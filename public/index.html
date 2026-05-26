@@ -356,109 +356,60 @@
     .hero-name { font-size: clamp(36px, 9vw, 52px); }
   }
 
-  /* ---------- CHAT PANEL ---------- */
-  .chat-panel {
-    position: fixed;
-    top: 0; right: 0;
-    width: 380px;
-    height: 100vh;
-    z-index: 10;
-    background: rgba(8,12,20,0.92);
-    backdrop-filter: blur(24px) saturate(1.3);
-    -webkit-backdrop-filter: blur(24px) saturate(1.3);
-    border-left: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px 0 0 16px;
+  /* ---------- CHAT VIEW (full-screen) ---------- */
+  .chat-view {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 420ms cubic-bezier(.4,0,.2,1);
-    box-shadow: -12px 0 48px rgba(0,0,0,0.6);
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 300ms ease;
   }
-  .chat-panel.is-open {
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-  .chat-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 9;
-    pointer-events: none;
-  }
-  .chat-backdrop.is-open { pointer-events: auto; }
+  .chat-view.is-open { opacity: 1; pointer-events: auto; }
   .has-chat .orb-ambient {
-    opacity: 0.22 !important;
-    transition: opacity 400ms ease;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
   }
-  .chat-header {
-    padding: 20px 20px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .chat-title {
-    font-family: 'Geist Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.32);
-  }
-  .chat-close {
-    width: 26px; height: 26px;
-    border-radius: 7px;
-    display: grid; place-items: center;
-    color: rgba(255,255,255,0.28);
-    transition: color 150ms, background 150ms;
-  }
-  .chat-close:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.07); }
-  .chat-messages {
+  .has-chat .bg-layer canvas { opacity: 0.06; transition: opacity 300ms ease; }
+  .chat-feed {
     flex: 1;
     overflow-y: auto;
-    padding: 18px 16px 12px;
+    padding: 48px 0 140px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.07) transparent;
+  }
+  .chat-feed::-webkit-scrollbar { width: 3px; }
+  .chat-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+  .chat-inner {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 0 calc(var(--sb-w) + 24px);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.08) transparent;
+    gap: 28px;
   }
-  .chat-messages::-webkit-scrollbar { width: 3px; }
-  .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-  .chat-row { display: flex; }
-  .chat-row.user { justify-content: flex-end; }
-  .chat-row.jarvis { justify-content: flex-start; }
-  .chat-bubble {
-    max-width: 88%;
-    padding: 9px 13px;
-    line-height: 1.6;
-    font-size: 13.5px;
+  .chat-msg { display: flex; flex-direction: column; }
+  .chat-msg.user { align-items: flex-end; }
+  .chat-msg.jarvis { align-items: flex-start; }
+  .chat-msg-text { font-size: 15px; line-height: 1.72; white-space: pre-wrap; }
+  .chat-msg.user .chat-msg-text {
+    color: rgba(255,255,255,0.95);
+    text-align: right;
+    max-width: 80%;
   }
-  .chat-bubble.user {
-    background: rgba(124,106,247,0.18);
-    border: 1px solid rgba(124,106,247,0.26);
-    color: rgba(255,255,255,0.9);
-    border-radius: 14px 14px 4px 14px;
-  }
-  .chat-bubble.jarvis {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    color: rgba(225,225,238,0.85);
-    font-family: 'Geist Mono', monospace;
-    font-size: 12px;
-    line-height: 1.75;
-    border-radius: 14px 14px 14px 4px;
-    white-space: pre-wrap;
-  }
+  .chat-msg.jarvis .chat-msg-text { color: rgba(255,255,255,0.82); }
   .chat-thinking {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 2px;
     color: var(--accent);
     font-family: 'Geist Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    letter-spacing: 0.16em;
     opacity: 0.6;
   }
   .think-dots { display: flex; gap: 4px; }
@@ -474,6 +425,22 @@
     0%, 60%, 100% { transform: scale(0.6); opacity: 0.2; }
     30% { transform: scale(1); opacity: 1; }
   }
+  .chat-close-btn {
+    position: fixed;
+    top: 20px; right: 20px;
+    z-index: 6;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.35);
+    transition: color 150ms, background 150ms, opacity 300ms;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .chat-close-btn.is-visible { opacity: 1; pointer-events: auto; }
+  .chat-close-btn:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.1); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
@@ -1868,39 +1835,40 @@ function Composer({
     className: "mic-pulse"
   })));
 }
-function ChatPanel({ open, messages, thinking, onClose }) {
+function ChatView({ open, messages, thinking, onClose }) {
   const endRef = React.useRef(null);
   React.useEffect(() => {
     if (open && endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking, open]);
-  return React.createElement('div', { className: `chat-panel ${open ? 'is-open' : ''}` },
-    React.createElement('div', { className: 'chat-header' },
-      React.createElement('span', { className: 'chat-title' }, 'Jarvis'),
-      React.createElement('button', {
-        className: 'chat-close',
-        onClick: onClose,
-        title: 'Fechar (ESC)'
-      }, React.createElement('svg', { width: 13, height: 13, viewBox: '0 0 13 13', fill: 'none' },
-        React.createElement('path', { d: 'M1 1l11 11M12 1L1 12', stroke: 'currentColor', strokeWidth: '1.6', strokeLinecap: 'round' })
-      ))
-    ),
-    React.createElement('div', { className: 'chat-messages' },
-      messages.map((msg, i) =>
-        React.createElement('div', { key: i, className: `chat-row ${msg.role}` },
-          React.createElement('div', { className: `chat-bubble ${msg.role}` }, msg.text)
-        )
-      ),
-      thinking && React.createElement('div', { className: 'chat-row jarvis' },
-        React.createElement('div', { className: 'chat-thinking' },
-          React.createElement('div', { className: 'think-dots' },
-            React.createElement('span'),
-            React.createElement('span'),
-            React.createElement('span')
+  return React.createElement(React.Fragment, null,
+    React.createElement('button', {
+      className: `chat-close-btn ${open ? 'is-visible' : ''}`,
+      onClick: onClose,
+      title: 'Fechar (ESC)'
+    }, React.createElement('svg', { width: 14, height: 14, viewBox: '0 0 14 14', fill: 'none' },
+      React.createElement('path', { d: 'M1 1l12 12M13 1L1 13', stroke: 'currentColor', strokeWidth: '1.6', strokeLinecap: 'round' })
+    )),
+    React.createElement('div', { className: `chat-view ${open ? 'is-open' : ''}` },
+      React.createElement('div', { className: 'chat-feed' },
+        React.createElement('div', { className: 'chat-inner' },
+          messages.map((msg, i) =>
+            React.createElement('div', { key: i, className: `chat-msg ${msg.role}` },
+              React.createElement('span', { className: 'chat-msg-text' }, msg.text)
+            )
           ),
-          'REFLETINDO...'
+          thinking && React.createElement('div', { className: 'chat-msg jarvis' },
+            React.createElement('div', { className: 'chat-thinking' },
+              React.createElement('div', { className: 'think-dots' },
+                React.createElement('span'),
+                React.createElement('span'),
+                React.createElement('span')
+              ),
+              'Refletindo...'
+            )
+          ),
+          React.createElement('div', { ref: endRef })
         )
-      ),
-      React.createElement('div', { ref: endRef })
+      )
     )
   );
 }
@@ -1954,7 +1922,7 @@ function App() {
     root.style.setProperty('--accent-soft', window.__hexA(accent, 0.18));
   }, [dark, accent]);
   useEffect(() => {
-    const onKey = e => { if (e.key === 'Escape') setChatOpen(false); };
+    const onKey = e => { if (e.key === 'Escape') { setChatOpen(false); setMessages([]); } };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
@@ -2016,7 +1984,7 @@ function App() {
   };
 
   // "active" = the screen is in working mode (focus, content, or voice).
-  const isActive = inputFocused || input.length > 0 || orbState === 'listening' || orbState === 'speaking';
+  const isActive = inputFocused || input.length > 0 || orbState === 'listening' || orbState === 'speaking' || chatOpen;
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
   return /*#__PURE__*/React.createElement("div", {
@@ -2059,15 +2027,12 @@ function App() {
     onBlur: () => setInputFocused(false),
     listening: orbState === 'listening',
     inputRef: inputRef
-  })), React.createElement('div', {
-    className: `chat-backdrop ${chatOpen ? 'is-open' : ''}`,
-    onClick: () => setChatOpen(false)
-  }), React.createElement(ChatPanel, {
+  }))), React.createElement(ChatView, {
     open: chatOpen && messages.length > 0,
     messages: messages,
     thinking: thinking,
-    onClose: () => setChatOpen(false)
-  })), /*#__PURE__*/React.createElement(TweaksPanel, {
+    onClose: () => { setChatOpen(false); setMessages([]); }
+  }), /*#__PURE__*/React.createElement(TweaksPanel, {
     title: "Tweaks"
   }, /*#__PURE__*/React.createElement(TweakSection, {
     label: "Identidade"
