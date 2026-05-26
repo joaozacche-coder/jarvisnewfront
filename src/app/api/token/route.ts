@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const at = new AccessToken(
-    process.env.LIVEKIT_API_KEY,
-    process.env.LIVEKIT_API_SECRET,
+    process.env.LIVEKIT_API_KEY!,
+    process.env.LIVEKIT_API_SECRET!,
     { identity: 'user-joao', ttl: '1h' }
   )
   at.addGrant({ roomJoin: true, room: 'jarvis-room' })

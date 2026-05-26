@@ -1795,33 +1795,55 @@ function App() {
     root.style.setProperty('--accent', accent);
     root.style.setProperty('--accent-soft', window.__hexA(accent, 0.18));
   }, [dark, accent]);
-  const submit = text => {
+  const submit = async (text) => {
     const value = (text ?? input).trim();
     if (!value) return;
     setInput('');
     setOrbState('speaking');
-    setTimeout(() => setOrbState('idle'), 2800);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: value })
+      })
+      const data = await res.json()
+      console.log('Jarvis:', data.response)
+      // TODO: exibir resposta na UI
+    } catch(e) {
+      console.error('Chat error:', e)
+    } finally {
+      setOrbState('idle')
+    }
   };
   const onMicToggle = async () => {
-    if (orbState === 'listening') {
-      setOrbState('idle');
-      return;
+    if (window._lkRoom) {
+      await window._lkRoom.disconnect()
+      window._lkRoom = null
+      setOrbState('idle')
+      return
     }
-    setOrbState('listening');
+    setOrbState('listening')
     try {
-      const res = await fetch('/api/token');
-      const { token, url } = await res.json();
-      const room = new LivekitClient.Room();
+      const res = await fetch('/api/token')
+      const { token, url } = await res.json()
+      const room = new LivekitClient.Room()
+      window._lkRoom = room
       room.on('trackSubscribed', (track) => {
-        if (track.kind === 'audio') setOrbState('speaking');
-      });
-      room.on('trackUnsubscribed', () => setOrbState('idle'));
-      room.on('disconnected', () => setOrbState('idle'));
-      await room.connect(url, token);
-      await room.localParticipant.setMicrophoneEnabled(true);
+        if (track.kind === 'audio') {
+          track.attach()
+          setOrbState('speaking')
+        }
+      })
+      room.on('trackUnsubscribed', () => setOrbState('listening'))
+      room.on('disconnected', () => {
+        setOrbState('idle')
+        window._lkRoom = null
+      })
+      await room.connect(url, token)
+      await room.localParticipant.setMicrophoneEnabled(true)
     } catch(e) {
-      console.error('LiveKit error:', e);
-      setOrbState('idle');
+      console.error('LiveKit error:', e)
+      setOrbState('idle')
     }
   };
 
