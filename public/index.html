@@ -355,6 +355,125 @@
   @media (max-width: 720px) {
     .hero-name { font-size: clamp(36px, 9vw, 52px); }
   }
+
+  /* ---------- CHAT PANEL ---------- */
+  .chat-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: 380px;
+    height: 100vh;
+    z-index: 10;
+    background: rgba(8,12,20,0.92);
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    border-left: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 420ms cubic-bezier(.4,0,.2,1);
+    box-shadow: -12px 0 48px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+  .chat-panel.is-open {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .chat-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    pointer-events: none;
+  }
+  .chat-backdrop.is-open { pointer-events: auto; }
+  .has-chat .orb-ambient {
+    opacity: 0.22 !important;
+    transition: opacity 400ms ease;
+  }
+  .chat-header {
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .chat-title {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.32);
+  }
+  .chat-close {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.28);
+    transition: color 150ms, background 150ms;
+  }
+  .chat-close:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.07); }
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.08) transparent;
+  }
+  .chat-messages::-webkit-scrollbar { width: 3px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .chat-row { display: flex; }
+  .chat-row.user { justify-content: flex-end; }
+  .chat-row.jarvis { justify-content: flex-start; }
+  .chat-bubble {
+    max-width: 88%;
+    padding: 9px 13px;
+    line-height: 1.6;
+    font-size: 13.5px;
+  }
+  .chat-bubble.user {
+    background: rgba(124,106,247,0.18);
+    border: 1px solid rgba(124,106,247,0.26);
+    color: rgba(255,255,255,0.9);
+    border-radius: 14px 14px 4px 14px;
+  }
+  .chat-bubble.jarvis {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: rgba(225,225,238,0.85);
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    line-height: 1.75;
+    border-radius: 14px 14px 14px 4px;
+    white-space: pre-wrap;
+  }
+  .chat-thinking {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 2px;
+    color: var(--accent);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    opacity: 0.6;
+  }
+  .think-dots { display: flex; gap: 4px; }
+  .think-dots span {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: thinkDot 1.4s ease-in-out infinite;
+  }
+  .think-dots span:nth-child(2) { animation-delay: 0.22s; }
+  .think-dots span:nth-child(3) { animation-delay: 0.44s; }
+  @keyframes thinkDot {
+    0%, 60%, 100% { transform: scale(0.6); opacity: 0.2; }
+    30% { transform: scale(1); opacity: 1; }
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
@@ -1749,6 +1868,42 @@ function Composer({
     className: "mic-pulse"
   })));
 }
+function ChatPanel({ open, messages, thinking, onClose }) {
+  const endRef = React.useRef(null);
+  React.useEffect(() => {
+    if (open && endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, thinking, open]);
+  return React.createElement('div', { className: `chat-panel ${open ? 'is-open' : ''}` },
+    React.createElement('div', { className: 'chat-header' },
+      React.createElement('span', { className: 'chat-title' }, 'Jarvis'),
+      React.createElement('button', {
+        className: 'chat-close',
+        onClick: onClose,
+        title: 'Fechar (ESC)'
+      }, React.createElement('svg', { width: 13, height: 13, viewBox: '0 0 13 13', fill: 'none' },
+        React.createElement('path', { d: 'M1 1l11 11M12 1L1 12', stroke: 'currentColor', strokeWidth: '1.6', strokeLinecap: 'round' })
+      ))
+    ),
+    React.createElement('div', { className: 'chat-messages' },
+      messages.map((msg, i) =>
+        React.createElement('div', { key: i, className: `chat-row ${msg.role}` },
+          React.createElement('div', { className: `chat-bubble ${msg.role}` }, msg.text)
+        )
+      ),
+      thinking && React.createElement('div', { className: 'chat-row jarvis' },
+        React.createElement('div', { className: 'chat-thinking' },
+          React.createElement('div', { className: 'think-dots' },
+            React.createElement('span'),
+            React.createElement('span'),
+            React.createElement('span')
+          ),
+          'REFLETINDO...'
+        )
+      ),
+      React.createElement('div', { ref: endRef })
+    )
+  );
+}
 function App() {
   const [t, setTweak] = useTweaks(/*EDITMODE-BEGIN*/{
     "name": "João",
@@ -1763,6 +1918,9 @@ function App() {
   const [mounted, setMounted] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const inputRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [thinking, setThinking] = useState(false);
   const ORB_SIZE = 480;
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 60);
@@ -1795,11 +1953,19 @@ function App() {
     root.style.setProperty('--accent', accent);
     root.style.setProperty('--accent-soft', window.__hexA(accent, 0.18));
   }, [dark, accent]);
+  useEffect(() => {
+    const onKey = e => { if (e.key === 'Escape') setChatOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   const submit = async (text) => {
     const value = (text ?? input).trim();
     if (!value) return;
     setInput('');
+    setChatOpen(true);
+    setMessages(prev => [...prev, { role: 'user', text: value }]);
     setOrbState('speaking');
+    setThinking(true);
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -1807,11 +1973,13 @@ function App() {
         body: JSON.stringify({ message: value })
       })
       const data = await res.json()
-      console.log('Jarvis:', data.response)
-      // TODO: exibir resposta na UI
+      const reply = data.response || data.reply || data.message || JSON.stringify(data)
+      setMessages(prev => [...prev, { role: 'jarvis', text: reply }])
     } catch(e) {
       console.error('Chat error:', e)
+      setMessages(prev => [...prev, { role: 'jarvis', text: 'Erro ao conectar com o servidor.' }])
     } finally {
+      setThinking(false)
       setOrbState('idle')
     }
   };
@@ -1852,7 +2020,7 @@ function App() {
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
   return /*#__PURE__*/React.createElement("div", {
-    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''}`
+    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${chatOpen && messages.length > 0 ? 'has-chat' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "bg-layer"
   }, t.particles && /*#__PURE__*/React.createElement(Particles, {
@@ -1891,7 +2059,15 @@ function App() {
     onBlur: () => setInputFocused(false),
     listening: orbState === 'listening',
     inputRef: inputRef
-  }))), /*#__PURE__*/React.createElement(TweaksPanel, {
+  })), React.createElement('div', {
+    className: `chat-backdrop ${chatOpen ? 'is-open' : ''}`,
+    onClick: () => setChatOpen(false)
+  }), React.createElement(ChatPanel, {
+    open: chatOpen && messages.length > 0,
+    messages: messages,
+    thinking: thinking,
+    onClose: () => setChatOpen(false)
+  })), /*#__PURE__*/React.createElement(TweaksPanel, {
     title: "Tweaks"
   }, /*#__PURE__*/React.createElement(TweakSection, {
     label: "Identidade"
