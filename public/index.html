@@ -395,7 +395,7 @@
   .is-light .msg-user .msg-bubble { background: rgba(0,0,0,0.06); }
 
   .msg-copy-wrap { position: relative; }
-  .msg-text { font-size: 14.5px; line-height: 1.65; color: var(--text); }
+  .msg-text { font-size: 14.5px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
 
   .msg-copy {
     position: absolute; top: 2px; right: -30px;
@@ -2036,7 +2036,14 @@ function App() {
       }
       return React.createElement('div', { key: msg.id, className: 'msg msg-jarvis' },
         React.createElement('div', { className: 'msg-copy-wrap' },
-          React.createElement('div', { className: 'msg-text' }, msg.text),
+          React.createElement('div', { className: 'msg-text' },
+            ...msg.text.split('\n\n').map((para, i, arr) =>
+              React.createElement('span', {
+                key: i,
+                style: { display: 'block', marginBottom: i < arr.length - 1 ? '8px' : '0' }
+              }, para)
+            )
+          ),
           React.createElement(CopyBtn, { text: msg.text })
         )
       );
