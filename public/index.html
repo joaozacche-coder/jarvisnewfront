@@ -2002,7 +2002,10 @@ function App() {
     size: ORB_SIZE
   })), /*#__PURE__*/React.createElement(Sidebar, {
     active: active,
-    onSelect: setActive,
+    onSelect: (id) => {
+      const routes = { tasks: '/tasks', crm: '/crm', finance: '/finance' };
+      if (routes[id]) { window.location.href = routes[id]; } else { setActive(id); }
+    },
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
   }), /*#__PURE__*/React.createElement("main", {
