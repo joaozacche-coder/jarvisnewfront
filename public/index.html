@@ -1,1069 +1,1947 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Jarvis</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JARVIS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary: #534AB7;
-  --primary-light: #EEEDFE;
-  --primary-mid: #AFA9EC;
-  --bg: #FFFFFF;
-  --bg-2: #F7F7F8;
-  --bg-3: #EFEFF1;
-  --text: #111118;
-  --text-2: #6B7280;
-  --text-3: #9CA3AF;
-  --border: rgba(0,0,0,0.07);
-  --border-md: rgba(0,0,0,0.11);
-  --red: #EF4444;
-  --green: #1D9E75;
-  --sb-w: 56px;
-  --top-h: 52px;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #root { height: 100%; }
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-}
-button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-textarea, input { font-family: inherit; }
-
-/* ─── LAYOUT ──────────────────────────── */
-.app { display: flex; height: 100vh; }
-
-/* ─── SIDEBAR ─────────────────────────── */
-.sidebar {
-  width: var(--sb-w);
-  height: 100vh;
-  background: var(--bg-2);
-  border-right: 0.5px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 0 14px;
-  flex-shrink: 0;
-  z-index: 20;
-}
-.sb-logo {
-  width: 30px; height: 30px;
-  background: var(--primary);
-  border-radius: 8px;
-  display: grid; place-items: center;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin-bottom: 18px;
-  flex-shrink: 0;
-  user-select: none;
-}
-.sb-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  width: 100%;
-  align-items: center;
-  padding: 0 10px;
-}
-.sb-item {
-  position: relative;
-  width: 36px; height: 36px;
-  border-radius: 9px;
-  display: grid; place-items: center;
-  color: var(--text-3);
-  font-size: 18px;
-  transition: background 130ms, color 130ms;
-  flex-shrink: 0;
-}
-.sb-item:hover { background: var(--bg-3); color: var(--text-2); }
-.sb-item.is-active { background: var(--primary-light); color: var(--primary); }
-.sb-badge {
-  position: absolute;
-  top: 5px; right: 5px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--red);
-  border: 1.5px solid var(--bg-2);
-  pointer-events: none;
-}
-.sb-tooltip {
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--text);
-  color: #fff;
-  font-size: 11.5px;
-  font-weight: 500;
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 120ms;
-  z-index: 100;
-}
-.sb-item:hover .sb-tooltip { opacity: 1; }
-.sb-foot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 0 10px;
-  flex-shrink: 0;
-}
-
-/* ─── MAIN ────────────────────────────── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* ─── TOPBAR ──────────────────────────── */
-.topbar {
-  height: var(--top-h);
-  border-bottom: 0.5px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 10px;
-  flex-shrink: 0;
-  background: var(--bg);
-  z-index: 5;
-}
-.top-orb {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 0 2px rgba(29,158,117,0.18);
-  animation: orbPulse 2.6s ease-in-out infinite;
-  flex-shrink: 0;
-}
-@keyframes orbPulse {
-  0%,100% { box-shadow: 0 0 0 2px rgba(29,158,117,0.18); }
-  50% { box-shadow: 0 0 0 5px rgba(29,158,117,0.08); }
-}
-.top-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.top-sep { width: 1px; height: 13px; background: var(--border-md); flex-shrink: 0; }
-.top-status { font-size: 12px; color: var(--text-3); }
-.top-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.btn-briefing {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 12px;
-  border-radius: 99px;
-  border: 0.5px solid var(--border-md);
-  background: var(--bg);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: background 130ms, border-color 130ms, color 130ms;
-}
-.btn-briefing:hover { background: var(--bg-2); color: var(--text); }
-
-/* ─── CONTEXT PILL ────────────────────── */
-.ctx-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 20px;
-  height: 30px;
-  border-bottom: 0.5px solid var(--border);
-  background: #FAFAFE;
-  font-size: 12px;
-  color: var(--text-2);
-  flex-shrink: 0;
-  animation: fadeDown 200ms both;
-}
-@keyframes fadeDown {
-  from { opacity: 0; height: 0; } to { opacity: 1; height: 30px; }
-}
-.ctx-bar-label { color: var(--text-3); }
-.ctx-bar span { font-weight: 500; color: var(--primary); }
-.ctx-clear {
-  margin-left: auto;
-  width: 18px; height: 18px;
-  border-radius: 4px;
-  display: grid; place-items: center;
-  font-size: 12px;
-  color: var(--text-3);
-  transition: background 130ms;
-}
-.ctx-clear:hover { background: var(--bg-3); color: var(--text-2); }
-
-/* ─── CHAT FEED ───────────────────────── */
-.chat-feed {
-  flex: 1;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.09) transparent;
-}
-.chat-feed::-webkit-scrollbar { width: 4px; }
-.chat-feed::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.09); border-radius: 2px; }
-.chat-inner {
-  max-width: 724px;
-  margin: 0 auto;
-  padding: 28px 28px 12px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ─── LOAD MORE ───────────────────────── */
-.load-more {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 8px;
-}
-.load-more-btn {
-  font-size: 12px;
-  color: var(--text-3);
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 6px;
-  transition: background 130ms, color 130ms;
-}
-.load-more-btn:hover { background: var(--bg-2); color: var(--text-2); }
-
-/* ─── DATE SEPARATOR ──────────────────── */
-.date-sep {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 0 16px;
-  color: var(--text-3);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-.date-sep::before, .date-sep::after {
-  content: '';
-  flex: 1;
-  height: 0.5px;
-  background: var(--border);
-}
-
-/* ─── MESSAGE ROW ─────────────────────── */
-.msg-row {
-  display: flex;
-  gap: 10px;
-  padding: 4px 0;
-  animation: fadeUp 210ms cubic-bezier(.2,.7,.2,1) both;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: none; }
-}
-.msg-row.user { flex-direction: row-reverse; }
-.msg-row + .msg-row { margin-top: 2px; }
-.msg-row.jarvis + .msg-row.user,
-.msg-row.user + .msg-row.jarvis { margin-top: 12px; }
-
-.msg-avatar {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  display: grid; place-items: center;
-  font-size: 11px;
-  font-weight: 500;
-  flex-shrink: 0;
-  margin-top: 1px;
-  user-select: none;
-}
-.msg-avatar.jarvis { background: var(--primary-light); color: var(--primary); }
-.msg-avatar.user   { background: var(--bg-3); color: var(--text-2); }
-
-.msg-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.msg-row.user .msg-content { align-items: flex-end; }
-
-/* user bubble */
-.msg-bubble {
-  background: var(--bg-2);
-  border: 0.5px solid var(--border);
-  border-radius: 14px 14px 4px 14px;
-  padding: 8px 13px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text);
-  max-width: 76%;
-  word-break: break-word;
-}
-
-/* jarvis text */
-.msg-text-wrap { position: relative; }
-.msg-text {
-  font-size: 14.5px;
-  line-height: 1.75;
-  color: var(--text);
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.msg-actions {
-  position: absolute;
-  top: -4px; right: 0;
-  display: none;
-  gap: 4px;
-}
-.msg-row.jarvis:hover .msg-actions { display: flex; }
-.copy-btn {
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  background: var(--bg-2);
-  border: 0.5px solid var(--border);
-  display: grid; place-items: center;
-  font-size: 13px;
-  color: var(--text-3);
-  transition: background 130ms, color 130ms;
-}
-.copy-btn:hover { background: var(--bg-3); color: var(--text); }
-.copy-btn.copied { color: var(--green); }
-
-/* ─── TYPING INDICATOR ────────────────── */
-.typing-row {
-  display: flex;
-  gap: 10px;
-  padding: 4px 0;
-  margin-top: 12px;
-  animation: fadeUp 210ms both;
-}
-.typing-dots {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  padding: 0 2px;
-  height: 28px;
-}
-.typing-dots span {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--text-3);
-  animation: typeDot 1.4s ease-in-out infinite;
-}
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typeDot {
-  0%,60%,100% { transform: scale(0.65); opacity: 0.35; }
-  30% { transform: scale(1); opacity: 1; }
-}
-
-/* ─── CONTEXT CARDS ───────────────────── */
-.cards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.ctx-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 11px;
-  border-radius: 10px;
-  border: 0.5px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  transition: transform 140ms, border-color 140ms, background 140ms;
-  text-align: left;
-  width: 100%;
-}
-.ctx-card:hover { transform: translateX(2px); border-color: var(--border-md); background: var(--bg-2); }
-.ctx-card:active { transform: scale(0.97); }
-.ctx-card.urgent { border-left: 2px solid rgba(239,68,68,0.35); }
-.ctx-icon {
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  display: grid; place-items: center;
-  font-size: 15px;
-  flex-shrink: 0;
-}
-.ctx-body { flex: 1; min-width: 0; }
-.ctx-title { font-size: 13px; font-weight: 500; line-height: 1.3; color: var(--text); }
-.ctx-sub { font-size: 11.5px; color: var(--text-3); margin-top: 1px; }
-.ctx-pill {
-  padding: 3px 8px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-}
-.stat-card {
-  padding: 11px 12px;
-  border-radius: 10px;
-  border: 0.5px solid var(--border);
-  background: var(--bg);
-}
-.stat-label { font-size: 11px; color: var(--text-3); font-weight: 500; }
-.stat-value { font-size: 18px; font-weight: 500; color: var(--text); margin-top: 3px; }
-
-/* ─── QUICK ACTIONS ───────────────────── */
-.quick-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.qa-chip {
-  display: flex; align-items: center; gap: 4px;
-  padding: 5px 12px;
-  border-radius: 99px;
-  border: 0.5px solid var(--border-md);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: background 130ms, color 130ms, border-color 130ms;
-}
-.qa-chip:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary-mid); }
-
-/* ─── EMPTY STATE ─────────────────────── */
-.empty-wrap {
-  padding: 32px 0 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.empty-greeting {
-  font-size: 22px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.3;
-}
-.empty-sub {
-  font-size: 14px;
-  color: var(--text-3);
-  margin-top: -14px;
-}
-
-/* ─── ERROR MESSAGE ───────────────────── */
-.msg-error {
-  font-size: 13.5px;
-  color: var(--text-2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.msg-error i { color: var(--red); font-size: 14px; }
-.retry-btn {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--primary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-}
-.retry-btn:hover { color: #3f35a0; }
-
-/* ─── INPUT BAR ───────────────────────── */
-.input-wrap {
-  padding: 10px 16px 14px;
-  background: var(--bg);
-  border-top: 0.5px solid var(--border);
-  flex-shrink: 0;
-}
-.input-bar {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  padding: 9px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border-md);
-  background: var(--bg);
-  max-width: 724px;
-  margin: 0 auto;
-  transition: border-color 180ms, box-shadow 180ms;
-}
-.input-bar:focus-within {
-  border-color: var(--primary-mid);
-  box-shadow: 0 0 0 3px rgba(83,74,183,0.08);
-}
-.input-icon-btn {
-  width: 30px; height: 30px;
-  border-radius: 7px;
-  display: grid; place-items: center;
-  font-size: 17px;
-  color: var(--text-3);
-  flex-shrink: 0;
-  transition: background 130ms, color 130ms;
-}
-.input-icon-btn:hover { background: var(--bg-2); color: var(--text-2); }
-.input-icon-btn.mic-on { color: var(--primary); background: var(--primary-light); }
-.input-textarea {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  resize: none;
-  font-size: 14px;
-  line-height: 1.57;
-  color: var(--text);
-  min-height: 22px;
-  max-height: 96px;
-  overflow-y: auto;
-  padding: 0;
-  scrollbar-width: none;
-}
-.input-textarea::-webkit-scrollbar { display: none; }
-.input-textarea::placeholder { color: var(--text-3); }
-.btn-send {
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  display: grid; place-items: center;
-  font-size: 16px;
-  flex-shrink: 0;
-  transition: background 130ms, opacity 130ms;
-}
-.btn-send:hover { background: #3f35a0; }
-.btn-send:disabled { opacity: 0.3; cursor: not-allowed; background: var(--primary); }
-.input-hint {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-3);
-  margin-top: 5px;
-  max-width: 724px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ─── TOAST ───────────────────────────── */
-.toast-wrap {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  pointer-events: none;
-}
-.toast {
-  background: var(--text);
-  color: #fff;
-  font-size: 13px;
-  padding: 7px 16px;
-  border-radius: 99px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.14);
-  animation: toastIn 250ms cubic-bezier(.2,.7,.2,1) both;
-  pointer-events: auto;
-  white-space: nowrap;
-}
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(-8px) scale(0.95); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* ─── MOBILE ──────────────────────────── */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0; top: auto;
-    width: 100%;
-    height: 58px;
-    flex-direction: row;
-    justify-content: space-around;
-    border-right: none;
-    border-top: 0.5px solid var(--border);
-    padding: 0;
-    z-index: 50;
+  :root {
+    --bg: #080C14;
+    --text: #F0F0F5;
+    --text-2: #8888A0;
+    --text-3: #5A5A70;
+    --border: rgba(255,255,255,0.07);
+    --accent: #7C6AF7;
+    --accent-soft: rgba(124,106,247,0.18);
+    --sb-w: 60px;
   }
-  .sb-logo { display: none; }
-  .sb-nav { flex-direction: row; flex: none; gap: 0; padding: 0; }
-  .sb-foot { flex-direction: row; padding: 0; margin-top: 0; }
-  .sb-item .sb-tooltip { display: none; }
-  .main { padding-bottom: 58px; }
-  .stats-grid { grid-template-columns: 1fr; }
-  .msg-bubble { max-width: 88%; }
-  .input-wrap { padding: 8px 10px 10px; }
-}
+
+  * { box-sizing: border-box; }
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Space Grotesk', 'DM Sans', 'Helvetica Neue', Helvetica, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button, input { font-family: inherit; color: inherit; background: none; border: 0; padding: 0; }
+  button { cursor: pointer; }
+
+  /* ---------- APP ---------- */
+  .app {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: var(--bg);
+    transition: background 600ms ease;
+  }
+
+  /* ---------- BACKGROUND PARTICLES ---------- */
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-layer canvas {
+    opacity: 0.25;
+    transition: opacity 600ms ease;
+  }
+  .is-active .bg-layer canvas { opacity: 1; }
+
+  /* ---------- ORB AS AMBIENT ENVIRONMENT ---------- */
+  .orb-ambient {
+    position: absolute;
+    top: var(--orb-top);
+    left: 50%;
+    width: var(--orb-size);
+    height: var(--orb-size);
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 55%);
+    transition: transform 520ms cubic-bezier(.4,0,.2,1), opacity 600ms ease;
+    will-change: transform;
+  }
+  .is-active .orb-ambient {
+    transform: translateX(-50%) scale(1.04);
+    opacity: 1;
+  }
+  .is-active .orb-ambient.orb-ambient--listening {
+    transform: translateX(-50%) scale(1.06);
+  }
+  .is-active .orb-ambient.orb-ambient--speaking {
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar {
+    position: absolute;
+    left: 0; top: 0;
+    z-index: 5;
+    width: var(--sb-w);
+    height: 100vh;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+  .sidebar-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .sidebar-logo-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.45);
+    transition: color 250ms ease;
+  }
+  .sidebar-logo-mark:hover { color: #fff; }
+  .is-light .sidebar-logo-mark { color: rgba(0,0,0,0.35); }
+  .is-light .sidebar-logo-mark:hover { color: #15151B; }
+
+  .sidebar-nav { display: flex; flex-direction: column; gap: 12px; flex: 1; padding-top: 14px; }
+  .sidebar-foot { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+
+  .nav-item {
+    position: relative;
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.20);
+    transition: color 220ms ease, transform 220ms ease;
+  }
+  .is-light .nav-item { color: rgba(0,0,0,0.22); }
+  .is-mounted .nav-item {
+    animation: navIn 600ms cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes navIn {
+    0% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+  }
+  .nav-item:hover { color: rgba(255,255,255,0.85); }
+  .is-light .nav-item:hover { color: rgba(0,0,0,0.85); }
+  .nav-item.is-active { color: #fff; }
+  .is-light .nav-item.is-active { color: #15151B; }
+  .nav-item.is-active::before {
+    content: '';
+    position: absolute;
+    left: -16px; top: 50%;
+    transform: translateY(-50%);
+    width: 2px; height: 14px;
+    border-radius: 0 2px 2px 0;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .nav-tooltip {
+    position: absolute;
+    left: calc(100% + 18px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background: rgba(20,24,36,0.92);
+    color: var(--text);
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+  .nav-item:hover .nav-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+  .nav-theme { color: rgba(255,255,255,0.20); }
+  .is-light .nav-theme { color: rgba(0,0,0,0.22); }
+
+  /* ---------- MAIN STAGE ---------- */
+  .main {
+    position: relative;
+    z-index: 3;
+    height: 100vh;
+  }
+
+  /* ---------- HERO (greeting) — at center of orb ---------- */
+  .hero {
+    position: absolute;
+    top: calc(var(--orb-top) + var(--orb-size) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+    transition:
+      opacity 420ms cubic-bezier(.4,0,.2,1),
+      transform 500ms cubic-bezier(.4,0,.2,1),
+      filter 420ms ease;
+    will-change: opacity, transform, filter;
+  }
+  .is-active .hero {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 14px));
+    filter: blur(4px);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.65);
+    white-space: nowrap;
+    text-shadow: 0 0 40px rgba(8,12,20,0.8);
+  }
+  .is-light .hero-eyebrow { color: rgba(0,0,0,0.32); }
+  .is-mounted .hero-eyebrow {
+    animation: fadeUp 800ms 80ms cubic-bezier(.2,.7,.2,1) both;
+  }
+
+  .hero-name {
+    margin: 0;
+    font-size: clamp(40px, 5.2vw, 64px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text);
+    text-wrap: balance;
+    text-shadow: 0 2px 20px rgba(8,12,20,0.9);
+  }
+  .is-mounted .hero-name {
+    animation: fadeUp 1000ms 220ms cubic-bezier(.2,.7,.2,1) both;
+  }
+
+  /* ---------- INPUT — pill, below orb, two positions ---------- */
+  .input-shell {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--orb-top) + var(--orb-size) + var(--orb-gap) + 25px); /* 25 = half input height */
+    transform: translate(-50%, -50%);
+    width: min(520px, calc(100% - 48px));
+    z-index: 2;
+    transition: top 540ms cubic-bezier(.4,0,.2,1), bottom 540ms cubic-bezier(.4,0,.2,1), width 540ms cubic-bezier(.4,0,.2,1);
+    will-change: top, bottom;
+  }
+  .is-active .input-shell {
+    top: auto;
+    bottom: 6vh;
+    transform: translateX(-50%);
+    width: min(560px, calc(100% - 48px));
+  }
+  .is-mounted .composer {
+    animation: fadeUp 1000ms 500ms cubic-bezier(.2,.7,.2,1) both;
+  }
+
+  .composer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 6px 6px 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 12px 40px rgba(0,0,0,0.35);
+    transition: background 280ms ease, box-shadow 280ms ease;
+  }
+  .is-light .composer { background: rgba(255,255,255,0.55); }
+  .composer:focus-within {
+    background: rgba(255,255,255,0.07);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 12px 40px rgba(0,0,0,0.4),
+      0 0 0 1px var(--accent-soft);
+  }
+  .is-light .composer:focus-within { background: rgba(255,255,255,0.75); }
+  .composer.is-listening {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 12px 40px rgba(0,0,0,0.4),
+      0 0 0 1px var(--accent);
+  }
+
+  .composer-input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    outline: 0;
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 4px;
+  }
+  .composer-input::placeholder {
+    color: rgba(255,255,255,0.35);
+    font-weight: 400;
+  }
+  .is-light .composer-input::placeholder { color: rgba(0,0,0,0.35); }
+
+  .composer-btn {
+    position: relative;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.45);
+    transition: color 200ms ease, background 200ms ease, transform 200ms ease;
+    flex-shrink: 0;
+  }
+  .is-light .composer-btn { color: rgba(0,0,0,0.5); }
+  .composer-btn:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+  .is-light .composer-btn:hover { background: rgba(0,0,0,0.05); }
+  .composer-btn.mic.is-on {
+    color: var(--accent);
+    background: rgba(124,106,247,0.18);
+  }
+  .mic-pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    animation: micPulse 1.2s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes micPulse {
+    0%   { transform: scale(0.85); opacity: .8; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+
+  /* ---------- STATUS LINE (below orb when speaking/listening) ---------- */
+  .status-line {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + min(34vh, 280px));
+    transform: translate(-50%, -50%);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--accent);
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 4;
+    transition: opacity 380ms ease, top 540ms cubic-bezier(.4,0,.2,1);
+  }
+  .status-line.is-visible { opacity: .85; }
+
+  /* ---------- ANIMS ---------- */
+  @keyframes fadeUp { from { transform: translateY(8px); } to { transform: none; } }
+
+  @media (max-width: 720px) {
+    .hero-name { font-size: clamp(36px, 9vw, 52px); }
+  }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
 <body>
-<div id="root"></div>
-<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
-<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-<script>
-'use strict';
-const { useState, useEffect, useRef, useCallback } = React;
-const e = React.createElement;
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script>
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
-// ─── UTILS ─────────────────────────────────────────────────────────────
-function uid() { return Math.random().toString(36).slice(2, 9); }
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
 
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 5)  return 'Boa noite';
-  if (h < 12) return 'Bom dia';
-  if (h < 18) return 'Boa tarde';
-  return 'Boa noite';
-}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
 
-function todayLabel() {
-  const d = new Date();
-  const days  = ['dom','seg','ter','qua','qui','sex','sáb'];
-  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  return `hoje · ${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
-}
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
 
-// ─── NAV ────────────────────────────────────────────────────────────────
-const NAV = [
-  { id: 'chat',     icon: 'ti-message',   label: 'Chat' },
-  { id: 'tasks',    icon: 'ti-checklist', label: 'Tarefas', badge: true },
-  { id: 'clients',  icon: 'ti-users',     label: 'Clientes' },
-  { id: 'finance',  icon: 'ti-chart-bar', label: 'Finanças' },
-  { id: 'calendar', icon: 'ti-calendar',  label: 'Agenda' },
-  { id: 'brain',    icon: 'ti-brain',     label: 'Segundo Cérebro' },
-];
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
 
-// ─── SIDEBAR ────────────────────────────────────────────────────────────
-function Sidebar({ active, onSelect }) {
-  return e('aside', { className: 'sidebar' },
-    e('div', { className: 'sb-logo' }, 'J'),
-    e('nav', { className: 'sb-nav' },
-      NAV.map(n =>
-        e('button', {
-          key: n.id,
-          className: `sb-item ${active === n.id ? 'is-active' : ''}`,
-          onClick: () => onSelect(n.id),
-          title: n.label
-        },
-          e('i', { className: `ti ${n.icon}` }),
-          n.badge && e('span', { className: 'sb-badge' }),
-          e('span', { className: 'sb-tooltip' }, n.label)
-        )
-      )
-    ),
-    e('div', { className: 'sb-foot' },
-      e('button', {
-        className: `sb-item ${active === 'settings' ? 'is-active' : ''}`,
-        onClick: () => onSelect('settings'),
-        title: 'Configurações'
-      },
-        e('i', { className: 'ti ti-settings' }),
-        e('span', { className: 'sb-tooltip' }, 'Configurações')
-      )
-    )
-  );
-}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
 
-// ─── TOPBAR ──────────────────────────────────────────────────────────────
-function Topbar({ onBriefing }) {
-  return e('header', { className: 'topbar' },
-    e('div', { className: 'top-orb' }),
-    e('span', { className: 'top-name' }, 'Jarvis'),
-    e('div', { className: 'top-sep' }),
-    e('span', { className: 'top-status' }, 'online agora'),
-    e('div', { className: 'top-right' },
-      e('button', { className: 'btn-briefing', onClick: onBriefing },
-        'Briefing ',
-        e('i', { className: 'ti ti-external-link', style: { fontSize: '11px' } })
-      )
-    )
-  );
-}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
 
-// ─── CONTEXT BAR ─────────────────────────────────────────────────────────
-function ContextBar({ context, onClear }) {
-  if (!context) return null;
-  return e('div', { className: 'ctx-bar' },
-    e('span', { className: 'ctx-bar-label' }, 'contexto: '),
-    e('span', null, context),
-    e('button', { className: 'ctx-clear', onClick: onClear, title: 'Limpar contexto' },
-      e('i', { className: 'ti ti-x' })
-    )
-  );
-}
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
 
-// ─── DATE SEPARATOR ───────────────────────────────────────────────────────
-function DateSep({ label }) {
-  return e('div', { className: 'date-sep' }, label);
-}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
 
-// ─── COPY BUTTON ──────────────────────────────────────────────────────────
-function CopyBtn({ text }) {
-  const [copied, setCopied] = useState(false);
-  const doCopy = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
-  };
-  return e('button', {
-    className: `copy-btn ${copied ? 'copied' : ''}`,
-    onClick: doCopy,
-    title: copied ? 'Copiado!' : 'Copiar'
-  }, e('i', { className: `ti ${copied ? 'ti-check' : 'ti-copy'}` }));
-}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
 
-// ─── CONTEXT CARDS ────────────────────────────────────────────────────────
-function ContextCards({ cards }) {
-  if (!cards || !cards.length) return null;
-  return e('div', { className: 'cards-list' },
-    cards.map((c, i) =>
-      e('button', {
-        key: i,
-        className: `ctx-card ${c.urgent ? 'urgent' : ''}`,
-        onClick: c.onClick || (() => {})
-      },
-        e('div', {
-          className: 'ctx-icon',
-          style: { background: c.iconBg || '#F0F0F2', color: c.iconColor || '#6B7280' }
-        }, e('i', { className: `ti ${c.icon || 'ti-file'}` })),
-        e('div', { className: 'ctx-body' },
-          e('div', { className: 'ctx-title' }, c.title),
-          c.sub && e('div', { className: 'ctx-sub' }, c.sub)
-        ),
-        c.status && e('span', {
-          className: 'ctx-pill',
-          style: { background: c.statusBg || '#F0F0F2', color: c.statusColor || '#6B7280' }
-        }, c.status)
-      )
-    )
-  );
-}
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
 
-// ─── STAT CARDS ───────────────────────────────────────────────────────────
-function StatCards({ stats }) {
-  if (!stats || !stats.length) return null;
-  return e('div', { className: 'stats-grid' },
-    stats.map((s, i) =>
-      e('div', { key: i, className: 'stat-card' },
-        e('div', { className: 'stat-label' }, s.label),
-        e('div', { className: 'stat-value' }, s.value)
-      )
-    )
-  );
-}
-
-// ─── QUICK ACTION CHIPS ───────────────────────────────────────────────────
-function QuickChips({ actions }) {
-  if (!actions || !actions.length) return null;
-  return e('div', { className: 'quick-actions' },
-    actions.map((a, i) =>
-      e('button', { key: i, className: 'qa-chip', onClick: a.onClick },
-        a.label,
-        e('i', { className: 'ti ti-arrow-up-right', style: { fontSize: '11px' } })
-      )
-    )
-  );
-}
-
-// ─── MESSAGE ──────────────────────────────────────────────────────────────
-function Message({ msg, onRetry, userInitials }) {
-  const isUser = msg.role === 'user';
-  return e('div', { className: `msg-row ${msg.role}` },
-    e('div', { className: `msg-avatar ${msg.role}` }, isUser ? (userInitials || 'EU') : 'J'),
-    e('div', { className: 'msg-content' },
-      isUser
-        ? e('div', { className: 'msg-bubble' }, msg.text)
-        : msg.isError
-          ? e('div', { className: 'msg-error' },
-              e('i', { className: 'ti ti-alert-circle' }),
-              'Algo deu errado.',
-              e('button', { className: 'retry-btn', onClick: onRetry }, 'Tenta de novo.')
-            )
-          : e(React.Fragment, null,
-              e('div', { className: 'msg-text-wrap' },
-                e('div', { className: 'msg-text' }, msg.text),
-                e('div', { className: 'msg-actions' },
-                  e(CopyBtn, { text: msg.text })
-                )
-              ),
-              msg.cards  && e(ContextCards, { cards: msg.cards }),
-              msg.stats  && e(StatCards, { stats: msg.stats }),
-              msg.quickActions && e(QuickChips, { actions: msg.quickActions })
-            )
-    )
-  );
-}
-
-// ─── TYPING INDICATOR ─────────────────────────────────────────────────────
-function TypingIndicator() {
-  return e('div', { className: 'typing-row' },
-    e('div', { className: 'msg-avatar jarvis' }, 'J'),
-    e('div', { className: 'typing-dots' },
-      e('span'), e('span'), e('span')
-    )
-  );
-}
-
-// ─── EMPTY STATE ──────────────────────────────────────────────────────────
-function EmptyState({ onAction }) {
-  const actions = [
-    { label: 'Ver tarefas de hoje',  msg: 'Quais são minhas tarefas de hoje?' },
-    { label: 'Status dos clientes',  msg: 'Como está o status dos meus clientes?' },
-    { label: 'Briefing do dia',      msg: 'Me dá o briefing do dia.' },
-  ];
-  return e('div', { className: 'empty-wrap' },
-    e('div', null,
-      e('div', { className: 'empty-greeting' }, `${greeting()}, Chefe.`),
-      e('div', { className: 'empty-sub' }, 'Como posso ajudar você hoje?')
-    ),
-    e('div', { className: 'quick-actions' },
-      actions.map((a, i) =>
-        e('button', { key: i, className: 'qa-chip', onClick: () => onAction(a.msg) },
-          a.label,
-          e('i', { className: 'ti ti-arrow-up-right', style: { fontSize: '11px' } })
-        )
-      )
-    )
-  );
-}
-
-// ─── INPUT BAR ────────────────────────────────────────────────────────────
-function InputBar({ onSend, isThinking, isListening, onMicToggle, inputRef: externalRef }) {
-  const [val, setVal]   = useState('');
-  const taRef           = useRef(null);
-
-  // expose textarea ref to parent for Cmd+K
-  useEffect(() => {
-    if (externalRef) externalRef.current = taRef.current;
-  });
-
-  // auto-resize textarea
-  useEffect(() => {
-    const ta = taRef.current;
-    if (!ta) return;
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 96) + 'px';
-  }, [val]);
-
-  const send = useCallback(() => {
-    const v = val.trim();
-    if (!v || isThinking) return;
-    onSend(v);
-    setVal('');
-    if (taRef.current) taRef.current.style.height = 'auto';
-  }, [val, isThinking, onSend]);
-
-  const onKey = useCallback(ev => {
-    if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); send(); return; }
-    if (ev.key === 'Escape') {
-      setVal('');
-      if (taRef.current) { taRef.current.style.height = 'auto'; taRef.current.blur(); }
-    }
-  }, [send]);
-
-  const canSend = val.trim().length > 0 && !isThinking;
-
-  return e('div', { className: 'input-wrap' },
-    e('div', { className: 'input-bar' },
-      e('button', { className: 'input-icon-btn', title: 'Anexar', tabIndex: -1 },
-        e('i', { className: 'ti ti-paperclip' })
-      ),
-      e('textarea', {
-        ref: taRef,
-        className: 'input-textarea',
-        placeholder: 'Mensagem…',
-        value: val,
-        rows: 1,
-        onChange: ev => setVal(ev.target.value),
-        onKeyDown: onKey
-      }),
-      e('button', {
-        className: `input-icon-btn ${isListening ? 'mic-on' : ''}`,
-        onClick: onMicToggle,
-        title: isListening ? 'Parar voz' : 'Voz',
-        tabIndex: -1
-      }, e('i', { className: 'ti ti-microphone' })),
-      e('button', {
-        className: 'btn-send',
-        onClick: send,
-        disabled: !canSend,
-        title: 'Enviar (Enter)'
-      }, e('i', { className: 'ti ti-arrow-up' }))
-    ),
-    e('div', { className: 'input-hint' }, 'Enter para enviar · Shift+Enter para nova linha · Cmd+K para focar')
-  );
-}
-
-// ─── TOAST ────────────────────────────────────────────────────────────────
-function ToastStack({ toasts }) {
-  if (!toasts.length) return null;
-  return e('div', { className: 'toast-wrap' },
-    toasts.map(t => e('div', { key: t.id, className: 'toast' }, t.text))
-  );
-}
-
-// ─── APP ──────────────────────────────────────────────────────────────────
-function App() {
-  const [messages,      setMessages]      = useState([]);
-  const [isThinking,    setIsThinking]    = useState(false);
-  const [activeNav,     setActiveNav]     = useState('chat');
-  const [activeContext, setActiveContext] = useState(null);
-  const [toasts,        setToasts]        = useState([]);
-  const [isListening,   setIsListening]   = useState(false);
-  const [lastMsg,       setLastMsg]       = useState('');
-
-  const feedRef  = useRef(null);
-  const inputRef = useRef(null); // points to the textarea DOM node
-
-  // scroll feed to bottom
-  const scrollBottom = useCallback(() => {
-    if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null ? keyOrEdits : {
+      [keyOrEdits]: val
+    };
+    setValues(prev => ({
+      ...prev,
+      ...edits
+    }));
+    window.parent.postMessage({
+      type: '__edit_mode_set_keys',
+      edits
+    }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', {
+      detail: edits
+    }));
   }, []);
+  return [values, setTweak];
+}
 
-  useEffect(scrollBottom, [messages, isThinking, scrollBottom]);
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({
+  title = 'Tweaks',
+  children
+}) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({
+    x: 16,
+    y: 16
+  });
+  const PAD = 16;
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth,
+      h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y))
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+  React.useEffect(() => {
+    const onMsg = e => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({
+      type: '__edit_mode_available'
+    }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({
+      type: '__edit_mode_dismissed'
+    }, '*');
+  };
+  const onDragStart = e => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX,
+      sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = ev => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy)
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+  if (!open) return null;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", null, __TWEAKS_STYLE), /*#__PURE__*/React.createElement("div", {
+    ref: dragRef,
+    className: "twk-panel",
+    "data-omelette-chrome": "",
+    style: {
+      right: offsetRef.current.x,
+      bottom: offsetRef.current.y
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-hd",
+    onMouseDown: onDragStart
+  }, /*#__PURE__*/React.createElement("b", null, title), /*#__PURE__*/React.createElement("button", {
+    className: "twk-x",
+    "aria-label": "Close tweaks",
+    onMouseDown: e => e.stopPropagation(),
+    onClick: dismiss
+  }, "\u2715")), /*#__PURE__*/React.createElement("div", {
+    className: "twk-body"
+  }, children)));
+}
 
-  // Cmd+K → focus input
-  useEffect(() => {
-    const handler = ev => {
-      if ((ev.metaKey || ev.ctrlKey) && ev.key === 'k') {
-        ev.preventDefault();
-        if (inputRef.current) inputRef.current.focus();
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({
+  label,
+  children
+}) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "twk-sect"
+  }, label), children);
+}
+function TweakRow({
+  label,
+  value,
+  children,
+  inline = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: inline ? 'twk-row twk-row-h' : 'twk-row'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label), value != null && /*#__PURE__*/React.createElement("span", {
+    className: "twk-val"
+  }, value)), children);
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({
+  label,
+  value,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label,
+    value: `${value}${unit}`
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    className: "twk-slider",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    onChange: e => onChange(Number(e.target.value))
+  }));
+}
+function TweakToggle({
+  label,
+  value,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-row twk-row-h"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "twk-toggle",
+    "data-on": value ? '1' : '0',
+    role: "switch",
+    "aria-checked": !!value,
+    onClick: () => onChange(!value)
+  }, /*#__PURE__*/React.createElement("i", null)));
+}
+function TweakRadio({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = o => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({
+    2: 16,
+    3: 10
+  }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = s => {
+      const m = options.find(o => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return /*#__PURE__*/React.createElement(TweakSelect, {
+      label: label,
+      value: value,
+      options: options,
+      onChange: s => onChange(resolve(s))
+    });
+  }
+  const opts = options.map(o => typeof o === 'object' ? o : {
+    value: o,
+    label: o
+  });
+  const idx = Math.max(0, opts.findIndex(o => o.value === value));
+  const n = opts.length;
+  const segAt = clientX => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor((clientX - r.left - 2) / inner * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+  const onPointerDown = e => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = ev => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: trackRef,
+    role: "radiogroup",
+    onPointerDown: onPointerDown,
+    className: dragging ? 'twk-seg dragging' : 'twk-seg'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-seg-thumb",
+    style: {
+      left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+      width: `calc((100% - 4px) / ${n})`
+    }
+  }), opts.map(o => /*#__PURE__*/React.createElement("button", {
+    key: o.value,
+    type: "button",
+    role: "radio",
+    "aria-checked": o.value === value
+  }, o.label))));
+}
+function TweakSelect({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "twk-field",
+    value: value,
+    onChange: e => onChange(e.target.value)
+  }, options.map(o => {
+    const v = typeof o === 'object' ? o.value : o;
+    const l = typeof o === 'object' ? o.label : o;
+    return /*#__PURE__*/React.createElement("option", {
+      key: v,
+      value: v
+    }, l);
+  })));
+}
+function TweakText({
+  label,
+  value,
+  placeholder,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "twk-field",
+    type: "text",
+    value: value,
+    placeholder: placeholder,
+    onChange: e => onChange(e.target.value)
+  }));
+}
+function TweakNumber({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  const clamp = n => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({
+    x: 0,
+    val: 0
+  });
+  const onScrubStart = e => {
+    e.preventDefault();
+    startRef.current = {
+      x: e.clientX,
+      val: value
+    };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = ev => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-num"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-lbl",
+    onPointerDown: onScrubStart
+  }, label), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: value,
+    min: min,
+    max: max,
+    step: step,
+    onChange: e => onChange(clamp(Number(e.target.value)))
+  }), unit && /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-unit"
+  }, unit));
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = n >> 16 & 255,
+    g = n >> 8 & 255,
+    b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+const __TwkCheck = ({
+  light
+}) => /*#__PURE__*/React.createElement("svg", {
+  viewBox: "0 0 14 14",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M3 7.2 5.8 10 11 4.2",
+  fill: "none",
+  strokeWidth: "2.2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  stroke: light ? 'rgba(0,0,0,.78)' : '#fff'
+}));
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  if (!options || !options.length) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "twk-row twk-row-h"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "twk-lbl"
+    }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("input", {
+      type: "color",
+      className: "twk-swatch",
+      value: value,
+      onChange: e => onChange(e.target.value)
+    }));
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = o => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-chips",
+    role: "radiogroup"
+  }, options.map((o, i) => {
+    const colors = Array.isArray(o) ? o : [o];
+    const [hero, ...rest] = colors;
+    const sup = rest.slice(0, 4);
+    const on = key(o) === cur;
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      type: "button",
+      className: "twk-chip",
+      role: "radio",
+      "aria-checked": on,
+      "data-on": on ? '1' : '0',
+      "aria-label": colors.join(', '),
+      title: colors.join(' · '),
+      style: {
+        background: hero
+      },
+      onClick: () => onChange(o)
+    }, sup.length > 0 && /*#__PURE__*/React.createElement("span", null, sup.map((c, j) => /*#__PURE__*/React.createElement("i", {
+      key: j,
+      style: {
+        background: c
+      }
+    }))), on && /*#__PURE__*/React.createElement(__TwkCheck, {
+      light: __twkIsLight(hero)
+    }));
+  })));
+}
+function TweakButton({
+  label,
+  onClick,
+  secondary = false
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: secondary ? 'twk-btn secondary' : 'twk-btn',
+    onClick: onClick
+  }, label);
+}
+Object.assign(window, {
+  useTweaks,
+  TweaksPanel,
+  TweakSection,
+  TweakRow,
+  TweakSlider,
+  TweakToggle,
+  TweakRadio,
+  TweakSelect,
+  TweakText,
+  TweakNumber,
+  TweakColor,
+  TweakButton
+});
+;
+// Animated particle field — soft drifting motes on a dark canvas.
+// Two layers: distant dust (slow, small, blurred) and near sparks (faster, bigger).
+
+function Particles({
+  accent = '#7C6AF7',
+  density = 1,
+  paused = false
+}) {
+  const canvasRef = React.useRef(null);
+  const rafRef = React.useRef(0);
+  const particlesRef = React.useRef([]);
+  const dimsRef = React.useRef({
+    w: 0,
+    h: 0,
+    dpr: 1
+  });
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      dimsRef.current = {
+        w,
+        h,
+        dpr
+      };
+      seed();
+    }
+    function seed() {
+      const {
+        w,
+        h
+      } = dimsRef.current;
+      const count = Math.floor(w * h / 9000 * density);
+      const arr = [];
+      for (let i = 0; i < count; i++) {
+        const layer = Math.random() < 0.7 ? 0 : 1; // 0 = dust, 1 = spark
+        arr.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * (layer ? 0.08 : 0.03),
+          vy: -(Math.random() * (layer ? 0.18 : 0.07) + 0.02),
+          r: layer ? Math.random() * 1.4 + 0.6 : Math.random() * 0.9 + 0.3,
+          a: Math.random() * (layer ? 0.55 : 0.3) + 0.1,
+          phase: Math.random() * Math.PI * 2,
+          freq: 0.4 + Math.random() * 0.8,
+          layer
+        });
+      }
+      particlesRef.current = arr;
+    }
+    let t = 0;
+    function tick() {
+      if (paused) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      t += 0.016;
+      const {
+        w,
+        h
+      } = dimsRef.current;
+      ctx.clearRect(0, 0, w, h);
+
+      // Subtle vignette / aurora behind everything
+      const g = ctx.createRadialGradient(w * 0.5, h * 0.55, 60, w * 0.5, h * 0.55, Math.max(w, h) * 0.7);
+      g.addColorStop(0, 'rgba(124,106,247,0.06)');
+      g.addColorStop(0.45, 'rgba(124,106,247,0.02)');
+      g.addColorStop(1, 'rgba(8,12,20,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      // First pass: update positions + draw connecting constellations between near sparks
+      const sparks = [];
+      for (const p of particlesRef.current) {
+        p.x += p.vx + Math.sin(t * p.freq + p.phase) * 0.05;
+        p.y += p.vy;
+        if (p.y < -10) {
+          p.y = h + 10;
+          p.x = Math.random() * w;
+        }
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+        if (p.layer === 1) sparks.push(p);
+      }
+
+      // Constellation lines
+      const maxDist = 140;
+      const cx = w * 0.5,
+        cy = h * 0.5;
+      for (let i = 0; i < sparks.length; i++) {
+        const a = sparks[i];
+        // Fade out lines near orb center (so they don't clutter the orb)
+        const dCenter = Math.hypot(a.x - cx, a.y - cy);
+        const centerFade = Math.min(1, Math.max(0, (dCenter - 180) / 180));
+        for (let j = i + 1; j < sparks.length; j++) {
+          const b = sparks[j];
+          const dx = a.x - b.x,
+            dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          if (d < maxDist) {
+            const alpha = (1 - d / maxDist) * 0.05 * centerFade;
+            if (alpha < 0.005) continue;
+            ctx.strokeStyle = `rgba(160,150,230,${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      for (const p of particlesRef.current) {
+        const twinkle = 0.6 + Math.sin(t * 2 * p.freq + p.phase) * 0.4;
+        const alpha = p.a * twinkle;
+        if (p.layer === 1) {
+          // glow spark
+          const rad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+          rad.addColorStop(0, `rgba(180,168,255,${alpha})`);
+          rad.addColorStop(0.4, `rgba(124,106,247,${alpha * 0.4})`);
+          rad.addColorStop(1, 'rgba(124,106,247,0)');
+          ctx.fillStyle = rad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = `rgba(240,240,255,${alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = `rgba(200,205,230,${alpha * 0.7})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    }
+    resize();
+    rafRef.current = requestAnimationFrame(tick);
+    window.addEventListener('resize', resize);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [density, paused, accent]);
+  return /*#__PURE__*/React.createElement("canvas", {
+    ref: canvasRef,
+    style: {
+      position: 'absolute',
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      pointerEvents: 'none'
+    }
+  });
+}
+window.Particles = Particles;
+;
+// VoiceOrb — particle sphere, monochrome violet + white, no halo background.
+// Floats directly on the dark stage.
+//
+// Speaking state animates like an audio visualizer:
+//   - a procedural "audio envelope" (multi-band synthetic speech) drives
+//     a global pulse + per-band sub-amplitude
+//   - each particle has a band index; bands attack fast and release slow,
+//     so loud syllables push particles outward and quiet pauses pull them
+//     back smoothly (lerp toward target, no popping).
+
+function VoiceOrb({
+  state = 'idle',
+  accent = '#7C6AF7',
+  onClick,
+  size = 380
+}) {
+  const wrapRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
+  const stateRef = React.useRef(state);
+  React.useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = size,
+      H = size;
+    const cx = W / 2,
+      cy = H / 2;
+    const R = size * 0.34;
+    const N = 280;
+    const BANDS = 8; // pseudo-frequency bands for the audio visualizer
+
+    // Fibonacci sphere
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      const y = 1 - i / (N - 1) * 2;
+      const ring = Math.sqrt(1 - y * y);
+      const theta = goldenAngle * i;
+      const x = Math.cos(theta) * ring;
+      const z = Math.sin(theta) * ring;
+      // Palette: 75% violet, 25% white
+      const isWhite = Math.random() < 0.25;
+      // Band = function of latitude AND a sprinkle of azimuth so it isn't purely horizontal stripes
+      const lat = Math.acos(y) / Math.PI; // 0 (top) .. 1 (bottom)
+      const az = theta % (Math.PI * 2) / (Math.PI * 2);
+      const band = (Math.floor(lat * BANDS) + Math.floor(az * 3)) % BANDS;
+      pts.push({
+        x,
+        y,
+        z,
+        phase: Math.random() * Math.PI * 2,
+        amp: 0.003 + Math.random() * 0.006,
+        // idle wobble amplitude — kept tight to preserve sphere shape
+        sz: isWhite ? 1.2 + Math.random() * 0.6 : 0.7 + Math.random() * 0.5,
+        twinkleP: Math.random() * Math.PI * 2,
+        band,
+        curBoost: 0,
+        // lerped expansion factor for speaking
+        hue: isWhite ? 'w' : 'v'
+      });
+    }
+    const COLORS = {
+      v: {
+        rgb: '180,160,255',
+        glow: '124,106,247'
+      },
+      w: {
+        rgb: '255,255,255',
+        glow: '235,228,255'
       }
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+
+    // Distance-based edges: connect pairs within CONNECTION_DIST of each other
+    const CONN_THRESH_SQ = 0.35 * 0.35; // unit-sphere chord threshold
+    const edges = [];
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x;
+        const dy = pts[i].y - pts[j].y;
+        const dz = pts[i].z - pts[j].z;
+        if (dx * dx + dy * dy + dz * dz < CONN_THRESH_SQ) {
+          edges.push([i, j, Math.random()]);
+        }
+      }
+    }
+
+    // Synthetic audio envelope.
+    // We sum a few sine waves at different "speech" rates and gate by a slow
+    // syllable envelope to mimic the cadence of someone talking.
+    function audioFrame(t) {
+      // Per-band amplitudes (0..1)
+      const bands = new Array(BANDS);
+      for (let b = 0; b < BANDS; b++) {
+        const f = 2.2 + b * 1.3; // each band oscillates at a different rate
+        const phase = b * 0.7;
+        const carrier = (Math.sin(t * f + phase) + 1) / 2;
+        const sub = (Math.sin(t * (f * 0.43) + phase * 1.7) + 1) / 2;
+        bands[b] = carrier * 0.7 + sub * 0.3;
+      }
+      // Syllable envelope — bursts and pauses
+      const syll = Math.max(0, Math.sin(t * 1.9) * 0.55 + Math.sin(t * 0.9 + 1.3) * 0.25 + Math.sin(t * 4.1 + 0.6) * 0.15 + 0.25);
+      // Overall master
+      const master = Math.min(1, syll * 1.1);
+      for (let b = 0; b < BANDS; b++) {
+        bands[b] = bands[b] * master;
+      }
+      return {
+        bands,
+        master
+      };
+    }
+    let rotY = 0,
+      rotX = 0;
+    let t = 0;
+    let raf;
+    function frame() {
+      const s = stateRef.current;
+      t += 0.016;
+      const rotSpeed = s === 'listening' ? 0.0090 : s === 'speaking' ? 0.0055 : 0.0042;
+      const ampMult = s === 'listening' ? 2.4 : 1.0;
+      const jitter = s === 'listening' ? 0.022 : 0;
+      const lineAlpha = s === 'listening' ? 0.55 : s === 'speaking' ? 0.5 : 0.15;
+      rotY += rotSpeed;
+      rotX += rotSpeed * 0.32;
+      const cosY = Math.cos(rotY),
+        sinY = Math.sin(rotY);
+      const cosX = Math.cos(rotX * 0.6),
+        sinX = Math.sin(rotX * 0.6);
+
+      // Audio envelope for the speaking visualizer
+      let audio = null;
+      if (s === 'speaking') audio = audioFrame(t);
+      ctx.clearRect(0, 0, W, H);
+
+      // Compute 2D projection
+      const proj = new Array(pts.length);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        const wob = Math.sin(t * 1.3 + p.phase) * p.amp * ampMult;
+        const jit = jitter ? (Math.random() - 0.5) * jitter : 0;
+
+        // Speaking-state expansion: lerp toward this band's target amplitude.
+        let target = 0;
+        if (audio) {
+          // Per-band level shaped by master envelope
+          target = audio.bands[p.band] * 0.35 + audio.master * 0.10;
+        }
+        // Attack 0.35 (fast), release 0.08 (slow & smooth back to rest)
+        const k = target > p.curBoost ? 0.35 : 0.08;
+        p.curBoost += (target - p.curBoost) * k;
+        const rr = R * (1 + wob + jit + p.curBoost);
+        let x = p.x * rr,
+          y = p.y * rr,
+          z = p.z * rr;
+        // rotate Y
+        const x1 = x * cosY + z * sinY;
+        const z1 = -x * sinY + z * cosY;
+        // rotate X
+        const y2 = y * cosX - z1 * sinX;
+        const z2 = y * sinX + z1 * cosX;
+        const persp = 1 + z2 / (R * 4);
+        proj[i] = {
+          x: cx + x1 * persp,
+          y: cy + y2 * persp,
+          z: z2,
+          persp,
+          p
+        };
+      }
+
+      // Particles with additive blending
+      ctx.globalCompositeOperation = 'lighter';
+      const order = proj.map((_, i) => i).sort((a, b) => proj[a].z - proj[b].z);
+      for (let oi = 0; oi < order.length; oi++) {
+        const i = order[oi];
+        const item = proj[i];
+        const {
+          x,
+          y,
+          z,
+          persp,
+          p
+        } = item;
+        const depth = (z + R) / (R * 2);
+        const col = COLORS[p.hue];
+        let alpha = 0.15 + depth * 0.55;
+        let szMul = persp;
+        const twinkle = 0.7 + Math.sin(t * 2.4 + p.twinkleP) * 0.3;
+        alpha *= twinkle;
+        if (s === 'listening') {
+          alpha = Math.min(1, alpha * 1.18);
+          szMul *= 1.08;
+        }
+        if (audio) {
+          // Bright particles ride the loudness
+          const b = p.curBoost;
+          alpha = Math.min(1, alpha + b * 1.6);
+          szMul *= 1 + b * 1.6;
+        }
+        const sz = p.sz * szMul;
+        const glowR = sz * 2.5;
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, glowR);
+        grad.addColorStop(0, `rgba(${col.glow},${alpha * 0.5})`);
+        grad.addColorStop(0.5, `rgba(${col.glow},${alpha * 0.08})`);
+        grad.addColorStop(1, `rgba(${col.glow},0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, glowR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(${col.rgb},${Math.min(1, alpha * 1.1)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, sz, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Edges drawn last — on top of particles so glow doesn't bury them
+      ctx.lineWidth = 0.55;
+      ctx.lineCap = 'round';
+      for (let e = 0; e < edges.length; e++) {
+        const [ai, bi] = edges[e];
+        const A = proj[ai], B = proj[bi];
+        const avgZ = (A.z + B.z) / 2;
+        const zfade = (avgZ + R) / (R * 2);
+        if (zfade < 0.15) continue;
+        let alpha = 0.35 * zfade;
+        if (audio) {
+          const boost = (A.p.curBoost + B.p.curBoost) * 0.5;
+          alpha = Math.min(0.7, alpha + boost * 1.2);
+        }
+        if (alpha < 0.03) continue;
+        ctx.strokeStyle = `rgba(180,160,255,${alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(A.x, A.y);
+        ctx.lineTo(B.x, B.y);
+        ctx.stroke();
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, [size]);
+  return /*#__PURE__*/React.createElement("div", {
+    ref: wrapRef,
+    className: `orb-wrap orb-wrap--${state}`,
+    style: {
+      width: size,
+      height: size
+    },
+    onClick: onClick
+  }, /*#__PURE__*/React.createElement("style", null, `
+        .orb-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          user-select: none;
+          background: transparent;
+        }
+        .orb-wrap canvas {
+          display: block;
+          background: transparent;
+        }
+        .orb-wrap--listening canvas { filter: brightness(1.15) saturate(1.1); }
+        .orb-wrap--speaking canvas  { filter: brightness(1.08); }
+      `), /*#__PURE__*/React.createElement("canvas", {
+    ref: canvasRef,
+    style: {
+      width: size,
+      height: size
+    }
+  }));
+}
+function hexA(hex, a) {
+  const c = hex.replace('#', '');
+  const n = c.length === 3 ? c.split('').map(x => x + x).join('') : c;
+  const r = parseInt(n.slice(0, 2), 16);
+  const g = parseInt(n.slice(2, 4), 16);
+  const b = parseInt(n.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+window.VoiceOrb = VoiceOrb;
+window.__hexA = hexA;
+;
+// JARVIS — orb as ambient environment. Content floats over a living, breathing sphere.
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+const ICONS = {
+  agent: /*#__PURE__*/React.createElement("path", {
+    d: "M12 2a4 4 0 0 1 4 4v4a4 4 0 1 1-8 0V6a4 4 0 0 1 4-4Zm-7 9a7 7 0 0 0 14 0M12 18v3m-4 0h8",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }),
+  tasks: /*#__PURE__*/React.createElement("path", {
+    d: "M4 6h10M4 12h10M4 18h6M18 5l2 2 4-4M18 11l2 2 4-4M18 17l2 2 4-4",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  crm: /*#__PURE__*/React.createElement("path", {
+    d: "M16 14a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3Zm0 2c-2.7 0-6 1.3-6 4v2h8m6-6c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5Z",
+    stroke: "currentColor",
+    strokeWidth: "1.4",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  finance: /*#__PURE__*/React.createElement("path", {
+    d: "M3 17l5-5 4 4 8-9M14 7h6v6",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  calendar: /*#__PURE__*/React.createElement("path", {
+    d: "M4 8h16M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Zm4-5v4m8-4v4",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }),
+  notes: /*#__PURE__*/React.createElement("path", {
+    d: "M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm9 0v5h5M8 13h8M8 17h5",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  reminders: /*#__PURE__*/React.createElement("path", {
+    d: "M12 3v3m0 0a6 6 0 0 1 6 6v3l1.5 3h-15L6 15v-3a6 6 0 0 1 6-6ZM9 21a3 3 0 0 0 6 0",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  settings: /*#__PURE__*/React.createElement("g", {
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    fill: "none",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "3"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"
+  })),
+  logo: /*#__PURE__*/React.createElement("path", {
+    d: "M12 2 4 6v6c0 4.5 3.4 8.6 8 10 4.6-1.4 8-5.5 8-10V6l-8-4Z",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    fill: "none",
+    strokeLinejoin: "round"
+  }),
+  sun: /*#__PURE__*/React.createElement("g", {
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    fill: "none",
+    strokeLinecap: "round"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+  })),
+  moon: /*#__PURE__*/React.createElement("path", {
+    d: "M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    fill: "none",
+    strokeLinejoin: "round"
+  }),
+  arrow: /*#__PURE__*/React.createElement("path", {
+    d: "M5 12h14m-5-5 5 5-5 5",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  mic: /*#__PURE__*/React.createElement("path", {
+    d: "M9 3h6v12a3 3 0 0 1-6 0V3Zm-4 8a7 7 0 0 0 14 0M12 18v3",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }),
+  attach: /*#__PURE__*/React.createElement("path", {
+    d: "M21 11.5 12.5 20a5.5 5.5 0 0 1-7.78-7.78l9-9a3.7 3.7 0 0 1 5.23 5.24L10 16.4a2 2 0 0 1-2.83-2.83l7.78-7.79",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }),
+  headphone: /*#__PURE__*/React.createElement("path", {
+    d: "M3 18v-6a9 9 0 0 1 18 0v6M3 18a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5Zm18 0a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5Z",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }),
+  volume: /*#__PURE__*/React.createElement("path", {
+    d: "M11 5 6 9H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3l5 4V5Zm7 2a6 6 0 0 1 0 10M15 9a3 3 0 0 1 0 6",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  })
+};
+const Icon = ({
+  name,
+  size = 16
+}) => /*#__PURE__*/React.createElement("svg", {
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24"
+}, ICONS[name]);
+const NAV = [{
+  id: 'agent',
+  label: 'Agente'
+}, {
+  id: 'tasks',
+  label: 'Tarefas'
+}, {
+  id: 'crm',
+  label: 'CRM'
+}, {
+  id: 'finance',
+  label: 'Finanças'
+}, {
+  id: 'calendar',
+  label: 'Agenda'
+}, {
+  id: 'notes',
+  label: 'Notas'
+}, {
+  id: 'reminders',
+  label: 'Lembretes'
+}, {
+  id: 'settings',
+  label: 'Config'
+}];
+function greetingEyebrow() {
+  const h = new Date().getHours();
+  return h < 5 ? 'BOA NOITE' : h < 12 ? 'BOM DIA' : h < 18 ? 'BOA TARDE' : 'BOA NOITE';
+}
+function Sidebar({
+  active,
+  onSelect,
+  dark,
+  onToggleTheme
+}) {
+  return /*#__PURE__*/React.createElement("aside", {
+    className: "sidebar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sidebar-stack"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "nav-item nav-logo",
+    title: "JARVIS"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "logo",
+    size: 16
+  })), NAV.map((n, i) => /*#__PURE__*/React.createElement("button", {
+    key: n.id,
+    className: `nav-item ${active === n.id ? 'is-active' : ''}`,
+    onClick: () => onSelect(n.id),
+    style: {
+      animationDelay: `${120 + i * 40}ms`
+    },
+    title: n.label
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: n.id,
+    size: 16
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "nav-tooltip"
+  }, n.label))), /*#__PURE__*/React.createElement("button", {
+    className: "nav-item nav-theme",
+    onClick: onToggleTheme,
+    title: dark ? 'Modo claro' : 'Modo escuro'
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: dark ? 'sun' : 'moon',
+    size: 16
+  }))));
+}
+function Composer({
+  value,
+  onChange,
+  onSubmit,
+  onMicToggle,
+  onFocus,
+  onBlur,
+  listening,
+  inputRef
+}) {
+  return /*#__PURE__*/React.createElement("form", {
+    className: `composer ${listening ? 'is-listening' : ''}`,
+    onSubmit: e => {
+      e.preventDefault();
+      onSubmit();
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "composer-btn attach",
+    title: "Anexar"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "attach",
+    size: 15
+  })), /*#__PURE__*/React.createElement("input", {
+    ref: inputRef,
+    type: "text",
+    className: "composer-input",
+    placeholder: "Pergunte ao JARVIS, ou fale\u2026",
+    value: value,
+    onChange: e => onChange(e.target.value),
+    onFocus: onFocus,
+    onBlur: onBlur,
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onSubmit();
+      }
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "composer-btn",
+    title: "Fone de ouvido"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "headphone",
+    size: 15
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "composer-btn",
+    title: "Volume"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "volume",
+    size: 15
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: `composer-btn mic ${listening ? 'is-on' : ''}`,
+    onClick: onMicToggle,
+    title: listening ? 'Parar' : 'Falar'
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "mic",
+    size: 15
+  }), listening && /*#__PURE__*/React.createElement("span", {
+    className: "mic-pulse"
+  })));
+}
+function App() {
+  const [t, setTweak] = useTweaks(/*EDITMODE-BEGIN*/{
+    "name": "João",
+    "accent": "#7C6AF7",
+    "dark": true,
+    "particles": true,
+    "density": 1.1
+  } /*EDITMODE-END*/);
+  const [active, setActive] = useState('agent');
+  const [input, setInput] = useState('');
+  const [orbState, setOrbState] = useState('idle');
+  const [mounted, setMounted] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+  const inputRef = useRef(null);
+  const ORB_SIZE = 480;
+  useEffect(() => {
+    const id = setTimeout(() => setMounted(true), 60);
+    return () => clearTimeout(id);
   }, []);
 
-  // add a transient toast
-  const addToast = useCallback(text => {
-    const id = uid();
-    setToasts(prev => [...prev, { id, text }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
+  // Push the orb's size into CSS so layout positions can be calculated from it.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--orb-size', `${ORB_SIZE}px`);
+    document.documentElement.style.setProperty('--orb-top', '8%');
+    document.documentElement.style.setProperty('--orb-gap', '40px');
   }, []);
-
-  // send a message
-  const sendMessage = useCallback(async text => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    setLastMsg(trimmed);
-
-    // optimistic user bubble
-    setMessages(prev => [...prev, { id: uid(), role: 'user', text: trimmed }]);
-    setIsThinking(true);
-
+  const accent = t.accent;
+  const dark = t.dark;
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      root.style.setProperty('--bg', '#080C14');
+      root.style.setProperty('--text', '#F0F0F5');
+      root.style.setProperty('--text-2', '#8888A0');
+      root.style.setProperty('--text-3', '#5A5A70');
+      root.style.setProperty('--border', 'rgba(255,255,255,0.07)');
+    } else {
+      root.style.setProperty('--bg', '#F5F4F0');
+      root.style.setProperty('--text', '#15151B');
+      root.style.setProperty('--text-2', '#6B6B7A');
+      root.style.setProperty('--text-3', '#9A9AAC');
+      root.style.setProperty('--border', 'rgba(0,0,0,0.08)');
+    }
+    root.style.setProperty('--accent', accent);
+    root.style.setProperty('--accent-soft', window.__hexA(accent, 0.18));
+  }, [dark, accent]);
+  const submit = async (text) => {
+    const value = (text ?? input).trim();
+    if (!value) return;
+    setInput('');
+    setOrbState('speaking');
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: trimmed })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const reply = data.response || data.reply || data.message || JSON.stringify(data);
-      setMessages(prev => [...prev, { id: uid(), role: 'jarvis', text: reply }]);
-    } catch (err) {
-      console.error('chat error:', err);
-      setMessages(prev => [...prev, { id: uid(), role: 'jarvis', isError: true, text: '' }]);
-      addToast('Erro ao conectar com Jarvis.');
-    } finally {
-      setIsThinking(false);
-    }
-  }, [addToast]);
-
-  // retry last message
-  const handleRetry = useCallback(() => {
-    setMessages(prev => prev.filter(m => !m.isError));
-    if (lastMsg) sendMessage(lastMsg);
-  }, [lastMsg, sendMessage]);
-
-  // LiveKit voice
-  const onMicToggle = useCallback(async () => {
-    if (window._lkRoom) {
-      await window._lkRoom.disconnect();
-      window._lkRoom = null;
-      setIsListening(false);
-      return;
-    }
-    setIsListening(true);
-    try {
-      const res = await fetch('/api/token');
-      const { token, url } = await res.json();
-      const room = new LivekitClient.Room();
-      window._lkRoom = room;
-      room.on('trackSubscribed', track => {
-        if (track.kind === 'audio') track.attach();
-      });
-      room.on('disconnected', () => {
-        setIsListening(false);
-        window._lkRoom = null;
-      });
-      await room.connect(url, token);
-      await room.localParticipant.setMicrophoneEnabled(true);
-    } catch (err) {
-      console.error('livekit error:', err);
-      setIsListening(false);
-      addToast('Erro ao conectar microfone.');
-    }
-  }, [addToast]);
-
-  const hasMessages = messages.length > 0;
-
-  return e('div', { className: 'app' },
-    e(Sidebar, { active: activeNav, onSelect: setActiveNav }),
-
-    e('div', { className: 'main' },
-      e(Topbar, { onBriefing: () => sendMessage('Me dá o briefing do dia.') }),
-      e(ContextBar, { context: activeContext, onClear: () => setActiveContext(null) }),
-
-      e('div', { className: 'chat-feed', ref: feedRef },
-        e('div', { className: 'chat-inner' },
-
-          hasMessages && e('div', { className: 'load-more' },
-            e('button', { className: 'load-more-btn' }, '↑ ver mais')
-          ),
-
-          e(DateSep, { label: todayLabel() }),
-
-          hasMessages
-            ? messages.map(msg =>
-                e(Message, {
-                  key: msg.id,
-                  msg,
-                  onRetry: handleRetry,
-                  userInitials: 'JZ'
-                })
-              )
-            : e(EmptyState, { onAction: sendMessage }),
-
-          isThinking && e(TypingIndicator)
-        )
-      ),
-
-      e(InputBar, {
-        onSend: sendMessage,
-        isThinking,
-        isListening,
-        onMicToggle,
-        inputRef
+        body: JSON.stringify({ message: value })
       })
-    ),
+      const data = await res.json()
+      console.log('Jarvis:', data.response)
+      // TODO: exibir resposta na UI
+    } catch(e) {
+      console.error('Chat error:', e)
+    } finally {
+      setOrbState('idle')
+    }
+  };
+  const onMicToggle = async () => {
+    if (window._lkRoom) {
+      await window._lkRoom.disconnect()
+      window._lkRoom = null
+      setOrbState('idle')
+      return
+    }
+    setOrbState('listening')
+    try {
+      const res = await fetch('/api/token')
+      const { token, url } = await res.json()
+      const room = new LivekitClient.Room()
+      window._lkRoom = room
+      room.on('trackSubscribed', (track) => {
+        if (track.kind === 'audio') {
+          track.attach()
+          setOrbState('speaking')
+        }
+      })
+      room.on('trackUnsubscribed', () => setOrbState('listening'))
+      room.on('disconnected', () => {
+        setOrbState('idle')
+        window._lkRoom = null
+      })
+      await room.connect(url, token)
+      await room.localParticipant.setMicrophoneEnabled(true)
+    } catch(e) {
+      console.error('LiveKit error:', e)
+      setOrbState('idle')
+    }
+  };
 
-    e(ToastStack, { toasts })
-  );
+  // "active" = the screen is in working mode (focus, content, or voice).
+  const isActive = inputFocused || input.length > 0 || orbState === 'listening' || orbState === 'speaking';
+  const showStatus = orbState === 'listening' || orbState === 'speaking';
+  const eyebrow = greetingEyebrow();
+  return /*#__PURE__*/React.createElement("div", {
+    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-layer"
+  }, t.particles && /*#__PURE__*/React.createElement(Particles, {
+    accent: accent,
+    density: t.density,
+    paused: !t.particles
+  })), /*#__PURE__*/React.createElement("div", {
+    className: `orb-ambient orb-ambient--${orbState}`
+  }, /*#__PURE__*/React.createElement(VoiceOrb, {
+    state: orbState,
+    accent: accent,
+    size: ORB_SIZE
+  })), /*#__PURE__*/React.createElement(Sidebar, {
+    active: active,
+    onSelect: setActive,
+    dark: dark,
+    onToggleTheme: () => setTweak('dark', !dark)
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "main"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "hero"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hero-eyebrow"
+  }, eyebrow), /*#__PURE__*/React.createElement("h1", {
+    className: "hero-name"
+  }, t.name)), /*#__PURE__*/React.createElement("div", {
+    className: `status-line ${showStatus ? 'is-visible' : ''}`
+  }, orbState === 'listening' && 'OUVINDO…', orbState === 'speaking' && 'RESPONDENDO…'), /*#__PURE__*/React.createElement("div", {
+    className: "input-shell"
+  }, /*#__PURE__*/React.createElement(Composer, {
+    value: input,
+    onChange: setInput,
+    onSubmit: () => submit(),
+    onMicToggle: onMicToggle,
+    onFocus: () => setInputFocused(true),
+    onBlur: () => setInputFocused(false),
+    listening: orbState === 'listening',
+    inputRef: inputRef
+  }))), /*#__PURE__*/React.createElement(TweaksPanel, {
+    title: "Tweaks"
+  }, /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Identidade"
+  }), /*#__PURE__*/React.createElement(TweakText, {
+    label: "Nome",
+    value: t.name,
+    onChange: v => setTweak('name', v)
+  }), /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Apar\xEAncia"
+  }), /*#__PURE__*/React.createElement(TweakToggle, {
+    label: "Modo escuro",
+    value: t.dark,
+    onChange: v => setTweak('dark', v)
+  }), /*#__PURE__*/React.createElement(TweakColor, {
+    label: "Cor de acento",
+    value: t.accent,
+    onChange: v => setTweak('accent', v),
+    options: ['#7C6AF7', '#5DD3FF', '#F77B6A', '#5DE3A8', '#E26AF7']
+  }), /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Cena"
+  }), /*#__PURE__*/React.createElement(TweakToggle, {
+    label: "Part\xEDculas",
+    value: t.particles,
+    onChange: v => setTweak('particles', v)
+  }), /*#__PURE__*/React.createElement(TweakSlider, {
+    label: "Densidade",
+    min: 0.3,
+    max: 2,
+    step: 0.1,
+    value: t.density,
+    onChange: v => setTweak('density', v)
+  }), /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Estados"
+  }), /*#__PURE__*/React.createElement(TweakButton, {
+    label: "idle",
+    onClick: () => {
+      setInput('');
+      setInputFocused(false);
+      setOrbState('idle');
+      inputRef.current?.blur();
+    }
+  }), /*#__PURE__*/React.createElement(TweakButton, {
+    label: "ouvindo",
+    onClick: () => setOrbState('listening')
+  }), /*#__PURE__*/React.createElement(TweakButton, {
+    label: "respondendo",
+    onClick: () => setOrbState('speaking')
+  })));
 }
-
-ReactDOM.createRoot(document.getElementById('root')).render(e(App));
-</script>
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+  </script>
 </body>
 </html>
