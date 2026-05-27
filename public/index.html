@@ -81,6 +81,10 @@
   .is-active .orb-ambient.orb-ambient--speaking {
     transform: translateX(-50%) scale(1.05);
   }
+  .has-chat .orb-ambient {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
 
   /* ---------- SIDEBAR ---------- */
   .sidebar {
@@ -1981,7 +1985,7 @@ function App() {
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
   return /*#__PURE__*/React.createElement("div", {
-    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''}`
+    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "bg-layer"
   }, t.particles && /*#__PURE__*/React.createElement(Particles, {
