@@ -445,7 +445,8 @@
   /* ─── Tasks View ─── */
   @keyframes tvFadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes tvSlideDown{ from { opacity:0; transform:translateY(-8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
-  @keyframes tvSlideOut { from { opacity:1; transform:translateX(0); max-height:60px; padding-top:13px; padding-bottom:13px; } to { opacity:0; transform:translateX(28px); max-height:0; padding-top:0; padding-bottom:0; border-bottom-width:0; } }
+  @keyframes tvSlideUp  { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  @keyframes tvSlideOut { from { opacity:1; transform:translateX(0); max-height:60px; padding-top:12px; padding-bottom:12px; } to { opacity:0; transform:translateX(28px); max-height:0; padding-top:0; padding-bottom:0; border-bottom-width:0; } }
   @keyframes tvShimmer  { from { background-position:-600px 0; } to { background-position:600px 0; } }
   @keyframes tvScaleIn  { from { transform:scale(0.5); opacity:0; } to { transform:scale(1); opacity:1; } }
   @keyframes tvPulse    { 0%,100% { box-shadow:0 0 0 0 rgba(124,106,247,0.4); } 50% { box-shadow:0 0 0 7px rgba(124,106,247,0); } }
@@ -476,13 +477,13 @@
   /* Stats cards */
   .tv-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; flex-shrink: 0; animation: tvFadeUp 0.4s 0.08s both; }
   .tv-card {
-    padding: 14px 16px; border-radius: 12px;
+    padding: 12px 16px; border-radius: 12px;
     background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 5px;
+    display: flex; flex-direction: column; gap: 4px;
     transition: background 0.18s, border-color 0.18s, transform 0.18s; cursor: default;
   }
   .tv-card:hover { background: rgba(255,255,255,0.055); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
-  .tv-card-num { font-size: 26px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
+  .tv-card-num { font-size: 24px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
   .tv-card-lbl { font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
   .tv-card--active .tv-card-num { color: var(--accent); }
   .tv-card--done   .tv-card-num { color: #34D399; }
@@ -493,7 +494,7 @@
   .tv-tab {
     padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 500;
     background: transparent; border: 1px solid var(--border); color: var(--text-3);
-    cursor: pointer; font-family: inherit; transition: all 0.15s;
+    cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap;
   }
   .tv-tab:hover { color: var(--text-2); border-color: rgba(255,255,255,0.12); }
   .tv-tab.is-on { background: rgba(124,106,247,0.12); border-color: rgba(124,106,247,0.3); color: var(--accent); }
@@ -501,26 +502,30 @@
   .tv-tab--late.is-on { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25); color: #F87171; }
 
   /* Skeleton */
-  .tv-skel-row { display: grid; grid-template-columns: 20px 1fr 68px 82px; align-items: center; gap: 14px; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+  .tv-skel-row { display: grid; grid-template-columns: 20px 1fr 68px 82px; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border); }
   .tv-skel-row:last-child { border-bottom: none; }
   .tv-skel { height: 12px; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: tvShimmer 1.6s infinite linear; }
   .tv-skel-circ { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,0.05); }
 
-  /* Empty */
-  .tv-empty { font-size: 13px; color: var(--text-3); text-align: center; padding: 60px 0; font-family: 'Geist Mono', monospace; animation: tvFadeUp 0.3s both; }
+  /* Empty state */
+  .tv-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 56px 0; animation: tvFadeUp 0.3s both; }
+  .tv-empty-icon { font-size: 36px; opacity: 0.15; line-height: 1; }
+  .tv-empty-msg { font-size: 14px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  .tv-empty-plain { font-size: 13px; color: var(--text-3); font-family: 'Geist Mono', monospace; padding: 60px 0; text-align: center; animation: tvFadeUp 0.3s both; }
 
   /* List */
   .tv-list { border-radius: 14px; border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; animation: tvFadeUp 0.4s 0.14s both; }
   .tv-row {
     display: grid; grid-template-columns: 22px 1fr auto;
-    align-items: center; gap: 14px; padding: 13px 20px;
+    align-items: center; gap: 14px; padding: 12px 18px 12px 16px;
     border-bottom: 1px solid var(--border); transition: background 0.12s;
     animation: tvFadeUp 0.35s calc(var(--i,0) * 35ms) both;
+    border-left: 3px solid var(--tv-prio, rgba(255,255,255,0.06));
   }
   .tv-row:last-child { border-bottom: none; }
   .tv-row:hover { background: rgba(255,255,255,0.02); }
   .tv-row.is-dying { animation: tvSlideOut 0.38s forwards ease-in; overflow: hidden; pointer-events: none; }
-  .tv-done { opacity: 0.48; }
+  .tv-done { opacity: 0.45; }
 
   /* Circular checkbox */
   .tv-check {
@@ -535,15 +540,22 @@
   .tv-checked svg { opacity: 1 !important; transform: scale(1) !important; animation: tvScaleIn 0.2s; }
 
   /* Row body */
-  .tv-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .tv-task-name { font-size: 13.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tv-body { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .tv-title-row { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .tv-task-name { font-size: 13.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; min-width: 0; }
   .tv-done .tv-task-name { text-decoration: line-through; color: var(--text-3); }
+  .tv-client-pill { font-size: 10.5px; padding: 1.5px 7px; border-radius: 4px; font-weight: 500; background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.2); color: rgba(168,155,255,0.9); white-space: nowrap; flex-shrink: 0; }
   .tv-tags { display: flex; gap: 5px; }
-  .tv-client-tag { font-size: 10.5px; padding: 1.5px 7px; border-radius: 4px; font-weight: 500; background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.2); color: rgba(168,155,255,0.9); }
+  .tv-client-tag { font-size: 10.5px; padding: 1.5px 7px; border-radius: 4px; font-weight: 500; background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.15); color: rgba(168,155,255,0.7); }
+  .tv-created-at { font-size: 10px; color: rgba(255,255,255,0.18); font-family: 'Geist Mono', monospace; letter-spacing: 0.02em; }
   .tv-row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .tv-badge { font-size: 11px; padding: 2.5px 9px; border-radius: 6px; font-weight: 500; white-space: nowrap; }
-  .tv-due { font-size: 11.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; white-space: nowrap; min-width: 46px; text-align: right; }
+  .tv-due { font-size: 11.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; white-space: nowrap; min-width: 60px; text-align: right; }
+  .tv-no-prazo { color: rgba(255,255,255,0.2) !important; font-style: italic; }
   .tv-late-due { color: #F87171 !important; }
+
+  /* FAB — mobile only */
+  .tv-fab { display: none; }
 
   /* Modal */
   .tv-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: tvFadeUp 0.18s both; }
@@ -579,6 +591,38 @@
   .tv-btn-ok:hover { opacity: 0.88; transform: translateY(-1px); }
   .tv-btn-ok:active { transform: translateY(0); }
   .tv-btn-ok:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 767px) {
+    .tasks-view { padding: 24px 16px 100px calc(var(--sb-w) + 16px); gap: 16px; }
+    .tv-title { font-size: 20px; }
+    .tv-header { align-items: flex-start; flex-direction: column; gap: 2px; }
+    .tv-new-btn { display: none; }
+    .tv-stats { grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .tv-tabs { overflow-x: auto; padding-bottom: 2px; flex-wrap: nowrap; }
+    .tv-tabs::-webkit-scrollbar { display: none; }
+    .tv-hide-mobile { display: none !important; }
+    .tv-row { padding: 11px 14px 11px 12px; gap: 10px; }
+    .tv-fab {
+      display: flex; position: fixed; bottom: 24px; right: 24px; z-index: 100;
+      width: 52px; height: 52px; border-radius: 50%; background: var(--accent);
+      border: none; color: white; font-size: 26px; line-height: 1;
+      align-items: center; justify-content: center; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(124,106,247,0.45); transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .tv-fab:hover { transform: scale(1.08); box-shadow: 0 8px 32px rgba(124,106,247,0.6); }
+    .tv-modal-bg { align-items: flex-end; }
+    .tv-modal {
+      width: 100%; max-width: 100%; border-radius: 20px 20px 0 0;
+      animation: tvSlideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      padding-bottom: max(26px, env(safe-area-inset-bottom, 26px));
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .tasks-view { padding: 32px 32px 32px calc(var(--sb-w) + 28px); }
+    .tv-card { padding: 10px 14px; }
+    .tv-card-num { font-size: 21px; }
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
@@ -2082,9 +2126,9 @@ function TasksView() {
   };
 
   const PRIO = {
-    high:   {label: 'Alta',  color: '#F87171', bg: 'rgba(248,113,113,0.12)'},
-    medium: {label: 'Média', color: '#FBBF24', bg: 'rgba(251,191,36,0.09)'},
-    low:    {label: 'Baixa', color: 'rgba(255,255,255,0.32)', bg: 'rgba(255,255,255,0.05)'}
+    high:   {label: 'Alta',  color: '#F87171', bg: 'rgba(248,113,113,0.12)', border: '#F87171'},
+    medium: {label: 'Média', color: '#FBBF24', bg: 'rgba(251,191,36,0.09)',  border: '#FBBF24'},
+    low:    {label: 'Baixa', color: 'rgba(255,255,255,0.32)', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)'}
   };
 
   const getPrio = (t) => {
@@ -2097,10 +2141,40 @@ function TasksView() {
     return 'low';
   };
 
+  // Extrai "- Cliente" do título; retorna {clean, client}
+  const KNOWN_CLIENTS = ['Gracie Barra', 'SoHo', 'DDpartssolution'];
+  const extractClient = (title) => {
+    for (const c of KNOWN_CLIENTS) {
+      const m = title.match(new RegExp('\\s*-\\s*' + c + '\\s*$', 'i'));
+      if (m) return {clean: title.slice(0, title.length - m[0].length).trim(), client: c};
+    }
+    return {clean: title, client: null};
+  };
+
+  // Tag da tarefa (sem "contexto-vivo", sem duplicar o cliente do título)
+  const getTag = (t, extractedClient) => {
+    const tag = (t.tags || []).find(x => x !== 'contexto-vivo') || '';
+    if (tag && extractedClient && tag.toLowerCase() === extractedClient.toLowerCase()) return '';
+    return tag;
+  };
+
+  // "criada há X dias/horas"
+  const fmtAge = (created_at) => {
+    if (!created_at) return null;
+    const diff = Date.now() - new Date(created_at).getTime();
+    const h = Math.floor(diff / 3600000);
+    if (h < 1) return null;
+    if (h < 24) return `criada há ${h}h`;
+    const d = Math.floor(h / 24);
+    if (d === 1) return 'criada ontem';
+    if (d < 30) return `criada há ${d} dias`;
+    return null;
+  };
+
   const fmtDue = (due) => {
-    if (!due) return '—';
+    if (!due) return null;
     const d = new Date(due);
-    if (isNaN(d.getTime())) return '—';
+    if (isNaN(d.getTime())) return null;
     const now = new Date();
     const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     if (sameDay(d, now)) return 'Hoje';
@@ -2114,8 +2188,6 @@ function TasksView() {
     const d = new Date(due); d.setHours(23,59,59,0);
     return d < new Date();
   };
-
-  const getTag = (t) => (t.tags || []).find(x => x !== 'contexto-vivo') || '';
 
   const pending   = tasks.filter(t => t.status !== 'done').length;
   const doneCount = tasks.filter(t => t.status === 'done').length;
@@ -2133,6 +2205,15 @@ function TasksView() {
                  : tasks.filter(t => isLate(t.due_date, t.status));
 
   const prioKey = {2: 'high', 1: 'medium', 0: 'low'};
+
+  // Empty state: vazio total vs. aba vazia
+  const emptyNode = tab === 'all'
+    ? ce('div', {className: 'tv-empty'},
+        ce('div', {className: 'tv-empty-icon'}, '✓'),
+        ce('div', {className: 'tv-empty-msg'}, 'Tudo em dia, Chefe.'),
+        ce('button', {className: 'tv-new-btn', style: {animation: 'none'}, onClick: () => setShowModal(true)}, '+ Nova Tarefa')
+      )
+    : ce('div', {className: 'tv-empty-plain'}, 'Nenhuma tarefa nesta aba.');
 
   return ce('div', {className: 'tasks-view'},
     // Header
@@ -2181,41 +2262,55 @@ function TasksView() {
           ))
         )
       : filtered.length === 0
-      ? ce('div', {className: 'tv-empty'}, tab === 'all' ? 'Nenhuma tarefa. Crie uma ou peça ao Jarvis.' : 'Nenhuma tarefa nesta aba.')
+      ? emptyNode
       : ce('div', {className: 'tv-list'},
           filtered.map((task, idx) => {
             const p = getPrio(task);
             const P = PRIO[p];
             const late = isLate(task.due_date, task.status);
             const done = task.status === 'done';
-            const tag = getTag(task);
             const isDying = dying.has(task.id);
+            const {clean: cleanTitle, client} = extractClient(task.title);
+            const tag = getTag(task, client);
+            const dueText = fmtDue(task.due_date);
+            const age = fmtAge(task.created_at);
             return ce('div', {
               key: task.id,
               className: 'tv-row' + (done ? ' tv-done' : '') + (isDying ? ' is-dying' : ''),
-              style: {'--i': idx}
+              style: {'--i': idx, '--tv-prio': P.border}
             },
+              // Circular checkbox
               ce('button', {
                 className: 'tv-check' + (done ? ' tv-checked' : ''),
                 onClick: () => toggle(task)
               },
-                ce('svg', {viewBox: '0 0 10 8', fill: 'none', xmlns: 'http://www.w3.org/2000/svg'},
+                ce('svg', {viewBox: '0 0 10 8', fill: 'none'},
                   ce('path', {d: 'M1 4L3.5 6.5L9 1', stroke: 'white', strokeWidth: '1.6', strokeLinecap: 'round', strokeLinejoin: 'round'})
                 )
               ),
+              // Body
               ce('div', {className: 'tv-body'},
-                ce('span', {className: 'tv-task-name'}, task.title),
-                tag ? ce('div', {className: 'tv-tags'},
-                  ce('span', {className: 'tv-client-tag'}, tag)
+                ce('div', {className: 'tv-title-row'},
+                  ce('span', {className: 'tv-task-name'}, cleanTitle),
+                  client ? ce('span', {className: 'tv-client-pill'}, client) : null
+                ),
+                (tag || age) ? ce('div', {style: {display:'flex', gap:'8px', alignItems:'center'}},
+                  tag ? ce('span', {className: 'tv-client-tag'}, tag) : null,
+                  age ? ce('span', {className: 'tv-created-at'}, age) : null
                 ) : null
               ),
-              ce('div', {className: 'tv-row-right'},
+              // Right: priority badge + due (hidden on mobile)
+              ce('div', {className: 'tv-row-right tv-hide-mobile'},
                 ce('span', {className: 'tv-badge', style: {background: P.bg, color: P.color}}, P.label),
-                ce('span', {className: 'tv-due' + (late ? ' tv-late-due' : '')}, fmtDue(task.due_date))
+                dueText
+                  ? ce('span', {className: 'tv-due' + (late ? ' tv-late-due' : '')}, dueText)
+                  : ce('span', {className: 'tv-due tv-no-prazo'}, 'sem prazo')
               )
             );
           })
         ),
+    // FAB — mobile only
+    ce('button', {className: 'tv-fab', onClick: () => setShowModal(true)}, '+'),
     // Modal
     showModal ? ce('div', {
       className: 'tv-modal-bg',
