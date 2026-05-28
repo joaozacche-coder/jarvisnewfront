@@ -441,6 +441,100 @@
   }
   .composer-textarea::placeholder { color: rgba(255,255,255,0.35); font-weight: 400; }
   .is-light .composer-textarea::placeholder { color: rgba(0,0,0,0.35); }
+
+  /* ─── Tasks View ─── */
+  .tasks-view {
+    position: relative; z-index: 3; height: 100vh;
+    padding: 40px 40px 32px var(--sb-w);
+    display: flex; flex-direction: column; gap: 22px;
+    overflow-y: auto; box-sizing: border-box;
+  }
+  .tv-header { display: flex; align-items: flex-end; justify-content: space-between; flex-shrink: 0; padding-left: 4px; }
+  .tv-title { font-size: 22px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; margin: 0; }
+  .tv-sub { display: block; font-size: 11.5px; color: var(--text-2); margin-top: 5px; font-family: 'Geist Mono', monospace; letter-spacing: 0.05em; }
+  .tv-new-btn {
+    padding: 8px 18px; border-radius: 999px;
+    background: rgba(124,106,247,0.12); border: 1px solid rgba(124,106,247,0.28);
+    color: var(--accent); font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: background 0.15s, border-color 0.15s;
+  }
+  .tv-new-btn:hover { background: rgba(124,106,247,0.22); border-color: rgba(124,106,247,0.45); }
+  .tv-stats { display: flex; gap: 7px; flex-shrink: 0; padding-left: 4px; }
+  .tv-pill {
+    padding: 3px 11px; border-radius: 999px; font-size: 11px;
+    font-family: 'Geist Mono', monospace;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-2);
+  }
+  .tv-pill--active { color: var(--accent); border-color: rgba(124,106,247,0.18); background: rgba(124,106,247,0.06); }
+  .tv-pill--done   { color: #34D399; border-color: rgba(52,211,153,0.18); background: rgba(52,211,153,0.05); }
+  .tv-pill--late   { color: #F87171; border-color: rgba(248,113,113,0.18); background: rgba(248,113,113,0.05); }
+  .tv-empty { font-size: 13px; color: var(--text-3); text-align: center; padding: 60px 0; font-family: 'Geist Mono', monospace; }
+  .tv-list { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; }
+  .tv-row {
+    display: grid; grid-template-columns: 20px 1fr 68px 82px 80px;
+    align-items: center; gap: 14px; padding: 12px 18px;
+    border-bottom: 1px solid var(--border); transition: background 0.1s;
+  }
+  .tv-row:last-child { border-bottom: none; }
+  .tv-row:hover { background: rgba(255,255,255,0.018); }
+  .tv-done { opacity: 0.45; }
+  .tv-check {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 1.5px solid rgba(255,255,255,0.15); background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: white; flex-shrink: 0; transition: all 0.15s;
+  }
+  .tv-check:hover { border-color: var(--accent); background: rgba(124,106,247,0.1); }
+  .tv-checked { background: var(--accent) !important; border-color: var(--accent) !important; }
+  .tv-body { min-width: 0; }
+  .tv-task-name { font-size: 13.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .tv-done .tv-task-name { text-decoration: line-through; color: var(--text-3); }
+  .tv-tag { font-size: 11px; color: var(--text-3); display: block; margin-top: 1px; }
+  .tv-badge { font-size: 11px; padding: 2px 9px; border-radius: 6px; font-weight: 500; text-align: center; }
+  .tv-due { font-size: 12px; color: var(--text-2); font-family: 'Geist Mono', monospace; }
+  .tv-late { color: #F87171; }
+  .tv-status { font-size: 11.5px; font-weight: 500; }
+  .tv-st-done { color: #34D399; }
+  .tv-st-late { color: #F87171; }
+  .tv-st-todo { color: var(--text-3); }
+  .tv-modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tv-modal {
+    background: #0D1420; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 24px; width: 400px;
+    display: flex; flex-direction: column; gap: 13px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+  .tv-modal-hd { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .tv-modal-x { font-size: 20px; color: var(--text-2); cursor: pointer; background: none; border: none; line-height: 1; }
+  .tv-input {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 10px 13px; font-size: 13.5px; color: var(--text);
+    width: 100%; font-family: inherit; outline: none; box-sizing: border-box; transition: border-color 0.15s;
+  }
+  .tv-input:focus { border-color: rgba(124,106,247,0.4); }
+  .tv-input::placeholder { color: var(--text-3); }
+  select.tv-input option { background: #0D1420; }
+  .tv-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tv-field { display: flex; flex-direction: column; gap: 5px; }
+  .tv-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-3); }
+  .tv-modal-ft { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
+  .tv-btn-cancel {
+    padding: 8px 16px; border-radius: 8px; background: transparent;
+    border: 1px solid rgba(255,255,255,0.08); color: var(--text-2);
+    font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .tv-btn-cancel:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .tv-btn-ok {
+    padding: 8px 18px; border-radius: 8px; background: var(--accent);
+    border: none; color: white; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+  }
+  .tv-btn-ok:hover { opacity: 0.85; }
+  .tv-btn-ok:disabled { opacity: 0.45; cursor: default; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
@@ -1871,6 +1965,179 @@ function Composer({
     className: "mic-pulse"
   })));
 }
+function TasksView() {
+  const ce = React.createElement;
+  const [tasks, setTasks] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [showModal, setShowModal] = React.useState(false);
+  const [newTitle, setNewTitle] = React.useState('');
+  const [newPriority, setNewPriority] = React.useState(1);
+  const [newDue, setNewDue] = React.useState('');
+  const [newTag, setNewTag] = React.useState('');
+  const [creating, setCreating] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('/api/tasks')
+      .then(r => r.json())
+      .then(d => { setTasks(d.tasks || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const toggle = (task) => {
+    const next = task.status === 'done' ? 'active' : 'done';
+    setTasks(prev => prev.map(t => t.id === task.id ? {...t, status: next} : t));
+    fetch('/api/tasks/' + task.id, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({status: next})
+    });
+  };
+
+  const createTask = () => {
+    if (!newTitle.trim()) return;
+    setCreating(true);
+    fetch('/api/tasks', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        title: newTitle.trim(), priority: newPriority,
+        due_date: newDue || null,
+        tags: newTag.trim() ? [newTag.trim()] : []
+      })
+    })
+    .then(r => r.json())
+    .then(created => {
+      if (created.id) setTasks(prev => [created, ...prev]);
+      setShowModal(false);
+      setNewTitle(''); setNewPriority(1); setNewDue(''); setNewTag('');
+    })
+    .finally(() => setCreating(false));
+  };
+
+  const PRIO = {
+    high:   {label: 'Alta',  color: '#F87171', bg: 'rgba(248,113,113,0.1)'},
+    medium: {label: 'Média', color: '#FBBF24', bg: 'rgba(251,191,36,0.1)'},
+    low:    {label: 'Baixa', color: 'rgba(255,255,255,0.28)', bg: 'rgba(255,255,255,0.05)'}
+  };
+
+  const getPrio = (t) => {
+    const cp = t.content && t.content.priority;
+    if (cp === 'alta') return 'high';
+    if (cp === 'média' || cp === 'media') return 'medium';
+    if (cp === 'baixa') return 'low';
+    if (t.priority >= 2) return 'high';
+    if (t.priority === 1) return 'medium';
+    return 'low';
+  };
+
+  const fmtDue = (due) => {
+    if (!due) return '—';
+    const d = new Date(due);
+    if (isNaN(d.getTime())) return '—';
+    const now = new Date();
+    const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    if (same(d, now)) return 'Hoje';
+    const tom = new Date(now); tom.setDate(tom.getDate() + 1);
+    if (same(d, tom)) return 'Amanhã';
+    return d.toLocaleDateString('pt-BR', {day: 'numeric', month: 'short'}).replace('.', '');
+  };
+
+  const isLate = (due, status) => {
+    if (!due || status === 'done') return false;
+    const d = new Date(due); d.setHours(0,0,0,0);
+    const now = new Date(); now.setHours(0,0,0,0);
+    return d < now;
+  };
+
+  const getTag = (t) => (t.tags || []).find(x => x !== 'contexto-vivo') || '';
+
+  const pending = tasks.filter(t => t.status !== 'done').length;
+  const doneCount = tasks.filter(t => t.status === 'done').length;
+  const lateCount = tasks.filter(t => isLate(t.due_date, t.status)).length;
+
+  return ce('div', {className: 'tasks-view'},
+    ce('div', {className: 'tv-header'},
+      ce('div', null,
+        ce('h2', {className: 'tv-title'}, 'Tarefas'),
+        ce('span', {className: 'tv-sub'}, loading ? 'carregando...' : pending + ' pendentes')
+      ),
+      ce('button', {className: 'tv-new-btn', onClick: () => setShowModal(true)}, '+ Nova Tarefa')
+    ),
+    ce('div', {className: 'tv-stats'},
+      ce('span', {className: 'tv-pill'}, tasks.length + ' total'),
+      ce('span', {className: 'tv-pill tv-pill--active'}, pending + ' pendentes'),
+      ce('span', {className: 'tv-pill tv-pill--done'}, doneCount + ' concluídas'),
+      lateCount > 0 ? ce('span', {className: 'tv-pill tv-pill--late'}, lateCount + ' atrasadas') : null
+    ),
+    loading
+      ? ce('div', {className: 'tv-empty'}, 'Carregando...')
+      : tasks.length === 0
+      ? ce('div', {className: 'tv-empty'}, 'Nenhuma tarefa. Crie uma ou peça ao Jarvis.')
+      : ce('div', {className: 'tv-list'},
+          tasks.map(task => {
+            const p = getPrio(task);
+            const P = PRIO[p];
+            const late = isLate(task.due_date, task.status);
+            const done = task.status === 'done';
+            const tag = getTag(task);
+            return ce('div', {key: task.id, className: 'tv-row' + (done ? ' tv-done' : '')},
+              ce('button', {className: 'tv-check' + (done ? ' tv-checked' : ''), onClick: () => toggle(task)}, done ? '✓' : ''),
+              ce('div', {className: 'tv-body'},
+                ce('span', {className: 'tv-task-name'}, task.title),
+                tag ? ce('span', {className: 'tv-tag'}, tag) : null
+              ),
+              ce('span', {className: 'tv-badge', style: {background: P.bg, color: P.color}}, P.label),
+              ce('span', {className: 'tv-due' + (late ? ' tv-late' : '')}, fmtDue(task.due_date)),
+              ce('span', {className: 'tv-status ' + (done ? 'tv-st-done' : late ? 'tv-st-late' : 'tv-st-todo')},
+                done ? 'Concluída' : late ? 'Atrasada' : 'A fazer'
+              )
+            );
+          })
+        ),
+    showModal ? ce('div', {
+      className: 'tv-modal-bg',
+      onClick: e => { if (e.target === e.currentTarget) setShowModal(false); }
+    },
+      ce('div', {className: 'tv-modal'},
+        ce('div', {className: 'tv-modal-hd'},
+          ce('span', null, 'Nova Tarefa'),
+          ce('button', {className: 'tv-modal-x', onClick: () => setShowModal(false)}, '×')
+        ),
+        ce('input', {
+          className: 'tv-input', placeholder: 'Nome da tarefa', autoFocus: true,
+          value: newTitle, onChange: e => setNewTitle(e.target.value),
+          onKeyDown: e => e.key === 'Enter' && createTask()
+        }),
+        ce('div', {className: 'tv-modal-row'},
+          ce('div', {className: 'tv-field'},
+            ce('label', {className: 'tv-label'}, 'Prioridade'),
+            ce('select', {className: 'tv-input', value: newPriority, onChange: e => setNewPriority(Number(e.target.value))},
+              ce('option', {value: 2}, 'Alta'),
+              ce('option', {value: 1}, 'Média'),
+              ce('option', {value: 0}, 'Baixa')
+            )
+          ),
+          ce('div', {className: 'tv-field'},
+            ce('label', {className: 'tv-label'}, 'Prazo'),
+            ce('input', {type: 'date', className: 'tv-input', value: newDue, onChange: e => setNewDue(e.target.value), style: {colorScheme: 'dark'}})
+          )
+        ),
+        ce('input', {
+          className: 'tv-input', placeholder: 'Cliente / tag  (ex: Gracie Barra)',
+          value: newTag, onChange: e => setNewTag(e.target.value)
+        }),
+        ce('div', {className: 'tv-modal-ft'},
+          ce('button', {className: 'tv-btn-cancel', onClick: () => setShowModal(false)}, 'Cancelar'),
+          ce('button', {
+            className: 'tv-btn-ok', onClick: createTask,
+            disabled: !newTitle.trim() || creating
+          }, creating ? 'Criando...' : 'Criar Tarefa')
+        )
+      )
+    ) : null
+  );
+}
+
 function App() {
   const [t, setTweak] = useTweaks(/*EDITMODE-BEGIN*/{
     "name": "João",
@@ -2002,13 +2269,10 @@ function App() {
     size: ORB_SIZE
   })), /*#__PURE__*/React.createElement(Sidebar, {
     active: active,
-    onSelect: (id) => {
-      const routes = { tasks: '/tasks', crm: '/crm', finance: '/finance' };
-      if (routes[id]) { window.location.href = routes[id]; } else { setActive(id); }
-    },
+    onSelect: setActive,
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
-  }), /*#__PURE__*/React.createElement("main", {
+  }), active === 'tasks' ? React.createElement(TasksView, null) : /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
