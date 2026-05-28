@@ -2025,7 +2025,20 @@ function TasksView() {
   React.useEffect(() => {
     fetch('/api/tasks')
       .then(r => r.json())
-      .then(d => { setTasks(d.tasks || []); setLoading(false); })
+      .then(d => {
+        const all = d.tasks || [];
+        const today = new Date(); today.setHours(0,0,0,0);
+        const stale = all.filter(t => {
+          if (t.status !== 'done') return false;
+          const ts = t.updated_at || t.created_at;
+          if (!ts) return false;
+          const completed = new Date(ts); completed.setHours(0,0,0,0);
+          return completed < today;
+        });
+        stale.forEach(t => fetch('/api/tasks/' + t.id, {method: 'DELETE'}));
+        setTasks(all.filter(t => !stale.find(s => s.id === t.id)));
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, []);
 
