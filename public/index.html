@@ -623,6 +623,51 @@
     .tv-card { padding: 10px 14px; }
     .tv-card-num { font-size: 21px; }
   }
+
+  /* ─── CRM / Clients View ─── */
+  .is-crm .orb-ambient { opacity: 0 !important; transition: opacity 0.5s; }
+  .is-crm .bg-layer canvas { opacity: 0.05 !important; transition: opacity 0.5s; }
+  .crm-view {
+    position: relative; z-index: 3; height: 100vh;
+    padding: 40px 48px 40px calc(var(--sb-w) + 40px);
+    display: flex; flex-direction: column; gap: 24px;
+    overflow-y: auto; box-sizing: border-box;
+  }
+  .crm-header { display: flex; align-items: flex-end; justify-content: space-between; flex-shrink: 0; }
+  .crm-title { font-size: 28px; font-weight: 300; color: var(--text); letter-spacing: -0.04em; margin: 0; animation: tvFadeUp 0.4s both; }
+  .crm-sub { display: block; font-size: 11.5px; color: var(--text-3); margin-top: 6px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; animation: tvFadeUp 0.4s 0.05s both; }
+  .crm-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; animation: tvFadeUp 0.4s 0.1s both; }
+  .crm-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+    transition: background 0.18s, border-color 0.18s, transform 0.2s;
+    border-top: 3px solid var(--crm-color, var(--accent));
+    animation: tvFadeUp 0.35s calc(var(--ci,0) * 80ms) both;
+  }
+  .crm-card:hover { background: rgba(255,255,255,0.045); border-color: rgba(255,255,255,0.1); transform: translateY(-3px); }
+  .crm-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .crm-name { font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
+  .crm-updated { font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace; margin-top: 4px; }
+  .crm-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--crm-color, var(--accent)); margin-right: 5px; vertical-align: middle; }
+  .crm-section { display: flex; flex-direction: column; gap: 5px; }
+  .crm-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+  .crm-body { font-size: 12.5px; color: var(--text-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .crm-next { font-size: 12px; color: rgba(124,106,247,0.85); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
+  .crm-card-ft { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 4px; }
+  .crm-tasks-pill { font-size: 11px; padding: 3px 9px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  .crm-tasks-pill--on { background: rgba(124,106,247,0.08); border-color: rgba(124,106,247,0.2); color: var(--accent); }
+  .crm-chat-btn { font-size: 12px; color: var(--text-3); background: none; border: none; cursor: pointer; font-family: inherit; transition: color 0.15s; padding: 0; }
+  .crm-chat-btn:hover { color: var(--text); }
+  .crm-skel-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .crm-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 0; animation: tvFadeUp 0.3s both; }
+  .crm-empty-icon { font-size: 36px; opacity: 0.15; line-height: 1; }
+  .crm-empty-msg { font-size: 14px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  @media (max-width: 1023px) { .crm-grid { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 767px) {
+    .crm-view { padding: 24px 16px 40px calc(var(--sb-w) + 16px); }
+    .crm-grid { grid-template-columns: 1fr; }
+    .crm-title { font-size: 20px; }
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
@@ -2053,6 +2098,99 @@ function Composer({
     className: "mic-pulse"
   })));
 }
+function ClientsView({onChat}) {
+  const ce = React.createElement;
+  const [clients, setClients] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/clients')
+      .then(r => r.json())
+      .then(d => { setClients(d.clients || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const CLIENT_COLORS = {'Gracie Barra': '#f59e0b', 'SoHo': '#14b8a6', 'DDpartssolution': '#8b5cf6'};
+  const getColor = (name) => CLIENT_COLORS[name] || '#7C6AF7';
+
+  const fmtUpdated = (ts) => {
+    if (!ts) return 'sem registro';
+    const h = Math.floor((Date.now() - new Date(ts).getTime()) / 3600000);
+    if (h < 1) return 'agora';
+    if (h < 24) return `há ${h}h`;
+    const d = Math.floor(h / 24);
+    return d === 1 ? 'ontem' : `há ${d} dias`;
+  };
+
+  const getBody = (c) => c && (c.situacao_atual || c.descricao || c.body || c.status || null);
+  const getNext = (c) => c && (c.proximo_passo || c.next_step || null);
+
+  const renderCards = () => {
+    if (loading) return ce('div', {className: 'crm-grid'},
+      [0,1,2].map(i => ce('div', {key: i, className: 'crm-skel-card'},
+        ce('div', {className: 'tv-skel', style: {width: '55%', height: '16px', marginBottom: '4px'}}),
+        ce('div', {className: 'tv-skel', style: {width: '35%', height: '10px'}}),
+        ce('div', {className: 'tv-skel', style: {width: '90%'}}),
+        ce('div', {className: 'tv-skel', style: {width: '75%'}}),
+        ce('div', {className: 'tv-skel', style: {width: '45%', height: '10px'}})
+      ))
+    );
+    if (clients.length === 0) return ce('div', {className: 'crm-empty'},
+      ce('div', {className: 'crm-empty-icon'}, '🏢'),
+      ce('div', {className: 'crm-empty-msg'}, 'Nenhum cliente ainda. Fale sobre um no chat.')
+    );
+    return ce('div', {className: 'crm-grid'},
+      clients.map((cl, idx) => {
+        const color = getColor(cl.client_name);
+        const body  = getBody(cl.content);
+        const next  = getNext(cl.content);
+        const hasTasks = cl.task_count > 0;
+        return ce('div', {
+          key: cl.id || idx,
+          className: 'crm-card',
+          style: {'--crm-color': color, '--ci': idx}
+        },
+          ce('div', {className: 'crm-card-head'},
+            ce('div', null,
+              ce('div', {className: 'crm-name'},
+                ce('span', {className: 'crm-dot'}),
+                cl.client_name
+              ),
+              ce('div', {className: 'crm-updated'}, 'atualizado ' + fmtUpdated(cl.updated_at))
+            )
+          ),
+          body ? ce('div', {className: 'crm-section'},
+            ce('div', {className: 'crm-label'}, 'Situação'),
+            ce('div', {className: 'crm-body'}, body)
+          ) : null,
+          next ? ce('div', {className: 'crm-section'},
+            ce('div', {className: 'crm-label'}, 'Próximo passo'),
+            ce('div', {className: 'crm-next'}, next)
+          ) : null,
+          ce('div', {className: 'crm-card-ft'},
+            ce('span', {className: 'crm-tasks-pill' + (hasTasks ? ' crm-tasks-pill--on' : '')},
+              cl.task_count + (cl.task_count === 1 ? ' tarefa' : ' tarefas')
+            ),
+            ce('button', {
+              className: 'crm-chat-btn',
+              onClick: () => onChat && onChat(cl.client_name)
+            }, 'Falar sobre →')
+          )
+        );
+      })
+    );
+  };
+
+  return ce('div', {className: 'crm-view'},
+    ce('div', {className: 'crm-header'},
+      ce('div', null,
+        ce('h2', {className: 'crm-title'}, 'Clientes'),
+        ce('span', {className: 'crm-sub'}, loading ? 'carregando...' : clients.length + ' clientes')
+      )
+    ),
+    renderCards()
+  );
+}
 function TasksView() {
   const ce = React.createElement;
   const [tasks, setTasks] = React.useState([]);
@@ -2479,7 +2617,7 @@ function App() {
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
   return /*#__PURE__*/React.createElement("div", {
-    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''} ${active === 'tasks' ? 'is-tasks' : ''}`
+    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''} ${active === 'tasks' ? 'is-tasks' : ''} ${active === 'crm' ? 'is-crm' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "bg-layer"
   }, t.particles && /*#__PURE__*/React.createElement(Particles, {
@@ -2497,7 +2635,7 @@ function App() {
     onSelect: setActive,
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
-  }), active === 'tasks' ? React.createElement(TasksView, null) : /*#__PURE__*/React.createElement("main", {
+  }), active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (name) => { setActive('agent'); setInput('Status de ' + name); }}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
