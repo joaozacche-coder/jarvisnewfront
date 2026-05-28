@@ -2193,9 +2193,15 @@ function CountUp({end, duration}) {
   return React.createElement('span', null, val);
 }
 
+const _FIXED_CLIENTS = [
+  {client_name: 'Gracie Barra',    client_color: '#534AB7', task_count: 0, has_context: false},
+  {client_name: 'SoHo',            client_color: '#185FA5', task_count: 0, has_context: false},
+  {client_name: 'DDpartssolution', client_color: '#0F6E56', task_count: 0, has_context: false},
+];
+
 function ClientsView({onChat}) {
   const ce = React.createElement;
-  const [clients, setClients] = React.useState([]);
+  const [clients, setClients] = React.useState(_FIXED_CLIENTS);
   const [loading, setLoading] = React.useState(true);
   const [showModal, setShowModal] = React.useState(false);
   const [modalName, setModalName] = React.useState('');
@@ -2203,8 +2209,14 @@ function ClientsView({onChat}) {
   React.useEffect(() => {
     fetch('/api/clients')
       .then(r => r.json())
-      .then(d => { setClients(d.clients || []); setLoading(false); })
-      .catch(() => setLoading(false));
+      .then(d => {
+        const backendMap = {};
+        for (const c of (d.clients || [])) backendMap[c.client_name] = c;
+        const merged = _FIXED_CLIENTS.map(fc => backendMap[fc.client_name] || fc);
+        setClients(merged);
+        setLoading(false);
+      })
+      .catch(() => { setClients(_FIXED_CLIENTS); setLoading(false); });
   }, []);
 
   const fmtUpdated = (ts) => {
