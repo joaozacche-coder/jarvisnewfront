@@ -2207,16 +2207,53 @@ function ClientsView({onChat}) {
   const [modalName, setModalName] = React.useState('');
 
   React.useEffect(() => {
+    const fetchContext = (name) =>
+      fetch(`/api/context?name=${encodeURIComponent(name)}`)
+        .then(r => r.json())
+        .catch(() => ({has_context: false}));
+
     fetch('/api/clients')
       .then(r => r.json())
-      .then(d => {
+      .then(async (d) => {
         const backendMap = {};
         for (const c of (d.clients || [])) backendMap[c.client_name] = c;
-        const merged = _FIXED_CLIENTS.map(fc => backendMap[fc.client_name] || fc);
+        const merged = await Promise.all(_FIXED_CLIENTS.map(async (fc) => {
+          const base = backendMap[fc.client_name] || fc;
+          if (base.has_context) return base;
+          const ctx = await fetchContext(fc.client_name);
+          if (!ctx.has_context) return base;
+          return {
+            ...base,
+            has_context: true,
+            content: {
+              situacao_atual: ctx.situacao_atual,
+              proximo_passo: ctx.proximo_passo,
+              ultimo_passo: ctx.ultimo_passo,
+            },
+            updated_at: ctx.updated_at || base.updated_at,
+          };
+        }));
         setClients(merged);
         setLoading(false);
       })
-      .catch(() => { setClients(_FIXED_CLIENTS); setLoading(false); });
+      .catch(async () => {
+        const merged = await Promise.all(_FIXED_CLIENTS.map(async (fc) => {
+          const ctx = await fetchContext(fc.client_name);
+          if (!ctx.has_context) return fc;
+          return {
+            ...fc,
+            has_context: true,
+            content: {
+              situacao_atual: ctx.situacao_atual,
+              proximo_passo: ctx.proximo_passo,
+              ultimo_passo: ctx.ultimo_passo,
+            },
+            updated_at: ctx.updated_at,
+          };
+        }));
+        setClients(merged);
+        setLoading(false);
+      });
   }, []);
 
   const fmtUpdated = (ts) => {
