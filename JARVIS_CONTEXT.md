@@ -146,8 +146,8 @@ LIVEKIT_API_SECRET=...
 
 **Visual atual:**
 - Fundo escuro/espacial com estrelas
-- Orb de partículas 3D (VoiceOrb) centralizado — some quando chat inicia ou entra em tela interna
-- Sidebar com ícones à esquerda (56px)
+- Orb de partículas 3D (VoiceOrb) centralizado — some quando chat inicia
+- Sidebar com ícones à esquerda
 - Chat ocupa tela inteira quando ativo
 - Input bar na parte inferior (textarea com auto-resize)
 - 3 dots animados quando Jarvis está pensando
@@ -155,8 +155,6 @@ LIVEKIT_API_SECRET=...
 - Retry inline em caso de erro
 - Auto-scroll suave para última mensagem
 - `white-space: pre-wrap` nas respostas
-- **Tela de Tarefas** (active === 'tasks'): visual dopaminérgico, tabs, stats, skeleton shimmer
-- **Tela de Clientes** (active === 'crm'): cards com avatar, CountUp, animações CRM
 
 **Arquivos Next.js:**
 - `src/app/api/token/route.ts` — gera JWT do LiveKit
@@ -181,9 +179,7 @@ LIVEKIT_API_SECRET=...
 - Frontend bonito na Vercel
 - Backend no Railway com redeploy automático via GitHub
 - Railway CLI configurado localmente
-- Orb some ao iniciar conversa e ao entrar em telas internas
-- **Tela de Tarefas** completa com dados reais do Supabase
-- **Tela de Clientes** completa com 3 clientes sempre visíveis e contexto vivo
+- Orb some ao iniciar conversa
 
 ---
 
@@ -192,7 +188,7 @@ LIVEKIT_API_SECRET=...
 ### FASE 1 — Telas internas
 1. ~~**Tela de Tarefas**~~ ✅ — dados reais do Supabase, loading state, modal Nova Tarefa, toggle done/undone, stats ao vivo
 2. ~~**Tela de Clientes**~~ ✅ — 3 clientes fixos sempre visíveis, CountUp, avatar, ponto pulsante, divider animado, cursor piscando, estado vazio, modal Novo Cliente, busca de contexto robusta
-3. **Tela de Finanças** — transações, saldo, categorias
+3. ~~**Tela de Finanças**~~ ✅ — transações reais, saldo, gráfico de barras, modal Nova Transação, animações fin-*
 4. **Tela de Agenda** — eventos do dia/semana
 5. **Tela de Segundo Cérebro** — notas, aprendizados, áreas de vida
 
@@ -227,7 +223,6 @@ LIVEKIT_API_SECRET=...
 | 6 tabelas universais com JSONB | Cobre qualquer nicho sem criar novas tabelas |
 | Contexto vivo por entidade (não eventos isolados) | Jarvis sempre sabe o estado atual, não só histórico |
 | HTML standalone em public/index.html | Funciona como SPA sem complexidade Next.js |
-| _FIXED_CLIENTS hardcodado no frontend | Garante 3 clientes sempre visíveis independente do backend |
 
 ---
 
@@ -269,9 +264,17 @@ LIVEKIT_API_SECRET=...
 - ClientsView completamente redesenhada: CountUp animado, avatar com initial + crmRotateIn, ponto pulsante verde (crmPulse), divider animado (crmDivider), cursor piscando no próximo passo (crmBlink), estado vazio com ⚡ para clientes sem histórico, modal Novo Cliente com spring animation, onChat genérico (suporta mensagens customizadas)
 - CSS CRM expandido: crm-modal-overlay, crm-modal-input, crm-modal-actions, crm-empty-state, crm-card--empty
 
-**Jarvis 8 (atual):**
+**Jarvis 8:**
 - BUG FIX — 3 clientes sempre visíveis: _FIXED_CLIENTS hardcodado no frontend como base imutável; backend enriquece via merge por client_name; fallback garante os 3 mesmo se API falhar
 - BUG FIX — contexto não encontrado: /clients endpoint trocou listar_entries(tags=["contexto-vivo"]) por buscar_entries(query="contexto:") que usa ilike — funciona independente das tags
 - Novo endpoint GET /context?name=X no backend: usa a mesma lógica exata do buscar_contexto_vivo do agente (busca por título exato "contexto: NomeCliente"), retorna situacao_atual, proximo_passo, ultimo_passo, updated_at com fallback de campos (situacao_atual > body, proximo_passo > next_step)
 - Next.js route /api/context/route.ts criada (proxy para Railway /context)
 - Frontend: após fetch do /clients, enriquece via Promise.all cada cliente sem has_context via /api/context?name=X separado — garante que Gracie Barra e outros mostrem contexto mesmo que /clients não retorne has_context=true
+
+**Jarvis 9 (atual):**
+- Backend: endpoints GET /transactions e POST /transactions adicionados em api.py; TransactionBody Pydantic model; entries tipo "transaction" com content.amount, content.transaction_type (receita/despesa), content.category
+- Next.js route /api/transactions/route.ts criada (proxy para Railway /transactions)
+- Tela de Finanças (FinanceView) construída no index.html: header com saldo total CountUp pt-BR, 3 cards de resumo (receitas/despesas/saldo com animação staggered), gráfico de barras CSS-only últimos 6 meses (finBarGrow via --fh CSS var), lista de transações agrupada por data (Hoje/Ontem/Esta semana/Mais antigas), FAB fixo + modal Nova Transação com toggle receita/despesa e pills de categoria, estado vazio animado
+- CountUp atualizado com prop locale para pt-BR (toLocaleString)
+- is-finance adicionado ao App className; orb some quando finance ativa; FinanceView adicionado ao render chain do App
+- CSS prefixado com fin- (finFadeUp, finSlideIn, finBarGrow, finPop keyframes)
