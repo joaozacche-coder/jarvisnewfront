@@ -2329,7 +2329,7 @@ function Composer({
     className: "mic-pulse"
   })));
 }
-function CountUp({end, duration}) {
+function CountUp({end, duration, locale}) {
   const [val, setVal] = React.useState(0);
   React.useEffect(() => {
     if (!end) { setVal(0); return; }
