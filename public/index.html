@@ -1107,19 +1107,29 @@
   .ag-empty-btn:hover { background: rgba(83,74,183,0.15); transform: translateY(-1px); }
 
   /* Briefing */
-  @keyframes agTypeIn { from{opacity:0} to{opacity:1} }
-  .ag-briefing { border: 0.5px solid rgba(83,74,183,0.22); border-left: 3px solid #534AB7; border-radius: 12px; background: rgba(83,74,183,0.07); padding: 14px 16px; margin: 0 0 16px; flex-shrink: 0; cursor: pointer; transition: background 0.2s, border-color 0.2s; animation: agFadeUp 0.35s 0.1s both; }
-  .ag-briefing:hover { background: rgba(83,74,183,0.13); border-color: rgba(83,74,183,0.38); }
-  .ag-briefing-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .ag-briefing-left { display: flex; align-items: center; gap: 8px; }
+  .ag-briefing { border: 0.5px solid rgba(83,74,183,0.22); border-left: 3px solid #534AB7; border-radius: 12px; background: rgba(83,74,183,0.07); margin: 0 0 16px; flex-shrink: 0; overflow: hidden; transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), background 0.2s, border-color 0.2s; animation: agFadeUp 0.35s 0.1s both; }
+  .ag-briefing--closed { max-height: 44px; }
+  .ag-briefing--closed:hover { background: rgba(83,74,183,0.12); border-color: rgba(83,74,183,0.38); }
+  .ag-briefing--open { max-height: 520px; }
+  .ag-briefing-hd { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 44px; box-sizing: border-box; cursor: pointer; flex-shrink: 0; }
+  .ag-briefing-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; overflow: hidden; }
   .ag-briefing-orb { width: 6px; height: 6px; border-radius: 50%; background: #7C6AF7; flex-shrink: 0; box-shadow: 0 0 6px rgba(124,106,247,0.7); animation: agPulse 2.4s ease-in-out infinite; }
-  .ag-briefing-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(124,106,247,0.85); }
-  .ag-briefing-right { display: flex; align-items: center; gap: 8px; }
+  .ag-briefing-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(124,106,247,0.85); flex-shrink: 0; }
+  .ag-briefing-preview { font-size: 12px; color: rgba(255,255,255,0.42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .ag-briefing-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .ag-briefing-time { font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
-  .ag-briefing-refresh { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 6px; font-family: inherit; transition: color 0.15s, background 0.15s; line-height: 1; }
+  .ag-briefing-chevron { font-size: 14px; color: rgba(124,106,247,0.55); line-height: 1; transition: transform 0.28s; display: inline-block; }
+  .ag-briefing--open .ag-briefing-chevron { transform: rotate(180deg); }
+  .ag-briefing-body { padding: 4px 14px 10px; }
+  .ag-briefing-text { font-size: 13.5px; line-height: 1.7; color: rgba(255,255,255,0.82); white-space: pre-wrap; animation: agFadeIn 0.35s both; }
+  .ag-briefing-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 12px; border-top: 0.5px solid rgba(83,74,183,0.18); }
+  .ag-briefing-chat-btn { background: rgba(83,74,183,0.15); border: 0.5px solid rgba(83,74,183,0.3); border-radius: 8px; color: rgba(124,106,247,0.9); font-size: 12px; font-weight: 600; padding: 5px 12px; cursor: pointer; font-family: inherit; transition: background 0.15s, border-color 0.15s; }
+  .ag-briefing-chat-btn:hover { background: rgba(83,74,183,0.28); border-color: rgba(83,74,183,0.55); }
+  .ag-briefing-foot-r { display: flex; align-items: center; gap: 6px; }
+  .ag-briefing-updated { font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  .ag-briefing-refresh { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 13px; padding: 2px 6px; border-radius: 6px; font-family: inherit; transition: color 0.15s, background 0.15s; line-height: 1; }
   .ag-briefing-refresh:hover { color: var(--text); background: rgba(255,255,255,0.08); }
-  .ag-briefing-text { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.82); white-space: pre-wrap; animation: agFadeIn 0.3s both; }
-  .ag-briefing-skel { display: flex; flex-direction: column; gap: 8px; }
+  .ag-briefing-skel { display: flex; flex-direction: column; gap: 8px; padding: 2px 0 6px; }
   .ag-briefing-skel-line { height: 13px; border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: agShim 1.5s ease-in-out calc(var(--si,0)*0.15s) infinite; }
 
   /* FAB */
@@ -3118,6 +3128,8 @@ function AgendaView({onChat}={}) {
   const [briefText, setBriefText] = React.useState('');
   const [briefDisp, setBriefDisp] = React.useState('');
   const [briefLoad, setBriefLoad] = React.useState(false);
+  const [briefOpen, setBriefOpen] = React.useState(false);
+  const [briefUpdatedAt, setBriefUpdatedAt] = React.useState('');
   const gridRef  = React.useRef(null);
   const swipeRef = React.useRef({x:0,y:0,active:false});
 
@@ -3142,11 +3154,15 @@ function AgendaView({onChat}={}) {
 
   /* briefing fetch */
   const fetchBriefing=()=>{
-    setBriefLoad(true); setBriefText(''); setBriefDisp('');
+    setBriefLoad(true); setBriefText(''); setBriefDisp(''); setBriefOpen(true);
     fetch('/api/chat',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:'me dá um briefing rápido do dia de hoje: tarefas pendentes, eventos de hoje e contexto dos clientes ativos. Responda em no máximo 3 linhas diretas, sem markdown.'})
-    }).then(r=>r.json()).then(d=>{setBriefText(d.response||d.message||'');setBriefLoad(false);}).catch(()=>{setBriefText('Não foi possível carregar o briefing.');setBriefLoad(false);});
+      body:JSON.stringify({message:'me dá um briefing do dia de hoje em 3 partes: 1) eventos de hoje, 2) tarefas pendentes mais urgentes, 3) qual cliente precisa de atenção agora. Seja direto, sem markdown, máximo 4 linhas.'})
+    }).then(r=>r.json()).then(d=>{
+      const txt=d.response||d.message||'';
+      setBriefText(txt); setBriefLoad(false);
+      const n=new Date(); setBriefUpdatedAt(padTime(n.getHours(),n.getMinutes()));
+    }).catch(()=>{setBriefText('Não foi possível carregar o briefing.');setBriefLoad(false);});
   };
   React.useEffect(()=>{ if(view==='dia') fetchBriefing(); },[view]);
   React.useEffect(()=>{
@@ -3323,30 +3339,36 @@ function AgendaView({onChat}={}) {
 
   /* ── Briefing card ─────────────────────────────────────────────── */
   const renderBriefing=()=>{
-    const t=new Date(); const hh=String(t.getHours()).padStart(2,'0'), mm=String(t.getMinutes()).padStart(2,'0');
-    return ce('div',{
-      className:'ag-briefing',
-      onClick:()=>onChat&&onChat('me conta mais sobre meu dia'),
-    },
-      ce('div',{className:'ag-briefing-hd'},
+    const preview=(briefDisp||briefText).replace(/\n/g,' ').slice(0,52);
+    const hasMore=briefDisp.length>0&&briefDisp.length<briefText.length;
+    return ce('div',{className:'ag-briefing ag-briefing--'+(briefOpen?'open':'closed')},
+      ce('div',{
+        className:'ag-briefing-hd',
+        onClick:()=>setBriefOpen(o=>!o),
+      },
         ce('div',{className:'ag-briefing-left'},
           ce('div',{className:'ag-briefing-orb'}),
-          ce('span',{className:'ag-briefing-label'},'Jarvis · hoje')
+          ce('span',{className:'ag-briefing-label'},'Jarvis'),
+          !briefOpen&&briefLoad&&ce('span',{className:'ag-briefing-preview'},'carregando…'),
+          !briefOpen&&!briefLoad&&preview&&ce('span',{className:'ag-briefing-preview'},preview+(hasMore?'…':'')),
         ),
         ce('div',{className:'ag-briefing-right'},
-          !briefLoad&&ce('span',{className:'ag-briefing-time'},`${hh}:${mm}`),
-          ce('button',{
-            className:'ag-briefing-refresh',
-            onClick:e=>{e.stopPropagation();fetchBriefing();},
-            title:'Atualizar briefing'
-          },'↻')
+          !briefOpen&&briefUpdatedAt&&ce('span',{className:'ag-briefing-time'},briefUpdatedAt),
+          ce('span',{className:'ag-briefing-chevron'},'⌄'),
         )
       ),
-      briefLoad
-        ? ce('div',{className:'ag-briefing-skel'},
-            ...[0,1,2].map(i=>ce('div',{key:i,className:'ag-briefing-skel-line',style:{width:i===2?'60%':'100%','--si':i}}))
-          )
-        : ce('div',{className:'ag-briefing-text'},briefDisp||' ')
+      ce('div',{className:'ag-briefing-body'},
+        briefLoad
+          ?ce('div',{className:'ag-briefing-skel'},...[0,1,2].map(i=>ce('div',{key:i,className:'ag-briefing-skel-line',style:{width:i===2?'60%':'100%','--si':i}})))
+          :ce('div',{className:'ag-briefing-text'},briefDisp||' ')
+      ),
+      ce('div',{className:'ag-briefing-footer'},
+        ce('button',{className:'ag-briefing-chat-btn',onClick:e=>{e.stopPropagation();onChat&&onChat('me conta mais sobre o meu dia');}},'→ Abrir chat'),
+        ce('div',{className:'ag-briefing-foot-r'},
+          briefUpdatedAt&&ce('span',{className:'ag-briefing-updated'},briefUpdatedAt),
+          ce('button',{className:'ag-briefing-refresh',onClick:e=>{e.stopPropagation();fetchBriefing();},title:'Atualizar'},'↻')
+        )
+      )
     );
   };
 
