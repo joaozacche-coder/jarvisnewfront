@@ -774,11 +774,11 @@
   .fin-title { font-size: 28px; font-weight: 300; color: var(--text); letter-spacing: -0.04em; margin: 0; animation: finFadeUp 0.3s both; }
   .fin-sub { display: block; font-size: 11px; color: var(--text-3); margin-top: 4px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: capitalize; animation: finFadeUp 0.3s 0.05s both; }
 
-  .fin-period-pills { display: flex; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 3px; position: relative; animation: finFadeUp 0.3s 0.08s both; }
-  .fin-period-slider { position: absolute; top: 3px; bottom: 3px; border-radius: 7px; background: rgba(124,106,247,0.16); border: 1px solid rgba(124,106,247,0.3); transition: left 0.28s cubic-bezier(0.34,1.56,0.64,1), width 0.28s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; }
-  .fin-period-btn { padding: 6px 14px; border: none; background: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; border-radius: 7px; transition: color 0.18s; position: relative; z-index: 1; white-space: nowrap; }
-  .fin-period-btn--active   { color: var(--accent); }
-  .fin-period-btn--inactive { color: var(--text-3); }
+  .fin-period-pills { display: flex; gap: 4px; animation: finFadeUp 0.3s 0.08s both; }
+  .fin-period-slider { display: none; }
+  .fin-period-btn { padding: 4px 14px; border: 0.5px solid transparent; background: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; border-radius: 99px; transition: background 0.15s, color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .fin-period-btn--active   { background: rgba(83,74,183,0.25); border-color: #534AB7; color: #fff; }
+  .fin-period-btn--inactive { color: rgba(255,255,255,0.4); }
 
   .fin-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; flex-shrink: 0; }
   .fin-card {
