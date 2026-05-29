@@ -960,144 +960,178 @@
   }
 
   /* ─── Agenda View ─── */
-  @keyframes agFadeUp  { from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)} }
-  @keyframes agDayIn   { from{opacity:0;transform:translateY(-8px) scale(0.93)}to{opacity:1;transform:translateY(0) scale(1)} }
-  @keyframes agEventIn { from{opacity:0;transform:translateX(-10px) scale(0.96)}to{opacity:1;transform:translateX(0) scale(1)} }
-  @keyframes agPop     { from{opacity:0;transform:translateY(10px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)} }
-  @keyframes agPulse   { 0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:0.5} }
-  @keyframes agShim    { from{background-position:-200% 0}to{background-position:200% 0} }
-  @keyframes agFadeOut { from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.93)} }
-  @keyframes agSlideL  { from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)} }
-  @keyframes agSlideR  { from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)} }
-  @keyframes agNowIn   { from{opacity:0;transform:scaleX(0);transform-origin:left}to{opacity:1;transform:scaleX(1)} }
+  @keyframes agFadeUp   { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes agEventIn  { from{opacity:0;transform:translateX(-8px) scale(0.96)} to{opacity:1;transform:translateX(0) scale(1)} }
+  @keyframes agPop      { from{opacity:0;transform:scale(0.94) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes agFadeOut  { from{opacity:1;transform:scale(1)} to{opacity:0;transform:scale(0.96)} }
+  @keyframes agShim     { 0%,100%{opacity:0.4} 50%{opacity:1} }
+  @keyframes agPulse    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+  @keyframes agSlideL   { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes agSlideR   { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes agSlideDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes agNowIn    { from{opacity:0} to{opacity:1} }
 
   .ag-view {
     position: relative; z-index: 3; height: 100vh;
-    padding: 40px 48px 0 calc(var(--sb-w) + 40px);
-    display: flex; flex-direction: column; gap: 18px;
+    padding: 28px 32px 0 calc(var(--sb-w) + 32px);
+    display: flex; flex-direction: column; gap: 14px;
     overflow: hidden; box-sizing: border-box;
   }
   .is-agenda .orb-ambient { opacity: 0 !important; transition: opacity 0.5s; }
-  .is-agenda .bg-layer canvas { opacity: 0.05 !important; transition: opacity 0.5s; }
+  .is-agenda .bg-layer canvas { opacity: 0.04 !important; transition: opacity 0.5s; }
 
-  /* header */
-  .ag-header { display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0; animation: agFadeUp 0.3s both; }
-  .ag-title  { font-size: 28px; font-weight: 300; color: var(--text); letter-spacing: -0.04em; margin: 0; }
-  .ag-sub    { display: block; font-size: 11px; color: var(--text-3); margin-top: 4px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: capitalize; }
-  .ag-nav    { display: flex; align-items: center; gap: 6px; }
-  .ag-nav-btn { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; font-size: 15px; line-height: 1; }
-  .ag-nav-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
-  .ag-nav-today { padding: 5px 14px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-3); cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; transition: all 0.15s; }
-  .ag-nav-today:hover { background: rgba(83,74,183,0.15); border-color: rgba(83,74,183,0.5); color: var(--accent); }
+  /* Header */
+  .ag-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; animation: agFadeUp 0.3s both; gap: 12px; }
+  .ag-header-left { flex: 1; min-width: 0; }
+  .ag-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .ag-title { font-size: 22px; font-weight: 300; color: var(--text); letter-spacing: -0.04em; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ag-nav { display: flex; align-items: center; gap: 6px; }
+  .ag-nav-btn { width: 32px; height: 32px; border-radius: 8px; background: transparent; border: 0.5px solid rgba(255,255,255,0.15); color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s, border-color 0.15s; font-size: 14px; line-height: 1; }
+  .ag-nav-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.28); color: var(--text); }
+  .ag-nav-today { padding: 5px 14px; border-radius: 99px; background: rgba(83,74,183,0.18); border: 1px solid #534AB7; color: var(--accent); cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; transition: all 0.15s; }
+  .ag-nav-today:hover { background: rgba(83,74,183,0.32); box-shadow: 0 4px 14px rgba(83,74,183,0.28); }
 
-  /* week strip */
-  .ag-week-strip { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; flex-shrink: 0; animation: agFadeUp 0.3s 0.08s both; }
-  .ag-week-strip--slide-l .ag-day-pill { animation: agSlideL 0.22s calc(var(--di,0)*18ms) both; }
-  .ag-week-strip--slide-r .ag-day-pill { animation: agSlideR 0.22s calc(var(--di,0)*18ms) both; }
-  .ag-day-pill {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    padding: 8px 4px 10px; border-radius: 12px; cursor: pointer;
-    background: rgba(255,255,255,0.03); border: 1px solid transparent;
-    transition: background 0.15s, border-color 0.15s, box-shadow 0.2s, transform 0.18s;
-    animation: agDayIn 0.32s calc(var(--di,0)*28ms + 0.1s) both;
-    position: relative;
-  }
-  .ag-day-pill:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
-  .ag-day-pill--today .ag-day-num  { color: var(--accent); }
-  .ag-day-pill--today .ag-day-name { color: rgba(124,106,247,0.65); }
-  .ag-day-pill--active { background: rgba(83,74,183,0.18); border-color: rgba(83,74,183,0.4); box-shadow: 0 4px 18px rgba(83,74,183,0.22); transform: translateY(-2px); }
-  .ag-day-name { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
-  .ag-day-num  { font-size: 20px; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -0.03em; }
-  .ag-day-dot  { position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); animation: agPulse 2.8s ease-in-out infinite; }
+  /* View pills toggle */
+  .ag-view-pills { display: flex; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 3px; gap: 2px; }
+  .ag-view-pill { padding: 4px 12px; border-radius: 8px; background: transparent; border: none; color: var(--text-3); cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; transition: background 0.18s, color 0.18s, border-color 0.18s; white-space: nowrap; }
+  .ag-view-pill--active { background: rgba(83,74,183,0.30); color: #fff; box-shadow: 0 2px 8px rgba(83,74,183,0.22); }
+  .ag-view-pill:not(.ag-view-pill--active):hover { background: rgba(255,255,255,0.06); color: var(--text-2); }
 
-  /* grid */
+  /* Content area */
+  .ag-content { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; transition: opacity 0.15s; }
+  .ag-content--fade { opacity: 0; }
+
+  /* Shared grid scroll wrapper */
   .ag-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent; }
-  .ag-grid { position: relative; }
-  .ag-hour-row { position: absolute; left: 0; right: 0; display: flex; align-items: flex-start; cursor: pointer; }
-  .ag-hour-row:hover .ag-hour-line-inner { opacity: 0.18; }
-  .ag-hour-label { width: 48px; flex-shrink: 0; font-size: 9.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: right; padding-right: 10px; padding-top: 3px; user-select: none; letter-spacing: 0.03em; }
-  .ag-hour-line  { flex: 1; padding-top: 12px; }
-  .ag-hour-line-inner { height: 1px; background: rgba(255,255,255,0.07); transition: opacity 0.12s; }
+  .ag-grid-wrap.ag-slide-l { animation: agSlideL 0.22s both; }
+  .ag-grid-wrap.ag-slide-r { animation: agSlideR 0.22s both; }
 
-  /* now indicator */
+  /* Hour rows */
+  .ag-hour-row { position: absolute; left: 0; right: 0; display: flex; align-items: flex-start; }
+  .ag-hour-row:hover .ag-week-slot { background: rgba(255,255,255,0.025); }
+  .ag-hour-label { width: 48px; flex-shrink: 0; font-size: 9px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: right; padding-right: 10px; padding-top: 4px; user-select: none; letter-spacing: 0.04em; }
+  .ag-hour-line { flex: 1; padding-top: 14px; }
+  .ag-hour-line-inner { height: 1px; background: rgba(255,255,255,0.06); }
+
+  /* Now indicator */
   .ag-now-line { position: absolute; left: 42px; right: 0; z-index: 5; display: flex; align-items: center; pointer-events: none; animation: agNowIn 0.5s 0.3s both; }
-  .ag-now-dot  { width: 8px; height: 8px; border-radius: 50%; background: #f87171; flex-shrink: 0; box-shadow: 0 0 8px rgba(248,113,113,0.55); animation: agPulse 2.2s ease-in-out infinite; }
-  .ag-now-track { flex: 1; height: 1.5px; background: rgba(248,113,113,0.45); }
+  .ag-now-dot  { width: 8px; height: 8px; border-radius: 50%; background: #f87171; flex-shrink: 0; box-shadow: 0 0 8px rgba(248,113,113,0.6); animation: agPulse 2.2s ease-in-out infinite; }
+  .ag-now-track { flex: 1; height: 1.5px; background: rgba(248,113,113,0.5); }
 
-  /* events */
+  /* Event cards */
   .ag-event {
-    position: absolute; left: 56px; right: 12px; z-index: 4;
-    border-radius: 10px; overflow: hidden; display: flex; cursor: pointer;
-    background: var(--ev-bg, rgba(83,74,183,0.14));
+    position: absolute; border-radius: 8px;
+    background: var(--ev-bg, rgba(83,74,183,0.15));
     border: 1px solid var(--ev-border, rgba(83,74,183,0.3));
-    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, filter 0.15s;
-    animation: agEventIn 0.32s cubic-bezier(0.34,1.56,0.64,1) both;
+    display: flex; overflow: hidden; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    animation: agEventIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
   }
   .ag-event--new   { animation: agEventIn 0.42s cubic-bezier(0.34,1.56,0.64,1) both; }
   .ag-event--dying { animation: agFadeOut 0.32s ease-out both; pointer-events: none; }
-  .ag-event:hover  { transform: translateX(3px) translateY(-1px); box-shadow: 0 6px 22px var(--ev-shadow, rgba(83,74,183,0.28)); filter: brightness(1.12); }
+  .ag-event:hover  { transform: translateX(2px) translateY(-1px); box-shadow: 0 6px 20px var(--ev-shadow, rgba(83,74,183,0.28)); filter: brightness(1.1); }
   .ag-event-bar    { width: 3px; background: var(--ev-color, #534AB7); flex-shrink: 0; }
   .ag-event-body   { padding: 5px 8px; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; justify-content: center; }
-  .ag-event-title  { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ag-event-time   { font-size: 9.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
-  .ag-event-client { font-size: 9.5px; color: var(--ev-color, #534AB7); opacity: 0.85; }
+  .ag-event-title  { font-size: 11px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ag-event-time   { font-size: 9px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  .ag-event-client { font-size: 9px; color: var(--ev-color, #534AB7); opacity: 0.85; }
+  .ag-event-del    { background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 8px; opacity: 0; transition: opacity 0.12s, color 0.12s; align-self: flex-start; padding-top: 5px; }
+  .ag-event:hover .ag-event-del { opacity: 1; }
+  .ag-event-del:hover { color: #f87171; }
 
-  /* skeleton */
+  /* ── Week view ── */
+  .ag-week-outer { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .ag-week-hd-row { display: flex; flex-shrink: 0; padding-left: 48px; border-bottom: 1px solid rgba(255,255,255,0.06); animation: agFadeUp 0.25s both; }
+  .ag-week-hd-cell { flex: 1; text-align: center; padding: 6px 4px; cursor: pointer; transition: background 0.12s; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .ag-week-hd-cell:hover { background: rgba(255,255,255,0.05); }
+  .ag-week-hd-name { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+  .ag-week-hd-num  { font-size: 17px; font-weight: 300; color: var(--text-2); line-height: 1.1; }
+  .ag-week-hd-cell--today .ag-week-hd-num { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .ag-week-hd-cell--today .ag-week-hd-name { color: var(--accent); }
+  .ag-week-grid { position: relative; }
+  .ag-week-slot { flex: 1; height: 100%; cursor: pointer; position: relative; transition: background 0.1s; border-left: 1px solid rgba(255,255,255,0.04); }
+  .ag-week-slot:hover { background: rgba(255,255,255,0.03); }
+  .ag-week-slot-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.04); }
+  .ag-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent; }
+
+  /* ── Day view ── */
+  .ag-day-grid { position: relative; }
+  .ag-event--day { left: 56px; right: 12px; }
+
+  /* ── Month view ── */
+  .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
+  .ag-month-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; padding: 0 2px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+  .ag-month-hd { text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); padding: 4px 0; }
+  .ag-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; padding: 4px 2px; flex-shrink: 0; }
+  .ag-month-grid.ag-slide-l { animation: agSlideL 0.22s both; }
+  .ag-month-grid.ag-slide-r { animation: agSlideR 0.22s both; }
+  .ag-month-cell { min-height: 80px; border-radius: 8px; padding: 8px 6px 6px; cursor: pointer; transition: background 0.12s, border-color 0.12s; border: 1px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+  .ag-month-cell:hover { background: rgba(255,255,255,0.05); }
+  .ag-month-cell--other { opacity: 0.28; }
+  .ag-month-cell--today .ag-month-num { background: var(--accent); color: #fff !important; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .ag-month-cell--sel { background: rgba(83,74,183,0.1); border-color: rgba(83,74,183,0.35); box-shadow: 0 2px 12px rgba(83,74,183,0.15); }
+  .ag-month-num { font-size: 14px; font-weight: 300; color: var(--text-2); line-height: 1.1; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+  .ag-month-dots { display: flex; gap: 3px; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .ag-month-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .ag-month-more { font-size: 8px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+
+  /* Expanded day events (month view) */
+  .ag-day-expand { border-top: 1px solid rgba(255,255,255,0.07); padding: 14px 4px 10px; display: flex; flex-direction: column; gap: 8px; animation: agSlideDown 0.22s both; }
+  .ag-day-expand--empty { align-items: center; padding: 20px; }
+  .ag-day-expand-hd { display: flex; align-items: center; justify-content: space-between; }
+  .ag-day-expand-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .ag-day-expand-add { background: none; border: 1px solid rgba(83,74,183,0.3); border-radius: 8px; color: var(--accent); cursor: pointer; font-size: 11px; padding: 3px 10px; font-family: inherit; transition: background 0.12s; }
+  .ag-day-expand-add:hover { background: rgba(83,74,183,0.15); }
+  .ag-day-expand-empty { font-size: 12px; color: var(--text-3); margin: 0; }
+  .ag-day-ev-card { display: flex; align-items: center; gap: 0; border-radius: 8px; background: var(--ev-bg); border: 1px solid var(--ev-border); cursor: pointer; overflow: hidden; transition: transform 0.12s, filter 0.12s; animation: agEventIn 0.3s calc(var(--i,0)*40ms) both; position: relative; }
+  .ag-day-ev-card:hover { transform: translateX(3px); filter: brightness(1.1); }
+  .ag-day-ev-bar { width: 3px; background: var(--ev-color); flex-shrink: 0; align-self: stretch; }
+  .ag-day-ev-body { padding: 8px 10px; flex: 1; min-width: 0; }
+
+  /* Skeleton */
   .ag-skel-wrap  { display: flex; flex-direction: column; gap: 10px; padding: 20px 0 20px 56px; animation: agFadeUp 0.3s both; }
-  .ag-skel-event { height: 58px; border-radius: 10px; margin-right: 12px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: agShim 1.4s ease-in-out calc(var(--i,0)*0.14s) infinite; }
-
-  /* empty */
-  .ag-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 60px 0; animation: agFadeUp 0.4s both; }
-  .ag-empty-icon  { font-size: 36px; animation: agPulse 3s ease-in-out infinite; }
-  .ag-empty-title { font-size: 16px; color: var(--text-2); font-weight: 300; margin: 0; }
-  .ag-empty-sub   { font-size: 12px; color: var(--text-3); font-family: 'Geist Mono', monospace; margin: 0; }
-  .ag-empty-btn   { padding: 9px 20px; border-radius: 10px; background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.25); color: var(--accent); cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 500; transition: all 0.15s; }
-  .ag-empty-btn:hover { background: rgba(124,106,247,0.2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(124,106,247,0.18); }
+  .ag-skel-event { height: 52px; border-radius: 10px; margin-right: 12px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: agShim 1.4s ease-in-out calc(var(--i,0)*0.14s) infinite; }
 
   /* FAB */
-  .ag-fab { position: fixed; bottom: 32px; right: 32px; z-index: 50; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(124,106,247,0.42); transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; }
+  .ag-fab { position: fixed; bottom: 32px; right: 32px; z-index: 50; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(124,106,247,0.42); transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; }
   .ag-fab:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(124,106,247,0.58); }
-  .ag-fab-plus { display: inline-block; font-size: 24px; color: #fff; line-height: 1; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+  .ag-fab-plus { font-size: 24px; color: #fff; line-height: 1; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); display: inline-block; }
   .ag-fab:hover .ag-fab-plus { transform: rotate(45deg); }
 
-  /* modal */
-  .ag-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.74); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: agFadeUp 0.16s both; }
-  .ag-modal { background: #0D1420; border: 1px solid rgba(255,255,255,0.1); border-radius: 22px; padding: 26px; width: 400px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; gap: 12px; box-shadow: 0 32px 80px rgba(0,0,0,0.75); animation: agPop 0.28s cubic-bezier(0.34,1.56,0.64,1); }
+  /* Modal */
+  .ag-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: agFadeUp 0.16s both; }
+  .ag-modal { background: #0D1420; border: 1px solid rgba(255,255,255,0.1); border-radius: 22px; padding: 24px; width: 420px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; gap: 12px; box-shadow: 0 32px 80px rgba(0,0,0,0.75); animation: agPop 0.26s cubic-bezier(0.34,1.56,0.64,1); }
   .ag-modal-hd { display: flex; align-items: center; justify-content: space-between; }
   .ag-modal-title { font-size: 16px; font-weight: 500; color: var(--text); }
   .ag-modal-x { background: none; border: none; color: var(--text-2); cursor: pointer; font-size: 22px; line-height: 1; padding: 0 4px; border-radius: 6px; transition: background 0.12s, color 0.12s; }
   .ag-modal-x:hover { background: rgba(255,255,255,0.07); color: var(--text); }
-  .ag-modal-input { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%; box-sizing: border-box; }
-  .ag-modal-input:focus { border-color: rgba(124,106,247,0.4); }
-  .ag-modal-input[type=date], .ag-modal-input[type=time] { color-scheme: dark; }
-  .ag-modal-input--title { font-size: 16px; }
+  .ag-modal-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%; box-sizing: border-box; }
+  .ag-modal-input:focus { border-color: rgba(83,74,183,0.55); }
+  .ag-modal-input[type="date"]::-webkit-calendar-picker-indicator,
+  .ag-modal-input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
   .ag-modal-row { display: flex; gap: 8px; align-items: center; }
-  .ag-modal-sep  { color: var(--text-3); font-size: 13px; flex-shrink: 0; }
-  .ag-color-row  { display: flex; gap: 8px; align-items: center; padding: 2px 0; }
-  .ag-color-lbl  { font-size: 10px; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
-  .ag-color-dot  { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; flex-shrink: 0; }
-  .ag-color-dot:hover { transform: scale(1.18); }
-  .ag-color-dot--sel { border-color: rgba(255,255,255,0.7); box-shadow: 0 0 0 3px rgba(255,255,255,0.15); transform: scale(1.15); }
-  .ag-modal-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; padding-top: 4px; }
-  .ag-modal-del { margin-right: auto; padding: 7px 12px; border-radius: 9px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: #f87171; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .ag-modal-colors { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ag-color-btn { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; flex-shrink: 0; }
+  .ag-color-btn:hover { transform: scale(1.15); }
+  .ag-color-btn--active { border-color: #fff; box-shadow: 0 0 0 2px var(--ring, #534AB7); transform: scale(1.1); }
+  .ag-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  .ag-modal-save { padding: 10px 22px; border-radius: 10px; background: var(--accent); border: none; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s, transform 0.15s; }
+  .ag-modal-save:hover:not(:disabled) { background: #6560d4; transform: translateY(-1px); }
+  .ag-modal-save:disabled { opacity: 0.5; cursor: default; }
+  .ag-modal-del { padding: 10px 16px; border-radius: 10px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: #f87171; font-size: 14px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
   .ag-modal-del:hover { background: rgba(248,113,113,0.2); }
-  .ag-modal-cancel  { padding: 9px 18px; border-radius: 9px; background: none; border: 1px solid var(--border); color: var(--text-2); cursor: pointer; font-family: inherit; font-size: 13px; transition: all 0.15s; }
-  .ag-modal-cancel:hover { background: rgba(255,255,255,0.04); }
-  .ag-modal-confirm { padding: 9px 20px; border-radius: 9px; background: rgba(83,74,183,0.2); border: 1px solid rgba(83,74,183,0.4); color: var(--accent); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; transition: all 0.15s; }
-  .ag-modal-confirm:hover:not(:disabled) { background: rgba(83,74,183,0.32); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(83,74,183,0.28); }
-  .ag-modal-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
 
   @media (max-width: 767px) {
-    .ag-view  { padding: 24px 16px 0 calc(var(--sb-w) + 16px); gap: 14px; }
-    .ag-header { flex-direction: column; gap: 10px; }
-    .ag-day-num { font-size: 17px; }
-    .ag-fab { bottom: 24px; right: 20px; }
+    .ag-view { padding: 20px 12px 0 calc(var(--sb-w) + 12px); gap: 12px; }
+    .ag-fab { bottom: 24px; right: 18px; }
     .ag-modal-overlay { align-items: flex-end; }
-    .ag-modal { width: 100%; max-width: 100%; border-radius: 22px 22px 0 0; padding: 22px 20px 36px; }
-    .ag-event { left: 52px; right: 6px; }
+    .ag-modal { width: 100%; max-width: 100%; border-radius: 22px 22px 0 0; padding: 22px 18px 36px; }
+    .ag-month-cell { min-height: 60px; padding: 6px 4px; }
+    .ag-title { font-size: 17px; }
+    .ag-nav-today { display: none; }
   }
   @media (min-width: 768px) and (max-width: 1023px) {
-    .ag-view { padding: 32px 32px 0 calc(var(--sb-w) + 28px); }
+    .ag-view { padding: 28px 28px 0 calc(var(--sb-w) + 24px); }
   }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
@@ -3000,498 +3034,371 @@ function FinanceView() {
 function AgendaView() {
   const ce = React.createElement;
 
-  const HOUR_START = 6, HOUR_END = 23, ROW_H = 64;
-  const HOURS = HOUR_END - HOUR_START + 1;
-  const COLORS = ['#534AB7','#1D9E75','#f87171','#60a5fa','#f59e0b','#e879f9'];
-  const DAY_NAMES = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const MONTHS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const HOUR_START = 6, HOUR_END = 23, ROW_H = 68;
+  const COLORS = ['#534AB7','#3b82f6','#10b981','#f87171','#f59e0b','#e879f9'];
+  const COLOR_LABELS = ['Roxo','Azul','Verde','Vermelho','Amber','Rosa'];
+  const DAY_SHORT  = ['D','S','T','Q','Q','S','S'];
+  const DAY_LONG   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const MONTH_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const MONTH_SHORT= ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
-  const getMonday = d => {
-    const dt = new Date(d); dt.setHours(0,0,0,0);
-    const day = dt.getDay();
-    dt.setDate(dt.getDate() + (day === 0 ? -6 : 1 - day));
-    return dt;
-  };
+  /* utils */
   const fmtDate = d => {
     const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
-    return y+'-'+m+'-'+dd;
+    return `${y}-${m}-${dd}`;
   };
-  const sameDay   = (a, b) => fmtDate(a) === fmtDate(b);
-  const parseTime = t => { if (!t) return null; const [h,m] = t.split(':').map(Number); return {h, m, total: h*60+m}; };
-  const padTime   = (h, m) => String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-  const hexAlpha  = (hex, a) => { const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${a})`; };
-  const evDateStr = ev => (ev.date || ev.created_at || '').slice(0,10);
+  const sameDay  = (a,b) => fmtDate(a) === fmtDate(b);
+  const addDays  = (d,n) => { const r = new Date(d); r.setDate(r.getDate()+n); return r; };
+  const addMonths= (d,n) => { const r = new Date(d); r.setMonth(r.getMonth()+n); r.setDate(1); return r; };
+  const getMonday= d => { const r=new Date(d); const day=r.getDay(); r.setDate(r.getDate()+(day===0?-6:1-day)); r.setHours(0,0,0,0); return r; };
+  const parseTime= t => { if(!t) return null; const [h,m]=(t+'').split(':').map(Number); if(isNaN(h)) return null; return {h,m:m||0,total:h+(m||0)/60}; };
+  const padTime  = (h,m=0) => `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const hexAlpha = (hex,a) => { const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${a})`; };
+  const capFirst = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : s;
+  const evColor  = ev => (ev.content && ev.content.color) || ev.color || '#534AB7';
+  const evDate   = ev => ((ev.content && ev.content.date) || ev.date || ev.created_at || '').slice(0,10);
+  const evStart  = ev => (ev.content && ev.content.start_time) || ev.start_time || '';
+  const evEnd    = ev => (ev.content && ev.content.end_time)   || ev.end_time   || '';
 
-  const [events, setEvents]         = React.useState([]);
-  const [loading, setLoading]       = React.useState(true);
-  const [weekStart, setWeekStart]   = React.useState(() => getMonday(new Date()));
-  const [selDay, setSelDay]         = React.useState(() => { const d = new Date(); d.setHours(0,0,0,0); return d; });
-  const [slideDir, setSlideDir]     = React.useState(0);
-  const [showModal, setShowModal]   = React.useState(false);
-  const [editId, setEditId]         = React.useState(null);
-  const [mTitle, setMTitle]         = React.useState('');
-  const [mDate, setMDate]           = React.useState('');
-  const [mStart, setMStart]         = React.useState('09:00');
-  const [mEnd, setMEnd]             = React.useState('10:00');
-  const [mDesc, setMDesc]           = React.useState('');
-  const [mClient, setMClient]       = React.useState('');
-  const [mColor, setMColor]         = React.useState('#534AB7');
-  const [newIds, setNewIds]         = React.useState(new Set());
-  const [dying, setDying]           = React.useState(new Set());
-  const [nowTime, setNowTime]       = React.useState(() => new Date());
+  /* state */
+  const now0 = new Date();
+  const todayStr = fmtDate(now0);
+  const [view, setView]         = React.useState('semana');
+  const [curDate, setCurDate]   = React.useState(new Date(now0.getFullYear(),now0.getMonth(),now0.getDate()));
+  const [weekStart, setWeekStart]= React.useState(getMonday(now0));
+  const [curMonth, setCurMonth] = React.useState(new Date(now0.getFullYear(),now0.getMonth(),1));
+  const [selDay,  setSelDay]    = React.useState(null);
+  const [events,  setEvents]    = React.useState([]);
+  const [loading, setLoading]   = React.useState(true);
+  const [slideDir,setSlideDir]  = React.useState('');
+  const [viewFade,setViewFade]  = React.useState(false);
+  const [showModal,setShowModal]= React.useState(false);
+  const [editId,  setEditId]    = React.useState(null);
+  const [mTitle,  setMTitle]    = React.useState('');
+  const [mDate,   setMDate]     = React.useState(todayStr);
+  const [mStart,  setMStart]    = React.useState('09:00');
+  const [mEnd,    setMEnd]      = React.useState('10:00');
+  const [mColor,  setMColor]    = React.useState(COLORS[0]);
+  const [mDesc,   setMDesc]     = React.useState('');
+  const [saving,  setSaving]    = React.useState(false);
+  const [newIds,  setNewIds]    = React.useState(new Set());
+  const [dying,   setDying]     = React.useState(new Set());
+  const [nowStr,  setNowStr]    = React.useState(padTime(now0.getHours(),now0.getMinutes()));
   const gridRef = React.useRef(null);
 
+  /* load events */
   React.useEffect(() => {
-    fetch('/api/events')
-      .then(r => r.json())
-      .then(d => { setEvents(d.events || []); setLoading(false); })
-      .catch(() => setLoading(false));
+    fetch('/api/events').then(r=>r.json()).then(d=>{ setEvents(d.events||[]); setLoading(false); }).catch(()=>setLoading(false));
   }, []);
 
+  /* clock tick */
   React.useEffect(() => {
-    const id = setInterval(() => setNowTime(new Date()), 60000);
-    return () => clearInterval(id);
+    const id = setInterval(()=>{ const n=new Date(); setNowStr(padTime(n.getHours(),n.getMinutes())); },60000);
+    return ()=>clearInterval(id);
   }, []);
 
+  /* scroll to now */
   React.useEffect(() => {
-    if (loading || !gridRef.current) return;
-    const h = nowTime.getHours();
-    gridRef.current.scrollTop = Math.max(0, (h - HOUR_START - 1) * ROW_H);
-  }, [loading]);
-
-  const weekDays = Array.from({length:7}, (_,i) => {
-    const d = new Date(weekStart); d.setDate(weekStart.getDate() + i); return d;
-  });
-
-  const fmtWeekRange = () => {
-    const [a, b] = [weekDays[0], weekDays[6]];
-    if (a.getMonth() === b.getMonth()) return `${a.getDate()}–${b.getDate()} de ${MONTHS[a.getMonth()]} ${a.getFullYear()}`;
-    return `${a.getDate()} ${MONTHS[a.getMonth()]} – ${b.getDate()} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
-  };
-
-  const goWeek = dir => {
-    setSlideDir(dir);
-    const d = new Date(weekStart); d.setDate(d.getDate() + dir * 7);
-    setWeekStart(d);
-    const newDays = Array.from({length:7}, (_,i) => { const dd = new Date(d); dd.setDate(d.getDate()+i); return dd; });
-    if (!newDays.some(dd => sameDay(dd, selDay))) setSelDay(dir > 0 ? newDays[0] : newDays[6]);
-    setTimeout(() => setSlideDir(0), 280);
-  };
-
-  const goToday = () => {
-    const t = new Date(); t.setHours(0,0,0,0);
-    setWeekStart(getMonday(t)); setSelDay(t);
-  };
-
-  const dayEvents = events
-    .filter(ev => evDateStr(ev) === fmtDate(selDay))
-    .sort((a,b) => ((a.content&&a.content.start_time)||'00:00').localeCompare((b.content&&b.content.start_time)||'00:00'));
-
-  const nowTop = (() => {
-    if (!sameDay(selDay, nowTime)) return null;
-    const mins = nowTime.getHours() * 60 + nowTime.getMinutes() - HOUR_START * 60;
-    if (mins < 0 || mins > HOURS * 60) return null;
-    return mins / 60 * ROW_H;
-  })();
-
-  const eventTop = t => { const p = parseTime(t); if (!p) return (8-HOUR_START)*ROW_H; return Math.max(0, (p.total - HOUR_START*60) / 60 * ROW_H); };
-  const eventH   = (s, e) => { const a = parseTime(s), b = parseTime(e); if (!a||!b||b.total<=a.total) return ROW_H; return Math.max(ROW_H*0.6, (b.total-a.total)/60*ROW_H); };
-
-  const closeModal = () => {
-    setShowModal(false); setEditId(null);
-    setMTitle(''); setMDate(''); setMStart('09:00'); setMEnd('10:00'); setMDesc(''); setMClient(''); setMColor('#534AB7');
-  };
-
-  const openCreate = h => {
-    const start = h !== undefined ? padTime(h, 0) : '09:00';
-    const end   = h !== undefined ? padTime(Math.min(23, h+1), 0) : '10:00';
-    setEditId(null); setMTitle(''); setMDate(fmtDate(selDay));
-    setMStart(start); setMEnd(end); setMDesc(''); setMClient(''); setMColor('#534AB7');
-    setShowModal(true);
-  };
-
-  const openEdit = ev => {
-    const c = ev.content || {};
-    setEditId(ev.id); setMTitle(ev.title||''); setMDate(evDateStr(ev));
-    setMStart(c.start_time||'09:00'); setMEnd(c.end_time||'10:00');
-    setMDesc(c.description||''); setMClient(c.client||''); setMColor(c.color||'#534AB7');
-    setShowModal(true);
-  };
-
-  const submitEvent = () => {
-    if (!mTitle.trim()) return;
-    const body = {title:mTitle.trim(), date:mDate, start_time:mStart, end_time:mEnd, description:mDesc, client:mClient, color:mColor};
-    if (editId) {
-      const orig = events.find(e => e.id === editId) || {};
-      const upd = {...orig, title:body.title, date:mDate+'T'+mStart+':00', content:{start_time:mStart, end_time:mEnd, description:mDesc, client:mClient, color:mColor}};
-      setEvents(prev => prev.map(e => e.id===editId ? upd : e));
-      closeModal();
-      fetch('/api/events/'+editId, {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).catch(()=>{});
-      return;
+    if ((view==='semana'||view==='dia') && gridRef.current) {
+      const p=parseTime(nowStr);
+      if(p) gridRef.current.scrollTop = Math.max(0,(p.total-HOUR_START)*ROW_H-140);
     }
-    const tmp = '_tmp_'+Date.now();
-    const opt = {id:tmp, title:body.title, date:mDate+'T'+mStart+':00', created_at:new Date().toISOString(), content:{start_time:mStart, end_time:mEnd, description:mDesc, client:mClient, color:mColor}};
-    setEvents(prev => [...prev, opt]);
-    setNewIds(prev => { const s = new Set(prev); s.add(tmp); return s; });
-    closeModal();
-    setTimeout(() => setNewIds(prev => { const s = new Set(prev); s.delete(tmp); return s; }), 800);
-    fetch('/api/events', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
-      .then(r => r.ok ? r.json() : null)
-      .then(real => { if (real) setEvents(prev => prev.map(e => e.id===tmp ? {...real, id:real.id||tmp} : e)); })
-      .catch(() => setEvents(prev => prev.filter(e => e.id!==tmp)));
+  }, [view, loading]);
+
+  /* derived now position */
+  const nowTop = React.useMemo(()=>{
+    const p=parseTime(nowStr);
+    if(!p||p.total<HOUR_START||p.total>HOUR_END) return null;
+    return (p.total-HOUR_START)*ROW_H;
+  },[nowStr]);
+
+  const evTop= t=>{ const p=parseTime(t); if(!p) return 0; return Math.max(0,(p.total-HOUR_START)*ROW_H); };
+  const evH  = (s,e)=>{ const sp=parseTime(s),ep=parseTime(e); if(!sp||!ep) return ROW_H; return Math.max(28,(ep.total-sp.total)*ROW_H); };
+
+  /* navigation */
+  const slideNav=(dir,fn)=>{ setSlideDir(dir); fn(); setTimeout(()=>setSlideDir(''),300); };
+  const goBack=()=>{ if(view==='dia') slideNav('r',()=>setCurDate(d=>addDays(d,-1))); else if(view==='semana') slideNav('r',()=>setWeekStart(d=>addDays(d,-7))); else slideNav('r',()=>{ setCurMonth(d=>addMonths(d,-1)); setSelDay(null); }); };
+  const goNext=()=>{ if(view==='dia') slideNav('l',()=>setCurDate(d=>addDays(d,1))); else if(view==='semana') slideNav('l',()=>setWeekStart(d=>addDays(d,7))); else slideNav('l',()=>{ setCurMonth(d=>addMonths(d,1)); setSelDay(null); }); };
+  const goToday=()=>{ const t=new Date(); setCurDate(new Date(t.getFullYear(),t.getMonth(),t.getDate())); setWeekStart(getMonday(t)); setCurMonth(new Date(t.getFullYear(),t.getMonth(),1)); setSelDay(null); };
+  const switchView=v=>{ if(v===view) return; setViewFade(true); setTimeout(()=>{ setView(v); setViewFade(false); },150); };
+
+  /* header title */
+  const headerTitle=()=>{
+    if(view==='mes') return `${MONTH_FULL[curMonth.getMonth()]} ${curMonth.getFullYear()}`;
+    if(view==='semana'){
+      const end=addDays(weekStart,6);
+      const sm=MONTH_SHORT[weekStart.getMonth()],em=MONTH_SHORT[end.getMonth()];
+      if(sm===em) return `${weekStart.getDate()} – ${end.getDate()} ${capFirst(sm)} ${weekStart.getFullYear()}`;
+      return `${weekStart.getDate()} ${capFirst(sm)} – ${end.getDate()} ${capFirst(em)} ${weekStart.getFullYear()}`;
+    }
+    const d=curDate; return `${DAY_LONG[d.getDay()]}, ${d.getDate()} ${capFirst(MONTH_SHORT[d.getMonth()])} ${d.getFullYear()}`;
   };
 
-  const deleteEvent = id => {
-    setDying(prev => { const s = new Set(prev); s.add(id); return s; });
-    closeModal();
-    setTimeout(() => { setEvents(prev => prev.filter(e => e.id!==id)); setDying(prev => { const s = new Set(prev); s.delete(id); return s; }); }, 350);
-    if (!id.startsWith('_tmp_')) fetch('/api/events/'+id, {method:'DELETE'}).catch(()=>{});
+  /* modal helpers */
+  const openCreate=(date,startH)=>{ setEditId(null); setMTitle(''); setMDate(date||todayStr); setMStart(startH!=null?padTime(startH):'09:00'); setMEnd(startH!=null?padTime(startH+1):'10:00'); setMColor(COLORS[0]); setMDesc(''); setShowModal(true); };
+  const openEdit  =ev=>{ setEditId(ev.id); setMTitle(ev.title||''); setMDate(evDate(ev)); setMStart(evStart(ev)); setMEnd(evEnd(ev)); setMColor(evColor(ev)); setMDesc((ev.content&&ev.content.description)||''); setShowModal(true); };
+  const closeModal=()=>{ setShowModal(false); setEditId(null); };
+
+  const submitEvent=async()=>{
+    if(!mTitle.trim()) return;
+    setSaving(true);
+    const body={title:mTitle.trim(),date:mDate,start_time:mStart,end_time:mEnd,color:mColor,description:mDesc};
+    try{
+      if(editId){
+        setEvents(evs=>evs.map(e=>e.id===editId?{...e,title:body.title,content:{...(e.content||{}),...body}}:e));
+        await fetch(`/api/events/${editId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const r=await fetch('/api/events').then(x=>x.json()); setEvents(r.events||[]);
+      } else {
+        const tid=`_tmp_${Date.now()}`;
+        setEvents(evs=>[{id:tid,title:body.title,content:body},...evs]);
+        setNewIds(s=>new Set([...s,tid]));
+        const r=await fetch('/api/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const data=await r.json();
+        setEvents(evs=>evs.map(e=>e.id===tid?(data.event||e):e));
+        setNewIds(s=>{ const n=new Set(s); n.delete(tid); return n; });
+      }
+    }catch(e){}
+    setSaving(false); closeModal();
   };
 
-  /* ── grid ── */
-  const hours = Array.from({length: HOURS}, (_, i) => HOUR_START + i);
-  const grid = ce('div', {className:'ag-grid-wrap', ref: gridRef},
-    ce('div', {className:'ag-grid', style:{height: HOURS*ROW_H+'px'}},
-      ...hours.map(h => ce('div', {
-        key:'h'+h, className:'ag-hour-row',
-        style:{top:(h-HOUR_START)*ROW_H+'px', height:ROW_H+'px'},
-        onClick: () => openCreate(h),
-      },
-        ce('div', {className:'ag-hour-label'}, h===12?'12pm': h<12?h+'am':(h-12)+'pm'),
-        ce('div', {className:'ag-hour-line'}, ce('div', {className:'ag-hour-line-inner'}))
-      )),
-      nowTop !== null ? ce('div', {
-        key:'now', className:'ag-now-line', style:{top: nowTop+'px'},
-      }, ce('div', {className:'ag-now-dot'}), ce('div', {className:'ag-now-track'})) : null,
-      ...dayEvents.map(ev => {
-        const col = (ev.content&&ev.content.color)||'#534AB7';
-        const top = eventTop((ev.content&&ev.content.start_time)||'09:00');
-        const ht  = eventH((ev.content&&ev.content.start_time)||'09:00', (ev.content&&ev.content.end_time)||'10:00');
-        const isNew = newIds.has(ev.id), isDying = dying.has(ev.id);
-        return ce('div', {
-          key: ev.id,
-          className: 'ag-event'+(isNew?' ag-event--new':'')+(isDying?' ag-event--dying':''),
-          style: { top:top+'px', height:ht+'px', '--ev-color':col, '--ev-bg':hexAlpha(col,0.14), '--ev-border':hexAlpha(col,0.3), '--ev-shadow':hexAlpha(col,0.28) },
-          onClick: e => { e.stopPropagation(); openEdit(ev); },
+  const deleteEvent=async id=>{
+    setDying(s=>new Set([...s,id]));
+    setTimeout(()=>{ setEvents(evs=>evs.filter(e=>e.id!==id)); setDying(s=>{ const n=new Set(s); n.delete(id); return n; }); },350);
+    await fetch(`/api/events/${id}`,{method:'DELETE'});
+  };
+
+  /* ── Month view ─────────────────────────────────────────────── */
+  const renderMonth=()=>{
+    const year=curMonth.getFullYear(), month=curMonth.getMonth();
+    const firstDay=new Date(year,month,1), lastDay=new Date(year,month+1,0);
+    const startOffset=firstDay.getDay();
+    const totalCells=Math.ceil((startOffset+lastDay.getDate())/7)*7;
+    const cells=Array.from({length:totalCells},(_,i)=>new Date(year,month,1-startOffset+i));
+    const dayEvs=d=>events.filter(e=>evDate(e)===fmtDate(d));
+    const isToday=d=>fmtDate(d)===todayStr;
+    const isCurMonth=d=>d.getMonth()===month;
+    const isSelDay=d=>selDay&&fmtDate(d)===fmtDate(selDay);
+    const selEvs=selDay?events.filter(e=>evDate(e)===fmtDate(selDay)).sort((a,b)=>evStart(a).localeCompare(evStart(b))):[];
+
+    return ce('div',{className:'ag-month-wrap'},
+      ce('div',{className:'ag-month-headers'}, ...DAY_SHORT.map((d,i)=>ce('div',{key:i,className:'ag-month-hd'},d))),
+      ce('div',{className:`ag-month-grid${slideDir==='l'?' ag-slide-l':slideDir==='r'?' ag-slide-r':''}`},
+        ...cells.map((d,i)=>{
+          const evs=dayEvs(d), dots=evs.slice(0,3), extra=evs.length-3;
+          return ce('div',{key:i,
+            className:`ag-month-cell${!isCurMonth(d)?' ag-month-cell--other':''}${isToday(d)?' ag-month-cell--today':''}${isSelDay(d)?' ag-month-cell--sel':''}`,
+            onClick:()=>setSelDay(isSelDay(d)?null:new Date(d)),
+          },
+            ce('span',{className:'ag-month-num'},d.getDate()),
+            evs.length>0&&ce('div',{className:'ag-month-dots'},
+              ...dots.map((ev,j)=>ce('span',{key:j,className:'ag-month-dot',style:{background:evColor(ev)}})),
+              extra>0&&ce('span',{className:'ag-month-more'},`+${extra}`)
+            )
+          );
+        })
+      ),
+      selDay&&selEvs.length===0&&ce('div',{className:'ag-day-expand ag-day-expand--empty'},
+        ce('span',{className:'ag-day-expand-title'},`${DAY_LONG[selDay.getDay()]}, ${selDay.getDate()} ${capFirst(MONTH_SHORT[selDay.getMonth()])}`),
+        ce('p',{className:'ag-day-expand-empty'},'Nenhum evento'),
+        ce('button',{className:'ag-day-expand-add',style:{marginTop:'8px'},onClick:()=>openCreate(fmtDate(selDay),null)},'+ novo evento')
+      ),
+      selDay&&selEvs.length>0&&ce('div',{className:'ag-day-expand'},
+        ce('div',{className:'ag-day-expand-hd'},
+          ce('span',{className:'ag-day-expand-title'},`${DAY_LONG[selDay.getDay()]}, ${selDay.getDate()} ${capFirst(MONTH_SHORT[selDay.getMonth()])}`),
+          ce('button',{className:'ag-day-expand-add',onClick:()=>openCreate(fmtDate(selDay),null)},'+ novo')
+        ),
+        ...selEvs.map((ev,i)=>ce('div',{key:ev.id,
+          className:`ag-day-ev-card${dying.has(ev.id)?' ag-event--dying':''}${newIds.has(ev.id)?' ag-event--new':''}`,
+          style:{'--ev-color':evColor(ev),'--ev-bg':hexAlpha(evColor(ev),0.12),'--ev-border':hexAlpha(evColor(ev),0.25),'--i':i},
+          onClick:()=>openEdit(ev),
         },
-          ce('div', {className:'ag-event-bar'}),
-          ce('div', {className:'ag-event-body'},
-            ce('div', {className:'ag-event-title'}, ev.title),
-            (ev.content&&(ev.content.start_time||ev.content.end_time)) && ce('div', {className:'ag-event-time'},
-              (ev.content.start_time||'')+(ev.content.end_time?' – '+ev.content.end_time:'')
+          ce('div',{className:'ag-day-ev-bar',style:{background:evColor(ev)}}),
+          ce('div',{className:'ag-day-ev-body'},
+            ce('div',{className:'ag-event-title'},ev.title),
+            (evStart(ev)||evEnd(ev))&&ce('div',{className:'ag-event-time'},`${evStart(ev)}${evEnd(ev)?` – ${evEnd(ev)}`:''}`)
+          ),
+          ce('button',{className:'ag-event-del',onClick:e=>{e.stopPropagation();deleteEvent(ev.id);}},'×')
+        ))
+      )
+    );
+  };
+
+  /* ── Week view ──────────────────────────────────────────────── */
+  const renderWeek=()=>{
+    const days=Array.from({length:7},(_,i)=>addDays(weekStart,i));
+    const NHOURS=HOUR_END-HOUR_START+1, totalH=NHOURS*ROW_H;
+    return ce('div',{className:'ag-week-outer'},
+      ce('div',{className:'ag-week-hd-row'},
+        ...days.map((d,i)=>ce('div',{key:i,
+          className:`ag-week-hd-cell${sameDay(d,new Date())?' ag-week-hd-cell--today':''}`,
+          onClick:()=>{ setCurDate(d); switchView('dia'); },
+        },
+          ce('span',{className:'ag-week-hd-name'},DAY_SHORT[d.getDay()]),
+          ce('span',{className:'ag-week-hd-num'},d.getDate())
+        ))
+      ),
+      ce('div',{
+        className:`ag-grid-wrap${slideDir==='l'?' ag-slide-l':slideDir==='r'?' ag-slide-r':''}`,
+        ref:gridRef,
+      },
+        ce('div',{className:'ag-week-grid',style:{height:totalH+'px',position:'relative'}},
+          ...Array.from({length:NHOURS},(_,hi)=>{
+            const h=HOUR_START+hi;
+            return ce('div',{key:h,className:'ag-hour-row',style:{top:hi*ROW_H+'px',height:ROW_H+'px'}},
+              ce('div',{className:'ag-hour-label'},`${h}h`),
+              ...days.map((d,di)=>ce('div',{key:di,className:'ag-week-slot',onClick:()=>openCreate(fmtDate(d),h)},
+                ce('div',{className:'ag-week-slot-line'})
+              ))
+            );
+          }),
+          nowTop!==null&&sameDay(new Date(),new Date())&&ce('div',{className:'ag-now-line',style:{top:nowTop+'px',left:'48px'}},
+            ce('div',{className:'ag-now-dot'}), ce('div',{className:'ag-now-track'})
+          ),
+          ...events.filter(ev=>days.some(d=>fmtDate(d)===evDate(ev))).map((ev,idx)=>{
+            const colIdx=days.findIndex(d=>fmtDate(d)===evDate(ev));
+            if(colIdx<0) return null;
+            const col=evColor(ev);
+            return ce('div',{key:ev.id,
+              className:`ag-event${newIds.has(ev.id)?' ag-event--new':''}${dying.has(ev.id)?' ag-event--dying':''}`,
+              style:{
+                top:evTop(evStart(ev))+'px', height:evH(evStart(ev),evEnd(ev))+'px',
+                left:`calc(48px + ${colIdx}*(100% - 48px)/7 + 3px)`,
+                width:`calc((100% - 48px)/7 - 6px)`,
+                '--ev-color':col,'--ev-bg':hexAlpha(col,0.15),'--ev-border':hexAlpha(col,0.3),'--ev-shadow':hexAlpha(col,0.25),
+                animationDelay:`${idx*25}ms`
+              },
+              onClick:()=>openEdit(ev),
+            },
+              ce('div',{className:'ag-event-bar'}),
+              ce('div',{className:'ag-event-body'},
+                ce('div',{className:'ag-event-title'},ev.title),
+                evStart(ev)&&ce('div',{className:'ag-event-time'},`${evStart(ev)}${evEnd(ev)?`–${evEnd(ev)}`:''}`)
+              )
+            );
+          })
+        )
+      )
+    );
+  };
+
+  /* ── Day view ───────────────────────────────────────────────── */
+  const renderDay=()=>{
+    const NHOURS=HOUR_END-HOUR_START+1, totalH=NHOURS*ROW_H;
+    const dayStr=fmtDate(curDate), isToday=dayStr===todayStr;
+    const dayEvs=events.filter(ev=>evDate(ev)===dayStr).sort((a,b)=>evStart(a).localeCompare(evStart(b)));
+    return ce('div',{
+      className:`ag-grid-wrap${slideDir==='l'?' ag-slide-l':slideDir==='r'?' ag-slide-r':''}`,
+      ref:gridRef,
+    },
+      ce('div',{className:'ag-day-grid',style:{height:totalH+'px',position:'relative'}},
+        ...Array.from({length:NHOURS},(_,hi)=>{
+          const h=HOUR_START+hi;
+          return ce('div',{key:h,className:'ag-hour-row',style:{top:hi*ROW_H+'px',height:ROW_H+'px'},onClick:()=>openCreate(dayStr,h)},
+            ce('div',{className:'ag-hour-label'},`${h}h`),
+            ce('div',{className:'ag-hour-line'},ce('div',{className:'ag-hour-line-inner'}))
+          );
+        }),
+        isToday&&nowTop!==null&&ce('div',{className:'ag-now-line',style:{top:nowTop+'px'}},
+          ce('div',{className:'ag-now-dot'}), ce('div',{className:'ag-now-track'})
+        ),
+        ...dayEvs.map((ev,idx)=>{
+          const col=evColor(ev);
+          return ce('div',{key:ev.id,
+            className:`ag-event ag-event--day${newIds.has(ev.id)?' ag-event--new':''}${dying.has(ev.id)?' ag-event--dying':''}`,
+            style:{
+              top:evTop(evStart(ev))+'px', height:evH(evStart(ev),evEnd(ev))+'px',
+              left:'56px', right:'16px',
+              '--ev-color':col,'--ev-bg':hexAlpha(col,0.15),'--ev-border':hexAlpha(col,0.3),'--ev-shadow':hexAlpha(col,0.25),
+              animationDelay:`${idx*35}ms`
+            },
+            onClick:()=>openEdit(ev),
+          },
+            ce('div',{className:'ag-event-bar'}),
+            ce('div',{className:'ag-event-body'},
+              ce('div',{className:'ag-event-title'},ev.title),
+              (evStart(ev)||evEnd(ev))&&ce('div',{className:'ag-event-time'},`${evStart(ev)}${evEnd(ev)?` – ${evEnd(ev)}`:''}`)
             ),
-            (ev.content&&ev.content.client) ? ce('div', {className:'ag-event-client'}, ev.content.client) : null
-          )
-        );
-      })
-    )
-  );
+            ce('button',{className:'ag-event-del',onClick:e=>{e.stopPropagation();deleteEvent(ev.id);}},'×')
+          );
+        })
+      )
+    );
+  };
 
-  /* ── skeleton ── */
-  const skel = ce('div', {className:'ag-skel-wrap'}, ...[0,1,2].map(i => ce('div', {key:i, className:'ag-skel-event', style:{'--i':i}})));
-
-  /* ── empty ── */
-  const empty = ce('div', {className:'ag-empty'},
-    ce('div', {className:'ag-empty-icon'}, '📅'),
-    ce('p',   {className:'ag-empty-title'}, 'Dia livre'),
-    ce('p',   {className:'ag-empty-sub'},   'Nenhum evento — clique em um horário para criar'),
-    ce('button', {className:'ag-empty-btn', onClick:()=>openCreate()}, 'Adicionar evento →')
-  );
-
-  /* ── modal ── */
-  const modal = !showModal ? null : ce('div', {
-    className:'ag-modal-overlay',
-    onClick: e => { if(e.target===e.currentTarget) closeModal(); },
-  },
-    ce('div', {className:'ag-modal'},
-      ce('div', {className:'ag-modal-hd'},
-        ce('div', {className:'ag-modal-title'}, editId ? 'Editar Evento' : 'Novo Evento'),
-        ce('button', {className:'ag-modal-x', onClick:closeModal}, '×')
+  /* ── Modal ─────────────────────────────────────────────────── */
+  const renderModal=()=>showModal&&ce('div',{className:'ag-modal-overlay',onClick:e=>{if(e.target===e.currentTarget)closeModal();}},
+    ce('div',{className:'ag-modal'},
+      ce('div',{className:'ag-modal-hd'},
+        ce('span',{className:'ag-modal-title'},editId?'Editar Evento':'Novo Evento'),
+        ce('button',{className:'ag-modal-x',onClick:closeModal},'×')
       ),
-      ce('input', {className:'ag-modal-input ag-modal-input--title', type:'text', placeholder:'Título do evento', value:mTitle, autoFocus:true, onChange:e=>setMTitle(e.target.value), onKeyDown:e=>{if(e.key==='Enter')submitEvent();if(e.key==='Escape')closeModal();}}),
-      ce('div', {className:'ag-modal-row'},
-        ce('input', {className:'ag-modal-input', type:'date', value:mDate, onChange:e=>setMDate(e.target.value), style:{flex:1}})
+      ce('input',{className:'ag-modal-input',placeholder:'Título do evento',value:mTitle,onChange:e=>setMTitle(e.target.value),autoFocus:true,style:{fontSize:'15px',fontWeight:500}}),
+      ce('div',{className:'ag-modal-row'},
+        ce('input',{className:'ag-modal-input',type:'date',value:mDate,onChange:e=>setMDate(e.target.value),style:{flex:1}})
       ),
-      ce('div', {className:'ag-modal-row ag-modal-row--times'},
-        ce('input', {className:'ag-modal-input', type:'time', value:mStart, onChange:e=>setMStart(e.target.value), style:{flex:1}}),
-        ce('span', {className:'ag-modal-sep'}, '→'),
-        ce('input', {className:'ag-modal-input', type:'time', value:mEnd, onChange:e=>setMEnd(e.target.value), style:{flex:1}})
+      ce('div',{className:'ag-modal-row'},
+        ce('input',{className:'ag-modal-input',type:'time',value:mStart,onChange:e=>setMStart(e.target.value),style:{flex:1}}),
+        ce('span',{style:{color:'var(--text-3)',fontSize:'11px',flexShrink:0,padding:'0 2px'}},'→'),
+        ce('input',{className:'ag-modal-input',type:'time',value:mEnd,onChange:e=>setMEnd(e.target.value),style:{flex:1}})
       ),
-      ce('input', {className:'ag-modal-input', type:'text', placeholder:'Cliente (opcional)', value:mClient, onChange:e=>setMClient(e.target.value)}),
-      ce('input', {className:'ag-modal-input', type:'text', placeholder:'Descrição (opcional)', value:mDesc, onChange:e=>setMDesc(e.target.value), onKeyDown:e=>{if(e.key==='Enter')submitEvent();if(e.key==='Escape')closeModal();}}),
-      ce('div', {className:'ag-color-row'},
-        ce('span', {className:'ag-color-lbl'}, 'Cor'),
-        ...COLORS.map(col => ce('button', {
-          key:col, className:'ag-color-dot'+(mColor===col?' ag-color-dot--sel':''),
-          style:{background:col}, onClick:()=>setMColor(col),
+      ce('div',{className:'ag-modal-colors'},
+        ...COLORS.map((col,i)=>ce('button',{key:i,
+          className:`ag-color-btn${mColor===col?' ag-color-btn--active':''}`,
+          style:{background:col,'--ring':col},
+          onClick:()=>setMColor(col),
+          title:COLOR_LABELS[i],
         }))
       ),
-      ce('div', {className:'ag-modal-actions'},
-        editId ? ce('button', {className:'ag-modal-del', onClick:()=>deleteEvent(editId)},
-          ce('i', {className:'ti ti-trash'}), ' Excluir'
-        ) : null,
-        ce('button', {className:'ag-modal-cancel', onClick:closeModal}, 'Cancelar'),
-        ce('button', {className:'ag-modal-confirm', onClick:submitEvent, disabled:!mTitle.trim()}, editId?'Salvar':'Criar evento')
+      ce('input',{className:'ag-modal-input',placeholder:'Descrição (opcional)',value:mDesc,onChange:e=>setMDesc(e.target.value)}),
+      ce('div',{className:'ag-modal-actions'},
+        editId&&ce('button',{className:'ag-modal-del',onClick:()=>{deleteEvent(editId);closeModal();}},'Excluir'),
+        ce('button',{className:'ag-modal-save',onClick:submitEvent,disabled:!mTitle.trim()||saving},saving?'...':editId?'Salvar':'Criar evento')
       )
     )
   );
 
-  const stripClass = 'ag-week-strip' + (slideDir > 0 ? ' ag-week-strip--slide-l' : slideDir < 0 ? ' ag-week-strip--slide-r' : '');
+  /* ── Skeleton ───────────────────────────────────────────────── */
+  const renderSkeleton=()=>ce('div',{className:'ag-skel-wrap'},
+    ...Array.from({length:4},(_,i)=>ce('div',{key:i,className:'ag-skel-event',style:{'--i':i}}))
+  );
 
-  return ce('div', {className:'ag-view'},
-    modal,
-    ce('div', {className:'ag-header'},
-      ce('div', null,
-        ce('h2', {className:'ag-title'}, 'Agenda'),
-        ce('span', {className:'ag-sub'}, fmtWeekRange())
+  /* ── Main render ────────────────────────────────────────────── */
+  return ce('div',{className:'ag-view'},
+    renderModal(),
+    ce('div',{className:'ag-header'},
+      ce('div',{className:'ag-header-left'},
+        ce('h2',{className:'ag-title'},headerTitle())
       ),
-      ce('div', {className:'ag-nav'},
-        ce('button', {className:'ag-nav-btn', onClick:()=>goWeek(-1)}, ce('i', {className:'ti ti-chevron-left'})),
-        ce('button', {className:'ag-nav-today', onClick:goToday}, 'Hoje'),
-        ce('button', {className:'ag-nav-btn', onClick:()=>goWeek(1)}, ce('i', {className:'ti ti-chevron-right'}))
+      ce('div',{className:'ag-header-right'},
+        ce('div',{className:'ag-view-pills'},
+          ...(['dia','semana','mes']).map(v=>ce('button',{key:v,
+            className:`ag-view-pill${view===v?' ag-view-pill--active':''}`,
+            onClick:()=>switchView(v)
+          },v==='dia'?'Dia':v==='semana'?'Sem':'Mês'))
+        ),
+        ce('div',{className:'ag-nav'},
+          ce('button',{className:'ag-nav-btn',onClick:goBack},'←'),
+          ce('button',{className:'ag-nav-today',onClick:goToday},'Hoje'),
+          ce('button',{className:'ag-nav-btn',onClick:goNext},'→')
+        )
       )
     ),
-    ce('div', {className: stripClass},
-      weekDays.map((d, i) => {
-        const isToday = sameDay(d, new Date());
-        const isSel   = sameDay(d, selDay);
-        const hasDot  = events.some(ev => evDateStr(ev) === fmtDate(d));
-        return ce('button', {
-          key:i,
-          className:'ag-day-pill'+(isToday?' ag-day-pill--today':'')+(isSel?' ag-day-pill--active':''),
-          style:{'--di':i},
-          onClick:()=>setSelDay(d),
-        },
-          ce('span', {className:'ag-day-name'}, DAY_NAMES[d.getDay()]),
-          ce('span', {className:'ag-day-num'},  d.getDate()),
-          hasDot ? ce('span', {className:'ag-day-dot'}) : null
-        );
-      })
+    ce('div',{className:`ag-content${viewFade?' ag-content--fade':''}`},
+      loading ? renderSkeleton() :
+      view==='mes'    ? renderMonth()  :
+      view==='semana' ? renderWeek()   :
+      renderDay()
     ),
-    loading ? skel : (dayEvents.length === 0 ? ce('div', null, grid, empty) : grid),
-    ce('button', {className:'ag-fab', onClick:()=>openCreate()}, ce('span', {className:'ag-fab-plus'}, '+'))
+    ce('button',{
+      className:'ag-fab',
+      onClick:()=>openCreate(
+        view==='dia'?fmtDate(curDate):view==='semana'?fmtDate(curDate):fmtDate(selDay||new Date()),
+        null
+      )
+    }, ce('span',{className:'ag-fab-plus'},'+'))
   );
 }
 
-
-const _FIXED_CLIENTS = [
-  {client_name: 'Gracie Barra',    client_color: '#534AB7', task_count: 0, has_context: false},
-  {client_name: 'SoHo',            client_color: '#185FA5', task_count: 0, has_context: false},
-  {client_name: 'DDpartssolution', client_color: '#0F6E56', task_count: 0, has_context: false},
-];
-
-function ClientsView({onChat}) {
-  const ce = React.createElement;
-  const [clients, setClients] = React.useState(_FIXED_CLIENTS);
-  const [loading, setLoading] = React.useState(true);
-  const [showModal, setShowModal] = React.useState(false);
-  const [modalName, setModalName] = React.useState('');
-
-  React.useEffect(() => {
-    const fetchContext = (name) =>
-      fetch(`/api/context?name=${encodeURIComponent(name)}`)
-        .then(r => r.json())
-        .catch(() => ({has_context: false}));
-
-    fetch('/api/clients')
-      .then(r => r.json())
-      .then(async (d) => {
-        const backendMap = {};
-        for (const c of (d.clients || [])) backendMap[c.client_name] = c;
-        const merged = await Promise.all(_FIXED_CLIENTS.map(async (fc) => {
-          const base = backendMap[fc.client_name] || fc;
-          if (base.has_context) return base;
-          const ctx = await fetchContext(fc.client_name);
-          if (!ctx.has_context) return base;
-          return {
-            ...base,
-            has_context: true,
-            content: {
-              situacao_atual: ctx.situacao_atual,
-              proximo_passo: ctx.proximo_passo,
-              ultimo_passo: ctx.ultimo_passo,
-            },
-            updated_at: ctx.updated_at || base.updated_at,
-          };
-        }));
-        setClients(merged);
-        setLoading(false);
-      })
-      .catch(async () => {
-        const merged = await Promise.all(_FIXED_CLIENTS.map(async (fc) => {
-          const ctx = await fetchContext(fc.client_name);
-          if (!ctx.has_context) return fc;
-          return {
-            ...fc,
-            has_context: true,
-            content: {
-              situacao_atual: ctx.situacao_atual,
-              proximo_passo: ctx.proximo_passo,
-              ultimo_passo: ctx.ultimo_passo,
-            },
-            updated_at: ctx.updated_at,
-          };
-        }));
-        setClients(merged);
-        setLoading(false);
-      });
-  }, []);
-
-  const fmtUpdated = (ts) => {
-    if (!ts) return null;
-    const h = Math.floor((Date.now() - new Date(ts).getTime()) / 3600000);
-    if (h < 1) return 'agora';
-    if (h < 24) return `há ${h}h`;
-    const d = Math.floor(h / 24);
-    return d === 1 ? 'ontem' : `há ${d} dias`;
-  };
-
-  const getBody = (c) => c && (c.situacao_atual || c.descricao || c.body || c.status || null);
-  const getNext = (c) => c && (c.proximo_passo || c.next_step || null);
-
-  const submitModal = () => {
-    if (!modalName.trim()) return;
-    onChat && onChat(`Novo cliente: ${modalName.trim()}`);
-    setShowModal(false);
-    setModalName('');
-  };
-
-  const modal = showModal ? ce('div', {
-    className: 'crm-modal-overlay',
-    onClick: (e) => { if (e.target === e.currentTarget) setShowModal(false); }
-  },
-    ce('div', {className: 'crm-modal'},
-      ce('div', {className: 'crm-modal-hd'},
-        ce('div', {className: 'crm-modal-title'}, 'Novo Cliente'),
-        ce('button', {className: 'crm-modal-x', onClick: () => setShowModal(false)}, '×')
-      ),
-      ce('input', {
-        className: 'crm-modal-input',
-        placeholder: 'Nome do cliente',
-        value: modalName,
-        autoFocus: true,
-        onChange: (e) => setModalName(e.target.value),
-        onKeyDown: (e) => {
-          if (e.key === 'Enter') submitModal();
-          if (e.key === 'Escape') setShowModal(false);
-        }
-      }),
-      ce('div', {className: 'crm-modal-hint'}, 'Enter para adicionar via chat'),
-      ce('div', {className: 'crm-modal-actions'},
-        ce('button', {className: 'crm-modal-cancel', onClick: () => setShowModal(false)}, 'Cancelar'),
-        ce('button', {className: 'crm-modal-confirm', onClick: submitModal}, 'Adicionar')
-      )
-    )
-  ) : null;
-
-  const renderCard = (cl, idx) => {
-    const color = cl.client_color || '#534AB7';
-    const initial = (cl.client_name || '?')[0].toUpperCase();
-    const body = getBody(cl.content);
-    const next = getNext(cl.content);
-    const hasCtx = cl.has_context;
-    const upd = fmtUpdated(cl.updated_at);
-
-    if (!hasCtx) {
-      return ce('div', {
-        key: cl.client_name,
-        className: 'crm-card crm-card--empty',
-        style: {'--crm-color': color, '--ci': idx}
-      },
-        ce('div', {className: 'crm-card-top'},
-          ce('div', {className: 'crm-avatar', style: {background: color + '22', color, '--ci': idx}}, initial),
-          ce('div', {className: 'crm-card-meta'},
-            ce('div', {className: 'crm-name'}, cl.client_name),
-            ce('div', {className: 'crm-updated'}, 'sem histórico')
-          )
-        ),
-        ce('div', {className: 'crm-divider', style: {'--ci': idx}}),
-        ce('div', {className: 'crm-empty-state'},
-          ce('span', {className: 'crm-spark'}, '⚡'),
-          ce('span', {className: 'crm-empty-card-txt'}, 'Sem histórico ainda')
-        ),
-        ce('div', {className: 'crm-card-ft'},
-          ce('span', {className: 'crm-tasks-pill'},
-            ce(CountUp, {end: cl.task_count, duration: 600}),
-            cl.task_count === 1 ? ' tarefa' : ' tarefas'
-          ),
-          ce('button', {
-            className: 'crm-chat-btn',
-            onClick: () => onChat && onChat(`Começar histórico de ${cl.client_name}`)
-          }, 'Começar agora ', ce('span', {className: 'crm-arrow'}, '→'))
-        )
-      );
-    }
-
-    return ce('div', {
-      key: cl.client_name,
-      className: 'crm-card',
-      style: {'--crm-color': color, '--ci': idx}
-    },
-      ce('div', {className: 'crm-card-top'},
-        ce('div', {className: 'crm-avatar', style: {background: color + '22', color, '--ci': idx}}, initial),
-        ce('div', {className: 'crm-card-meta'},
-          ce('div', {className: 'crm-name'},
-            ce('span', {className: 'crm-dot'}),
-            cl.client_name
-          ),
-          upd ? ce('div', {className: 'crm-updated'}, 'atualizado ' + upd) : null
-        )
-      ),
-      ce('div', {className: 'crm-divider', style: {'--ci': idx}}),
-      body ? ce('div', {className: 'crm-section'},
-        ce('div', {className: 'crm-label'}, 'Situação'),
-        ce('div', {className: 'crm-body'}, body)
-      ) : null,
-      next ? ce('div', {className: 'crm-section'},
-        ce('div', {className: 'crm-label'}, 'Próximo passo'),
-        ce('div', {className: 'crm-next'}, next, ce('em', {className: 'crm-cursor'}, '|'))
-      ) : null,
-      ce('div', {className: 'crm-card-ft'},
-        ce('span', {className: 'crm-tasks-pill' + (cl.task_count > 0 ? ' crm-tasks-pill--on' : '')},
-          ce(CountUp, {end: cl.task_count, duration: 600}),
-          cl.task_count === 1 ? ' tarefa' : ' tarefas'
-        ),
-        ce('button', {
-          className: 'crm-chat-btn',
-          onClick: () => onChat && onChat(`Status de ${cl.client_name}`)
-        }, 'Falar sobre ', ce('span', {className: 'crm-arrow'}, '→'))
-      )
-    );
-  };
-
-  const renderCards = () => {
-    if (loading) return ce('div', {className: 'crm-grid'},
-      [0,1,2].map(i => ce('div', {key: i, className: 'crm-skel-card'},
-        ce('div', {className: 'crm-card-top', style: {marginBottom: '14px'}},
-          ce('div', {className: 'tv-skel', style: {width: '42px', height: '42px', borderRadius: '12px', flexShrink: 0}}),
-          ce('div', {style: {flex: 1}},
-            ce('div', {className: 'tv-skel', style: {width: '60%', height: '14px', marginBottom: '6px'}}),
-            ce('div', {className: 'tv-skel', style: {width: '40%', height: '10px'}})
-          )
-        ),
-        ce('div', {className: 'tv-skel', style: {width: '90%', marginBottom: '8px'}}),
-        ce('div', {className: 'tv-skel', style: {width: '75%'}})
-      ))
-    );
-    return ce('div', {className: 'crm-grid'}, clients.map(renderCard));
-  };
-
-  return ce('div', {className: 'crm-view'},
-    modal,
-    ce('div', {className: 'crm-header'},
-      ce('div', null,
-        ce('h2', {className: 'crm-title'}, 'Clientes'),
-        ce('span', {className: 'crm-sub'}, loading ? 'carregando...' : `${clients.length} ativos`)
-      ),
-      ce('button', {className: 'crm-add-btn', onClick: () => setShowModal(true)},
-        ce('span', {className: 'crm-add-icon'}, '+'), ' Novo Cliente'
-      )
-    ),
-    renderCards()
-  );
-}
 function TasksView() {
   const ce = React.createElement;
   const [tasks, setTasks] = React.useState([]);
