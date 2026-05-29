@@ -1131,6 +1131,17 @@
   .ag-briefing-refresh:hover { color: var(--text); background: rgba(255,255,255,0.08); }
   .ag-briefing-skel { display: flex; flex-direction: column; gap: 8px; padding: 2px 0 6px; }
   .ag-briefing-skel-line { height: 13px; border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: agShim 1.5s ease-in-out calc(var(--si,0)*0.15s) infinite; }
+  .ag-brief-rows { display: flex; flex-direction: column; animation: agFadeIn 0.3s both; }
+  .ag-brief-row { display: flex; gap: 10px; padding: 8px 0; border-top: 0.5px solid rgba(255,255,255,0.05); }
+  .ag-brief-row:first-child { border-top: none; padding-top: 0; }
+  .ag-brief-icon { font-size: 15px; flex-shrink: 0; line-height: 1.5; margin-top: 1px; }
+  .ag-brief-body { flex: 1; min-width: 0; }
+  .ag-brief-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+  .ag-brief-lbl--ev { color: rgba(124,106,247,0.7); }
+  .ag-brief-lbl--tk { color: rgba(52,211,153,0.7); }
+  .ag-brief-lbl--fo { color: rgba(251,191,36,0.7); }
+  .ag-brief-txt { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.82); }
+  .ag-brief-txt--fo { color: rgba(251,191,36,0.88); font-weight: 500; }
 
   /* FAB */
   .ag-fab { position: fixed; bottom: 32px; right: 32px; z-index: 50; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(124,106,247,0.42); transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; }
@@ -3154,15 +3165,18 @@ function AgendaView({onChat}={}) {
 
   /* briefing fetch */
   const fetchBriefing=()=>{
+    const ds=fmtDate(curDate);
+    const todayEvs=events.filter(ev=>evDate(ev)===ds);
+    const evsStr=todayEvs.length>0?todayEvs.map(ev=>`${evStart(ev)} ${ev.title||''}`.trim()).join(', '):'Nenhum';
     setBriefLoad(true); setBriefText(''); setBriefDisp(''); setBriefOpen(true);
     fetch('/api/chat',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:'me dá um briefing do dia de hoje em 3 partes: 1) eventos de hoje, 2) tarefas pendentes mais urgentes, 3) qual cliente precisa de atenção agora. Seja direto, sem markdown, máximo 4 linhas.'})
+      body:JSON.stringify({message:`Responda EXATAMENTE neste formato, sem varia\u00e7\u00f5es:\nEVENTOS: [lista eventos de hoje com hor\u00e1rio, ou 'Nenhum']\nTAREFAS: [m\u00e1x 3 tarefas mais urgentes separadas por \u00b7 ]\nFOCO: [1 cliente ou projeto que precisa de aten\u00e7\u00e3o agora, em 1 frase]\n\nContexto: eventos de hoje s\u00e3o: ${evsStr}`})
     }).then(r=>r.json()).then(d=>{
       const txt=d.response||d.message||'';
       setBriefText(txt); setBriefLoad(false);
       const n=new Date(); setBriefUpdatedAt(padTime(n.getHours(),n.getMinutes()));
-    }).catch(()=>{setBriefText('Não foi possível carregar o briefing.');setBriefLoad(false);});
+    }).catch(()=>{setBriefText('N\u00e3o foi poss\u00edvel carregar o briefing.');setBriefLoad(false);});
   };
   React.useEffect(()=>{ if(view==='dia') fetchBriefing(); },[view]);
   React.useEffect(()=>{
@@ -3337,10 +3351,14 @@ function AgendaView({onChat}={}) {
     );
   };
 
-  /* ── Briefing card ─────────────────────────────────────────────── */
+  /* ── Briefing card ────────────────────────────────────────────── */
   const renderBriefing=()=>{
-    const preview=(briefDisp||briefText).replace(/\n/g,' ').slice(0,52);
-    const hasMore=briefDisp.length>0&&briefDisp.length<briefText.length;
+    const pev=briefText.match(/EVENTOS:\s*(.+?)(?=\nTAREFAS:|\nFOCO:|$)/s);
+    const ptk=briefText.match(/TAREFAS:\s*(.+?)(?=\nEVENTOS:|\nFOCO:|$)/s);
+    const pfo=briefText.match(/FOCO:\s*(.+?)(?=\nEVENTOS:|\nTAREFAS:|$)/s);
+    const isStr=!!(pev&&ptk&&pfo);
+    const preview=pev?pev[1].trim().slice(0,52):(briefDisp||briefText).replace(/\n/g,' ').slice(0,52);
+    const hasMore=!isStr&&briefDisp.length>0&&briefDisp.length<briefText.length;
     return ce('div',{className:'ag-briefing ag-briefing--'+(briefOpen?'open':'closed')},
       ce('div',{
         className:'ag-briefing-hd',
@@ -3360,13 +3378,37 @@ function AgendaView({onChat}={}) {
       ce('div',{className:'ag-briefing-body'},
         briefLoad
           ?ce('div',{className:'ag-briefing-skel'},...[0,1,2].map(i=>ce('div',{key:i,className:'ag-briefing-skel-line',style:{width:i===2?'60%':'100%','--si':i}})))
-          :ce('div',{className:'ag-briefing-text'},briefDisp||' ')
+          :isStr
+            ?ce('div',{className:'ag-brief-rows'},
+                ce('div',{className:'ag-brief-row'},
+                  ce('i',{className:'ti ti-calendar ag-brief-icon',style:{color:'rgba(124,106,247,0.8)'}}),
+                  ce('div',{className:'ag-brief-body'},
+                    ce('div',{className:'ag-brief-lbl ag-brief-lbl--ev'},'Eventos'),
+                    ce('div',{className:'ag-brief-txt'},pev[1].trim())
+                  )
+                ),
+                ce('div',{className:'ag-brief-row'},
+                  ce('i',{className:'ti ti-circle-check ag-brief-icon',style:{color:'rgba(52,211,153,0.8)'}}),
+                  ce('div',{className:'ag-brief-body'},
+                    ce('div',{className:'ag-brief-lbl ag-brief-lbl--tk'},'Tarefas'),
+                    ce('div',{className:'ag-brief-txt'},ptk[1].trim())
+                  )
+                ),
+                ce('div',{className:'ag-brief-row'},
+                  ce('i',{className:'ti ti-target ag-brief-icon',style:{color:'rgba(251,191,36,0.8)'}}),
+                  ce('div',{className:'ag-brief-body'},
+                    ce('div',{className:'ag-brief-lbl ag-brief-lbl--fo'},'Foco'),
+                    ce('div',{className:'ag-brief-txt ag-brief-txt--fo'},pfo[1].trim())
+                  )
+                )
+              )
+            :ce('div',{className:'ag-briefing-text'},briefDisp||' ')
       ),
       ce('div',{className:'ag-briefing-footer'},
-        ce('button',{className:'ag-briefing-chat-btn',onClick:e=>{e.stopPropagation();onChat&&onChat('me conta mais sobre o meu dia');}},'→ Abrir chat'),
+        ce('button',{className:'ag-briefing-chat-btn',onClick:e=>{e.stopPropagation();onChat&&onChat('me conta mais sobre o meu dia');}},'\u2192 Abrir chat'),
         ce('div',{className:'ag-briefing-foot-r'},
           briefUpdatedAt&&ce('span',{className:'ag-briefing-updated'},briefUpdatedAt),
-          ce('button',{className:'ag-briefing-refresh',onClick:e=>{e.stopPropagation();fetchBriefing();},title:'Atualizar'},'↻')
+          ce('button',{className:'ag-briefing-refresh',onClick:e=>{e.stopPropagation();fetchBriefing();},title:'Atualizar'},'\u21bb')
         )
       )
     );
