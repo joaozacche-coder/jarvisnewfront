@@ -1106,6 +1106,22 @@
   .ag-empty-btn { background: none; border: 1px solid rgba(83,74,183,0.3); border-radius: 10px; color: var(--accent); cursor: pointer; font-size: 12px; padding: 7px 18px; font-family: inherit; transition: background 0.15s, transform 0.15s; margin-top: 4px; }
   .ag-empty-btn:hover { background: rgba(83,74,183,0.15); transform: translateY(-1px); }
 
+  /* Briefing */
+  @keyframes agTypeIn { from{opacity:0} to{opacity:1} }
+  .ag-briefing { border: 0.5px solid rgba(83,74,183,0.22); border-left: 3px solid #534AB7; border-radius: 12px; background: rgba(83,74,183,0.07); padding: 14px 16px; margin: 0 0 16px; flex-shrink: 0; cursor: pointer; transition: background 0.2s, border-color 0.2s; animation: agFadeUp 0.35s 0.1s both; }
+  .ag-briefing:hover { background: rgba(83,74,183,0.13); border-color: rgba(83,74,183,0.38); }
+  .ag-briefing-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .ag-briefing-left { display: flex; align-items: center; gap: 8px; }
+  .ag-briefing-orb { width: 6px; height: 6px; border-radius: 50%; background: #7C6AF7; flex-shrink: 0; box-shadow: 0 0 6px rgba(124,106,247,0.7); animation: agPulse 2.4s ease-in-out infinite; }
+  .ag-briefing-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(124,106,247,0.85); }
+  .ag-briefing-right { display: flex; align-items: center; gap: 8px; }
+  .ag-briefing-time { font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+  .ag-briefing-refresh { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 6px; font-family: inherit; transition: color 0.15s, background 0.15s; line-height: 1; }
+  .ag-briefing-refresh:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+  .ag-briefing-text { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.82); white-space: pre-wrap; animation: agFadeIn 0.3s both; }
+  .ag-briefing-skel { display: flex; flex-direction: column; gap: 8px; }
+  .ag-briefing-skel-line { height: 13px; border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: agShim 1.5s ease-in-out calc(var(--si,0)*0.15s) infinite; }
+
   /* FAB */
   .ag-fab { position: fixed; bottom: 32px; right: 32px; z-index: 50; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(124,106,247,0.42); transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; }
   .ag-fab:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(124,106,247,0.58); }
@@ -3045,7 +3061,7 @@ function FinanceView() {
   );
 }
 
-function AgendaView() {
+function AgendaView({onChat}={}) {
   const ce = React.createElement;
 
   const HOUR_START = 6, HOUR_END = 23, ROW_H = 60;
@@ -3099,6 +3115,9 @@ function AgendaView() {
   const [newIds,  setNewIds]    = React.useState(new Set());
   const [dying,   setDying]     = React.useState(new Set());
   const [nowStr,  setNowStr]    = React.useState(padTime(now0.getHours(),now0.getMinutes()));
+  const [briefText, setBriefText] = React.useState('');
+  const [briefDisp, setBriefDisp] = React.useState('');
+  const [briefLoad, setBriefLoad] = React.useState(false);
   const gridRef  = React.useRef(null);
   const swipeRef = React.useRef({x:0,y:0,active:false});
 
@@ -3120,6 +3139,22 @@ function AgendaView() {
       if(p) gridRef.current.scrollTop = Math.max(0,(p.total-HOUR_START)*ROW_H-140);
     }
   }, [view, loading]);
+
+  /* briefing fetch */
+  const fetchBriefing=()=>{
+    setBriefLoad(true); setBriefText(''); setBriefDisp('');
+    fetch('https://jarvisia-production.up.railway.app/chat',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:'me dá um briefing rápido do dia de hoje: tarefas pendentes, eventos de hoje e contexto dos clientes ativos. Responda em no máximo 3 linhas diretas, sem markdown.',user_id:'JoaoZacche'})
+    }).then(r=>r.json()).then(d=>{setBriefText(d.response||d.message||'');setBriefLoad(false);}).catch(()=>{setBriefText('Não foi possível carregar o briefing.');setBriefLoad(false);});
+  };
+  React.useEffect(()=>{ if(view==='dia') fetchBriefing(); },[view]);
+  React.useEffect(()=>{
+    if(!briefText) return;
+    setBriefDisp(''); let i=0;
+    const id=setInterval(()=>{ i++; setBriefDisp(briefText.slice(0,i)); if(i>=briefText.length) clearInterval(id); },18);
+    return ()=>clearInterval(id);
+  },[briefText]);
 
   /* derived now position */
   const nowTop = React.useMemo(()=>{
@@ -3286,6 +3321,35 @@ function AgendaView() {
     );
   };
 
+  /* ── Briefing card ─────────────────────────────────────────────── */
+  const renderBriefing=()=>{
+    const t=new Date(); const hh=String(t.getHours()).padStart(2,'0'), mm=String(t.getMinutes()).padStart(2,'0');
+    return ce('div',{
+      className:'ag-briefing',
+      onClick:()=>onChat&&onChat('me conta mais sobre meu dia'),
+    },
+      ce('div',{className:'ag-briefing-hd'},
+        ce('div',{className:'ag-briefing-left'},
+          ce('div',{className:'ag-briefing-orb'}),
+          ce('span',{className:'ag-briefing-label'},'Jarvis · hoje')
+        ),
+        ce('div',{className:'ag-briefing-right'},
+          !briefLoad&&ce('span',{className:'ag-briefing-time'},`${hh}:${mm}`),
+          ce('button',{
+            className:'ag-briefing-refresh',
+            onClick:e=>{e.stopPropagation();fetchBriefing();},
+            title:'Atualizar briefing'
+          },'↻')
+        )
+      ),
+      briefLoad
+        ? ce('div',{className:'ag-briefing-skel'},
+            ...[0,1,2].map(i=>ce('div',{key:i,className:'ag-briefing-skel-line',style:{width:i===2?'60%':'100%','--si':i}}))
+          )
+        : ce('div',{className:'ag-briefing-text'},briefDisp||' ')
+    );
+  };
+
   /* ── Day view ───────────────────────────────────────────────── */
   const renderDay=()=>{
     const NHOURS=HOUR_END-HOUR_START+1, totalH=NHOURS*ROW_H;
@@ -3297,6 +3361,7 @@ function AgendaView() {
       ref:gridRef,
       style:{display:'flex',flexDirection:'column'},
     },
+      renderBriefing(),
       !hasDayEvs && nowTop===null && ce('div',{className:'ag-empty'},
         ce('i',{className:'ti ti-calendar-off ag-empty-icon'}),
         ce('p',{className:'ag-empty-label'},'Nenhum evento'),
@@ -3873,7 +3938,7 @@ function App() {
     onSelect: setActive,
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
-  }), active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, null) : /*#__PURE__*/React.createElement("main", {
+  }), active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
