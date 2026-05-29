@@ -753,11 +753,14 @@
   /* ─── Finance View ─── */
   @keyframes finFadeUp    { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes finSlideIn   { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
-  @keyframes finBarGrow   { from { height:4px; } to { height:var(--fh,4px); } }
+  @keyframes finBarGrow   { from { height:8px; } to { height:var(--fh,8px); } }
   @keyframes finNewItem   { from { opacity:0; transform:translateY(-10px) scaleY(0.85); transform-origin:top; } to { opacity:1; transform:translateY(0) scaleY(1); } }
   @keyframes finPulse     { 0%,100% { opacity:0.14; transform:scale(1); } 50% { opacity:0.22; transform:scale(1.08); } }
   @keyframes finConfetti  { 0% { transform:translate(0,0) rotate(0deg); opacity:1; } 100% { transform:translate(var(--cx,0px),var(--cy,-40px)) rotate(540deg); opacity:0; } }
   @keyframes finSkelShim  { from { background-position:-200% 0; } to { background-position:200% 0; } }
+  @keyframes finFlashPos  { 0%,100% { box-shadow:none; } 40% { box-shadow:0 0 0 3px rgba(29,158,117,0.45); background:rgba(29,158,117,0.08); } }
+  @keyframes finFlashNeg  { 0%,100% { box-shadow:none; } 40% { box-shadow:0 0 0 3px rgba(248,113,113,0.45); background:rgba(248,113,113,0.08); } }
+  @keyframes finFadeOut   { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(24px); } }
 
   .fin-view {
     position: relative; z-index: 3; height: 100vh;
@@ -782,13 +785,14 @@
   /* cards */
   .fin-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; flex-shrink: 0; }
   .fin-card {
-    padding: 14px 16px; border-radius: 14px;
+    padding: 12px 16px; border-radius: 14px;
     background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 5px;
-    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s, background 0.2s;
+    display: flex; flex-direction: column; gap: 4px;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.18s;
     animation: finFadeUp 0.4s calc(var(--ci,0)*80ms) both; cursor: default;
+    overflow: hidden;
   }
-  .fin-card:hover { transform: translateY(-4px); }
+  .fin-card:hover { transform: translateY(-3px); }
   .fin-card--income  { border-top: 2px solid #1D9E75; }
   .fin-card--income:hover  { box-shadow: 0 10px 28px rgba(29,158,117,0.16); background: rgba(29,158,117,0.04); }
   .fin-card--expense { border-top: 2px solid #f87171; }
@@ -799,7 +803,7 @@
   .fin-card--income  .fin-card-label { color: rgba(29,158,117,0.7); }
   .fin-card--expense .fin-card-label { color: rgba(248,113,113,0.7); }
   .fin-card--balance .fin-card-label { color: rgba(124,106,247,0.7); }
-  .fin-card-num { font-size: 26px; font-weight: 300; letter-spacing: -0.04em; line-height: 1.05; }
+  .fin-card-num { font-size: 24px; font-weight: 300; letter-spacing: -0.04em; line-height: 1.1; }
   .fin-card--income  .fin-card-num { color: #1D9E75; }
   .fin-card--expense .fin-card-num { color: #f87171; }
   .fin-card--balance .fin-card-num { color: var(--accent); }
@@ -815,7 +819,7 @@
   .fin-bar-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
   .fin-bar {
     width: 13px; border-radius: 4px 4px 0 0;
-    height: var(--fh, 4px); min-height: 4px;
+    height: var(--fh, 8px); min-height: 8px;
     animation: finBarGrow 0.6s ease-out calc(var(--bi,0) * 0.06s) both;
     cursor: pointer; transition: filter 0.15s;
   }
@@ -837,7 +841,7 @@
   .fin-group-hd { display: flex; align-items: center; gap: 10px; padding: 14px 0 8px; }
   .fin-group-hd:first-child { padding-top: 0; }
   .fin-group-lbl { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); flex-shrink: 0; }
-  .fin-group-line { flex: 1; height: 1px; background: var(--border); }
+  .fin-group-line { flex: 1; height: 1px; background: rgba(255,255,255,0.12); }
   .fin-tx-item {
     display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 10px;
     transition: background 0.12s, transform 0.15s;
@@ -865,6 +869,22 @@
 
   /* skeleton */
   .fin-skel { border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: finSkelShim 1.4s ease-in-out infinite; }
+
+  .fin-card--flash-pos { animation: finFlashPos 0.55s ease-out; }
+  .fin-card--flash-neg { animation: finFlashNeg 0.55s ease-out; }
+  .fin-tx-item--dying { animation: finFadeOut 0.3s ease-out both; pointer-events:none; }
+  .fin-tx-delete { opacity:0; background:none; border:none; cursor:pointer; color:rgba(248,113,113,0.5); font-size:14px; padding:4px 6px; border-radius:6px; transition:opacity 0.15s, color 0.15s, background 0.12s; flex-shrink:0; }
+  .fin-tx-item:hover .fin-tx-delete { opacity:1; }
+  .fin-tx-delete:hover { color:#f87171; background:rgba(248,113,113,0.1); }
+  .fin-tx-confirm { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+  .fin-tx-confirm-lbl { font-size:11px; color:var(--text-3); white-space:nowrap; }
+  .fin-tx-confirm-yes { padding:3px 8px; border-radius:5px; background:rgba(248,113,113,0.14); border:1px solid rgba(248,113,113,0.3); color:#f87171; font-size:11px; cursor:pointer; font-family:inherit; transition:all 0.12s; }
+  .fin-tx-confirm-yes:hover { background:rgba(248,113,113,0.24); }
+  .fin-tx-confirm-no  { padding:3px 8px; border-radius:5px; background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--text-3); font-size:11px; cursor:pointer; font-family:inherit; transition:all 0.12s; }
+  .fin-tx-confirm-no:hover { background:rgba(255,255,255,0.07); }
+  .fin-total-row { display:flex; justify-content:space-between; padding:12px 10px 4px; border-top:1px solid rgba(255,255,255,0.12); margin-top:4px; font-size:11px; color:var(--text-3); font-family:'Geist Mono',monospace; }
+  .fin-total-income { color:rgba(29,158,117,0.7); }
+  .fin-total-expense { color:rgba(248,113,113,0.7); }
 
   /* FAB */
   .fin-fab {
@@ -922,6 +942,7 @@
     .fin-view { padding: 24px 16px 120px calc(var(--sb-w) + 16px); gap: 16px; }
     .fin-header { flex-direction: column; gap: 12px; }
     .fin-cards { grid-template-columns: repeat(2,1fr); }
+    .fin-card--balance { grid-column: 1 / -1; }
     .fin-chart-wrap { overflow-x: hidden; }
     .fin-chart { overflow-x: auto; }
     .fin-fab { bottom: 24px; right: 20px; }
@@ -2380,17 +2401,19 @@ function CountUp({end, duration, locale}) {
 
 function FinanceView() {
   const ce = React.createElement;
-  const [txns, setTxns]         = React.useState([]);
-  const [loading, setLoading]   = React.useState(true);
-  const [period, setPeriod]     = React.useState('month');
+  const [txns, setTxns]           = React.useState([]);
+  const [loading, setLoading]     = React.useState(true);
+  const [period, setPeriod]       = React.useState('month');
   const [showModal, setShowModal] = React.useState(false);
   const [modalType, setModalType] = React.useState('despesa');
   const [modalAmount, setModalAmount] = React.useState('');
-  const [modalCat, setModalCat] = React.useState('Outros');
+  const [modalCat, setModalCat]   = React.useState('Outros');
   const [modalDesc, setModalDesc] = React.useState('');
-  const [saving, setSaving]     = React.useState(false);
-  const [newIds, setNewIds]     = React.useState(new Set());
-  const [confetti, setConfetti] = React.useState([]);
+  const [newIds, setNewIds]       = React.useState(new Set());
+  const [dyingIds, setDyingIds]   = React.useState(new Set());
+  const [deleteId, setDeleteId]   = React.useState(null);
+  const [balFlash, setBalFlash]   = React.useState(null);
+  const [confetti, setConfetti]   = React.useState([]);
 
   React.useEffect(() => {
     fetch('/api/transactions')
@@ -2432,15 +2455,16 @@ function FinanceView() {
       expense: mt.filter(t => t.content && t.content.transaction_type==='despesa').reduce((s,t)=>s+parseFloat(t.content.amount||0),0),
     };
   });
-  const maxVal = Math.max(4, ...chartData.flatMap(m => [m.income, m.expense]));
-  const BAR_MAX = 84;
+  const maxVal = Math.max(8, ...chartData.flatMap(m => [m.income, m.expense]));
+  const BAR_MAX = 80;
 
   const fmtCur   = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const fmtShort = n => 'R$'+Math.round(n).toLocaleString('pt-BR');
+  const fmtShort = n => 'R$ '+Math.round(n).toLocaleString('pt-BR');
   const fmtDate  = iso => {
     if (!iso) return '';
     return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
   };
+  const fmtAmt   = (isIncome, n) => (isIncome ? '+' : '−') + 'R$ ' + fmtCur(n);
 
   const todayD     = new Date(); todayD.setHours(0,0,0,0);
   const yesterdayD = new Date(todayD); yesterdayD.setDate(yesterdayD.getDate()-1);
@@ -2461,8 +2485,26 @@ function FinanceView() {
   });
   const GROUP_ORDER = ['Hoje','Ontem','Esta semana','Mais antigas'];
 
-  const CAT_ICONS  = {'Alimentação':'\u{1F37D}','Transporte':'\u{1F697}','Marketing':'\u{1F4E3}','Trabalho':'\u{1F4BC}','Moradia':'\u{1F3E0}','Saúde':'\u{1F48A}','Lazer':'\u{1F3AE}','Outros':'\u{1F4CC}'};
-  const CAT_COLORS = {'Alimentação':'rgba(251,146,60,0.18)','Transporte':'rgba(96,165,250,0.18)','Marketing':'rgba(167,139,250,0.18)','Trabalho':'rgba(52,211,153,0.18)','Moradia':'rgba(249,115,22,0.18)','Saúde':'rgba(244,63,94,0.18)','Lazer':'rgba(6,182,212,0.18)','Outros':'rgba(148,163,184,0.1)'};
+  const CAT_ICONS  = {
+    'Alimentação':'🍽️',
+    'Transporte':'🚗',
+    'Marketing':'📢',
+    'Trabalho':'💼',
+    'Moradia':'🏠',
+    'Saúde':'💊',
+    'Lazer':'🎮',
+    'Outros':'📌',
+  };
+  const CAT_COLORS = {
+    'Alimentação':'rgba(251,146,60,0.2)',
+    'Transporte':'rgba(96,165,250,0.2)',
+    'Marketing':'rgba(167,139,250,0.2)',
+    'Trabalho':'rgba(52,211,153,0.2)',
+    'Moradia':'rgba(251,191,36,0.2)',
+    'Saúde':'rgba(244,63,94,0.2)',
+    'Lazer':'rgba(124,106,247,0.2)',
+    'Outros':'rgba(148,163,184,0.12)',
+  };
   const CATS = Object.keys(CAT_ICONS);
 
   const fireConfetti = () => {
@@ -2471,8 +2513,7 @@ function FinanceView() {
       id: Date.now()+i, color,
       cx: (Math.random()*70-35)+'px',
       cy: -(Math.random()*55+25)+'px',
-      x: Math.round(window.innerWidth/2),
-      y: 180,
+      x: Math.round(window.innerWidth/2), y: 180,
     }));
     setConfetti(prev => [...prev, ...dots]);
     setTimeout(() => {
@@ -2482,37 +2523,57 @@ function FinanceView() {
   };
 
   const submitTx = () => {
-    if (!modalAmount || parseFloat(modalAmount) <= 0) return;
-    setSaving(true);
+    const amt = parseFloat(modalAmount);
+    if (!modalAmount || amt <= 0) return;
+    const isInc = modalType === 'receita';
+    const tempId = '_tmp_' + Date.now();
+    const optimistic = {
+      id: tempId,
+      title: modalDesc.trim() || (isInc ? 'Receita' : 'Despesa'),
+      date: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      content: { amount: amt, transaction_type: modalType, category: modalCat },
+    };
+    setTxns(prev => [optimistic, ...prev]);
+    setNewIds(prev => { const s = new Set(prev); s.add(tempId); return s; });
+    setShowModal(false);
+    setModalAmount(''); setModalDesc(''); setModalCat('Outros'); setModalType('despesa');
+    setBalFlash(isInc ? 'pos' : 'neg');
+    setTimeout(() => setBalFlash(null), 600);
+    setTimeout(() => setNewIds(prev => { const s = new Set(prev); s.delete(tempId); return s; }), 700);
+    fireConfetti();
     fetch('/api/transactions', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        title: modalDesc.trim() || (modalType==='receita'?'Receita':'Despesa'),
-        amount: parseFloat(modalAmount),
-        transaction_type: modalType,
-        category: modalCat,
-      }),
+      body: JSON.stringify({ title: optimistic.title, amount: amt, transaction_type: modalType, category: modalCat }),
     })
-    .then(res => res.ok ? res.json() : null)
-    .then(newTx => {
-      if (!newTx) return;
-      const nid = newTx.id || ('_'+Date.now());
-      const withId = {...newTx, id: nid};
-      setTxns(prev => [withId, ...prev]);
-      setNewIds(prev => { const s = new Set(prev); s.add(nid); return s; });
-      setTimeout(() => setNewIds(prev => { const s = new Set(prev); s.delete(nid); return s; }), 700);
-      setShowModal(false);
-      setModalAmount(''); setModalDesc(''); setModalCat('Outros'); setModalType('despesa');
-      fireConfetti();
+    .then(r => r.ok ? r.json() : null)
+    .then(real => {
+      if (!real) return;
+      setTxns(prev => prev.map(t => t.id === tempId ? {...real, id: real.id || tempId} : t));
     })
-    .finally(() => setSaving(false));
+    .catch(() => {
+      setTxns(prev => prev.filter(t => t.id !== tempId));
+    });
   };
 
+  const deleteTx = id => {
+    setDyingIds(prev => { const s = new Set(prev); s.add(id); return s; });
+    setDeleteId(null);
+    setTimeout(() => {
+      setTxns(prev => prev.filter(t => t.id !== id));
+      setDyingIds(prev => { const s = new Set(prev); s.delete(id); return s; });
+    }, 320);
+    if (!id.startsWith('_tmp_')) {
+      fetch('/api/transactions/' + id, { method:'DELETE' }).catch(() => {});
+    }
+  };
+
+  /* ── Skeleton ── */
   const skelCards = ce('div', {className:'fin-cards'},
     [0,1,2].map(i => ce('div', {key:i, className:'fin-card', style:{borderTop:'2px solid rgba(255,255,255,0.05)',animation:'none'}},
-      ce('div', {className:'fin-skel', style:{width:'48px',height:'9px'}}),
-      ce('div', {className:'fin-skel', style:{width:'68%',height:'22px',marginTop:'5px'}}),
-      ce('div', {className:'fin-skel', style:{width:'46%',height:'8px',marginTop:'3px'}})
+      ce('div', {className:'fin-skel', style:{width:'48px',height:'8px'}}),
+      ce('div', {className:'fin-skel', style:{width:'68%',height:'20px',marginTop:'5px'}}),
+      ce('div', {className:'fin-skel', style:{width:'46%',height:'7px',marginTop:'3px'}})
     ))
   );
   const skelList = ce('div', {className:'fin-list', style:{marginTop:'4px'}},
@@ -2526,30 +2587,32 @@ function FinanceView() {
     ))
   );
 
+  /* ── Cards ── */
   const cards = ce('div', {className:'fin-cards'},
     ce('div', {className:'fin-card fin-card--income', style:{'--ci':0}},
       ce('div', {className:'fin-card-label'}, '↑  RECEITAS'),
-      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(income), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(income), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, periodLabel)
     ),
     ce('div', {className:'fin-card fin-card--expense', style:{'--ci':1}},
       ce('div', {className:'fin-card-label'}, '↓  DESPESAS'),
-      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(expense), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(expense), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, periodLabel)
     ),
-    ce('div', {className:'fin-card fin-card--balance', style:{'--ci':2}},
+    ce('div', {className:'fin-card fin-card--balance' + (balFlash ? ' fin-card--flash-'+balFlash : ''), style:{'--ci':2}},
       ce('div', {className:'fin-card-label'}, balance >= 0 ? '≡  SALDO' : '↘  SALDO'),
-      ce('div', {className:'fin-card-num'}, balance >= 0 ? '+R$ ' : '-R$ ', ce(CountUp, {end:Math.round(Math.abs(balance)), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, balance >= 0 ? '+R$ ' : '−R$ ', ce(CountUp, {end:Math.round(Math.abs(balance)), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, 'líquido')
     )
   );
 
+  /* ── Chart ── */
   const chart = ce('div', {className:'fin-chart-wrap'},
     ce('div', {className:'fin-chart-title'}, 'Histórico — últimos 6 meses'),
     ce('div', {className:'fin-chart'},
       chartData.map((m,i) => {
-        const incH = Math.max(4, Math.round((m.income / maxVal) * BAR_MAX));
-        const expH = Math.max(4, Math.round((m.expense / maxVal) * BAR_MAX));
+        const incH = Math.max(8, Math.round((m.income / maxVal) * BAR_MAX));
+        const expH = Math.max(8, Math.round((m.expense / maxVal) * BAR_MAX));
         return ce('div', {key:i, className:'fin-month'},
           ce('div', {className:'fin-bars'},
             ce('div', {className:'fin-bar-wrap'},
@@ -2567,12 +2630,13 @@ function FinanceView() {
     )
   );
 
+  /* ── List ── */
   var txIdx = 0;
   const list = filtered.length === 0
     ? ce('div', {className:'fin-empty'},
-        ce('div', {className:'fin-empty-icon'}, '\u{1F4B8}'),
-        ce('p',   {className:'fin-empty-title'}, 'Nenhuma transação em ' + (period==='week'?'esta semana':period==='year'?'este ano':curMonthName)),
-        ce('p',   {className:'fin-empty-sub'},   'Registre receitas e despesas para ver seu saldo'),
+        ce('div', {className:'fin-empty-icon'}, '💸'),
+        ce('p', {className:'fin-empty-title'}, 'Nenhuma transação em ' + (period==='week'?'esta semana':period==='year'?'este ano':curMonthName)),
+        ce('p', {className:'fin-empty-sub'},   'Registre receitas e despesas para ver seu saldo'),
         ce('button', {className:'fin-empty-btn', onClick:()=>setShowModal(true)}, 'Registrar primeira →')
       )
     : ce('div', {className:'fin-list'},
@@ -2582,13 +2646,15 @@ function FinanceView() {
             const isIncome = t.content && t.content.transaction_type === 'receita';
             const cat = (t.content && t.content.category) || 'Outros';
             const amt = parseFloat((t.content && t.content.amount) || 0);
-            const isNew = newIds.has(t.id);
+            const isNew  = newIds.has(t.id);
+            const isDying = dyingIds.has(t.id);
+            const isConfirming = deleteId === t.id;
             return ce('div', {
               key: t.id || i,
-              className: 'fin-tx-item' + (isNew ? ' fin-tx-item--new' : ''),
+              className: 'fin-tx-item'+(isNew?' fin-tx-item--new':'')+(isDying?' fin-tx-item--dying':''),
               style: {'--i': i},
             },
-              ce('div', {className:'fin-tx-icon', style:{background: CAT_COLORS[cat] || 'rgba(148,163,184,0.1)'}}, CAT_ICONS[cat] || '\u{1F4CC}'),
+              ce('div', {className:'fin-tx-icon', style:{background: CAT_COLORS[cat] || 'rgba(148,163,184,0.12)'}}, CAT_ICONS[cat] || '📌'),
               ce('div', {className:'fin-tx-info'},
                 ce('div', {className:'fin-tx-title'}, t.title || '—'),
                 ce('div', {className:'fin-tx-meta'},
@@ -2597,20 +2663,40 @@ function FinanceView() {
                 )
               ),
               ce('div', {className:'fin-tx-amount fin-tx-amount--'+(isIncome?'income':'expense')},
-                (isIncome?'+':'-')+'R$ '+fmtCur(amt)
-              )
+                fmtAmt(isIncome, amt)
+              ),
+              isConfirming
+                ? ce('div', {className:'fin-tx-confirm'},
+                    ce('span', {className:'fin-tx-confirm-lbl'}, 'Deletar?'),
+                    ce('button', {className:'fin-tx-confirm-yes', onClick:()=>deleteTx(t.id)}, 'sim'),
+                    ce('button', {className:'fin-tx-confirm-no',  onClick:()=>setDeleteId(null)}, 'não')
+                  )
+                : ce('button', {
+                    className:'fin-tx-delete',
+                    onClick: e => { e.stopPropagation(); setDeleteId(t.id); },
+                    title: 'Deletar',
+                  }, '🗑')
             );
           });
           return [
             ce('div', {key:'hd-'+g, className:'fin-group-hd'},
               ce('span', {className:'fin-group-lbl'}, g),
-              ce('div',  {className:'fin-group-line'})
+              ce('div', {className:'fin-group-line'})
             ),
             ...items,
           ];
-        })
+        }),
+        ce('div', {className:'fin-total-row'},
+          ce('span', null,
+            ce('span', {className:'fin-total-income'}, '↑ R$ '+fmtCur(income)),
+            '  ·  ',
+            ce('span', {className:'fin-total-expense'}, '↓ R$ '+fmtCur(expense))
+          ),
+          ce('span', null, 'total do período')
+        )
       );
 
+  /* ── Modal ── */
   const modal = showModal ? ce('div', {
     className:'fin-modal-overlay',
     onClick: e => { if(e.target===e.currentTarget) setShowModal(false); },
@@ -2642,7 +2728,7 @@ function FinanceView() {
           className:'fin-modal-cat'+(modalCat===c?' fin-modal-cat--sel':''),
           onClick:()=>setModalCat(c),
         },
-          ce('span', {className:'fin-modal-cat-icon'}, CAT_ICONS[c] || '\u{1F4CC}'),
+          ce('span', {className:'fin-modal-cat-icon'}, CAT_ICONS[c] || '📌'),
           c
         ))
       ),
@@ -2657,8 +2743,8 @@ function FinanceView() {
         ce('button', {
           className:'fin-modal-confirm fin-modal-confirm--'+modalType,
           onClick:submitTx,
-          disabled: saving || !modalAmount || parseFloat(modalAmount) <= 0,
-        }, saving ? 'Salvando…' : (modalType==='receita' ? 'Registrar receita' : 'Registrar despesa'))
+          disabled: !modalAmount || parseFloat(modalAmount) <= 0,
+        }, modalType==='receita' ? 'Registrar receita' : 'Registrar despesa')
       )
     )
   ) : null;
