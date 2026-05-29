@@ -753,7 +753,7 @@
   /* ─── Finance View ─── */
   @keyframes finFadeUp    { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes finSlideIn   { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
-  @keyframes finBarGrow   { from { height:12px; } to { height:var(--fh,12px); } }
+  @keyframes finBarGrow   { from { height:6px; } to { height:var(--fh,6px); } }
   @keyframes finNewItem   { from { opacity:0; transform:translateY(-10px) scaleY(0.85); transform-origin:top; } to { opacity:1; transform:translateY(0) scaleY(1); } }
   @keyframes finPulse     { 0%,100% { opacity:0.14; transform:scale(1); } 50% { opacity:0.22; transform:scale(1.08); } }
   @keyframes finConfetti  { 0% { transform:translate(0,0) rotate(0deg); opacity:1; } 100% { transform:translate(var(--cx,0px),var(--cy,-40px)) rotate(540deg); opacity:0; } }
@@ -782,9 +782,9 @@
 
   .fin-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; flex-shrink: 0; }
   .fin-card {
-    padding: 10px 16px; border-radius: 14px; max-height: 72px;
+    padding: 10px 16px 8px; border-radius: 14px; max-height: 72px;
     background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 4px;
+    display: flex; flex-direction: column; gap: 2px;
     transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.18s;
     animation: finFadeUp 0.4s calc(var(--ci,0)*80ms) both; cursor: default;
     overflow: hidden;
@@ -815,11 +815,11 @@
   .fin-bar-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
   .fin-bar {
     width: 13px; border-radius: 4px 4px 0 0;
-    height: 12px; min-height: 12px;
+    height: 6px; min-height: 6px;
     cursor: pointer; transition: filter 0.15s;
   }
   .fin-chart--visible .fin-bar {
-    height: var(--fh, 12px);
+    height: var(--fh, 6px);
     animation: finBarGrow 0.5s ease-out calc(var(--bi,0) * 0.06s) both;
   }
   .fin-bar:hover { filter: brightness(1.25); }
@@ -2463,34 +2463,24 @@ function FinanceView() {
   const sliderLeft  = 'calc(3px + ' + periodIdx + ' * (100% - 6px) / 3)';
   const sliderWidth = 'calc((100% - 6px) / 3)';
 
-  const CAT_ICONS = {
-    'Alimentação':'🍽️',
-    'Transporte':'🚗',
-    'Marketing':'📢',
-    'Trabalho':'💼',
-    'Moradia':'🏠',
-    'Saúde':'💊',
-    'Lazer':'🎮',
-    'Outros':'📌',
+  const _normKey = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const CAT_MAP = {
+    'alimentacao':    {icon:'🍽️', bg:'#92400e', label:'Alimentação'},
+    'transporte':     {icon:'🚗', bg:'#1e3a5f', label:'Transporte'},
+    'marketing':      {icon:'📢', bg:'#3b1f6e', label:'Marketing'},
+    'trabalho':       {icon:'💼', bg:'#14532d', label:'Trabalho'},
+    'freelance':      {icon:'💼', bg:'#14532d', label:'Trabalho'},
+    'salario':        {icon:'💼', bg:'#14532d', label:'Trabalho'},
+    'moradia':        {icon:'🏠', bg:'#78350f', label:'Moradia'},
+    'aluguel':        {icon:'🏠', bg:'#78350f', label:'Moradia'},
+    'saude':          {icon:'💊', bg:'#831843', label:'Saúde'},
+    'lazer':          {icon:'🎮', bg:'#1e1b4b', label:'Lazer'},
+    'entretenimento': {icon:'🎮', bg:'#1e1b4b', label:'Lazer'},
   };
-  const CAT_COLORS = {
-    'Alimentação':'rgba(251,146,60,0.2)',
-    'Transporte':'rgba(96,165,250,0.2)',
-    'Marketing':'rgba(167,139,250,0.2)',
-    'Trabalho':'rgba(52,211,153,0.2)',
-    'Moradia':'rgba(251,191,36,0.2)',
-    'Saúde':'rgba(244,63,94,0.2)',
-    'Lazer':'rgba(124,106,247,0.2)',
-    'Outros':'rgba(148,163,184,0.12)',
-  };
-  const CATS = Object.keys(CAT_ICONS);
-
-  const normCat = raw => {
-    if (!raw) return 'Outros';
-    const n = raw.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-    const found = CATS.find(k => k.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '') === n);
-    return found || 'Outros';
-  };
+  const _CAT_DEF = {icon:'💳', bg:'#1f2937', label:'Outros'};
+  const getCat = raw => CAT_MAP[_normKey(raw)] || _CAT_DEF;
+  const CATS = ['Alimentação','Transporte','Marketing','Trabalho','Moradia','Saúde','Lazer','Outros'];
+  const CAT_ICONS = {'Alimentação':'🍽️','Transporte':'🚗','Marketing':'📢','Trabalho':'💼','Moradia':'🏠','Saúde':'💊','Lazer':'🎮','Outros':'💳'};
 
   const changePeriod = p => {
     if (p === period) return;
@@ -2576,7 +2566,7 @@ function FinanceView() {
   };
 
   const openEdit = t => {
-    const cat = normCat((t.content && t.content.category) || 'Outros');
+    const cat = getCat((t.content && t.content.category) || '').label;
     setEditId(t.id);
     setModalType((t.content && t.content.transaction_type) || 'despesa');
     setModalAmount(String(parseFloat((t.content && t.content.amount) || 0)));
@@ -2690,8 +2680,8 @@ function FinanceView() {
       ref: chartRef,
     },
       chartData.map((m,i) => {
-        const incH = Math.max(12, Math.round((m.income / maxVal) * BAR_MAX));
-        const expH = Math.max(12, Math.round((m.expense / maxVal) * BAR_MAX));
+        const incH = Math.max(6, Math.round((m.income / maxVal) * BAR_MAX));
+        const expH = Math.max(6, Math.round((m.expense / maxVal) * BAR_MAX));
         return ce('div', {key:i, className:'fin-month'},
           ce('div', {className:'fin-bars'},
             ce('div', {className:'fin-bar-wrap'},
@@ -2724,7 +2714,7 @@ function FinanceView() {
             if (!paginated.includes(t)) return null;
             const i = txIdx++;
             const isIncome = t.content && t.content.transaction_type === 'receita';
-            const cat = normCat((t.content && t.content.category) || 'Outros');
+            const catInfo = getCat((t.content && t.content.category) || '');
             const amt = parseFloat((t.content && t.content.amount) || 0);
             const displayTitle = (t.content && t.content.description) || t.title || '—';
             const isNew  = newIds.has(t.id);
@@ -2735,11 +2725,11 @@ function FinanceView() {
               className: 'fin-tx-item'+(isNew?' fin-tx-item--new':'')+(isDying?' fin-tx-item--dying':''),
               style: {'--i': i},
             },
-              ce('div', {className:'fin-tx-icon', style:{background: CAT_COLORS[cat] || 'rgba(148,163,184,0.12)'}}, CAT_ICONS[cat] || '📌'),
+              ce('div', {className:'fin-tx-icon', style:{background: catInfo.bg}}, catInfo.icon),
               ce('div', {className:'fin-tx-info'},
                 ce('div', {className:'fin-tx-title'}, displayTitle),
                 ce('div', {className:'fin-tx-meta'},
-                  ce('span', {className:'fin-cat-pill'}, cat),
+                  ce('span', {className:'fin-cat-pill'}, catInfo.label),
                   ce('span', {className:'fin-tx-date'}, fmtDate(t.date || t.created_at))
                 )
               ),
