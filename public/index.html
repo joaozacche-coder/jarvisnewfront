@@ -1016,7 +1016,7 @@
   .ag-hour-label { width: 48px; flex-shrink: 0; font-size: 9px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: right; padding-right: 10px; padding-top: 4px; user-select: none; letter-spacing: 0.04em; }
   .ag-hour-line { flex: 1; padding-top: 14px; }
   .ag-hour-line-inner { height: 1px; background: rgba(255,255,255,0.1); }
-  .ag-hour-half-line { height: 1px; background: rgba(255,255,255,0.05); margin-top: calc(68px / 2 - 2px); margin-left: 0; }
+  .ag-hour-half-line { height: 1px; background: rgba(255,255,255,0.05); margin-top: calc(60px / 2 - 2px); margin-left: 0; }
   .ag-week-half-line { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255,255,255,0.045); pointer-events: none; }
 
   /* Now indicator */
@@ -1055,8 +1055,9 @@
   .ag-week-hd-cell--today .ag-week-hd-num { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
   .ag-week-hd-cell--today .ag-week-hd-name { color: var(--accent); }
   .ag-week-grid { position: relative; }
-  .ag-week-slot { flex: 1; height: 100%; cursor: pointer; position: relative; transition: background 0.1s; border-left: 1px solid rgba(255,255,255,0.04); }
-  .ag-week-slot:hover { background: rgba(255,255,255,0.03); }
+  .ag-week-slot { flex: 1; height: 100%; cursor: pointer; position: relative; transition: background 0.1s; border-left: 0.5px solid rgba(255,255,255,0.05); }
+  .ag-week-slot:hover { background: rgba(83,74,183,0.08); }
+  .ag-week-slot:hover::after { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 16px; color: rgba(83,74,183,0.7); pointer-events: none; font-weight: 300; }
   .ag-week-slot-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.09); }
   .ag-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent; }
 
@@ -1066,13 +1067,14 @@
 
   /* ── Month view ── */
   .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
-  .ag-month-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; padding: 0 2px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
-  .ag-month-hd { text-align: center; font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); padding: 4px 0; }
-  .ag-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; padding: 4px 2px; flex-shrink: 0; }
+  .ag-month-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0 0 0; border-bottom: 0.5px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+  .ag-month-hd { text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 8px 0; }
+  .ag-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0; flex-shrink: 0; }
   .ag-month-grid.ag-slide-l { animation: agSlideL 0.22s both; }
   .ag-month-grid.ag-slide-r { animation: agSlideR 0.22s both; }
-  .ag-month-cell { min-height: 80px; border-radius: 8px; padding: 8px 6px 6px; cursor: pointer; transition: background 0.15s, border-color 0.15s, box-shadow 0.15s; border: 0.5px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; animation: agCellIn 0.25s calc(var(--ci,0)*10ms) both; }
-  .ag-month-cell:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); border-radius: 8px; }
+  .ag-month-cell { min-height: 80px; border-radius: 0; padding: 8px 6px 6px; cursor: pointer; transition: background 0.15s; border-right: 0.5px solid rgba(255,255,255,0.06); border-bottom: 0.5px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; animation: agCellIn 0.22s calc(var(--ci,0)*8ms) both; }
+  .ag-month-cell:hover { background: rgba(255,255,255,0.04); }
+  .ag-month-cell:hover .ag-month-num:not(.ag-month-num--today) { background: rgba(255,255,255,0.08); border-radius: 50%; }
   .ag-month-cell--other { opacity: 0.25; pointer-events: none; }
   .ag-month-cell--today .ag-month-num { background: #534AB7; color: #fff !important; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; box-shadow: 0 0 0 3px rgba(83,74,183,0.28); }
   .ag-month-cell--sel { background: rgba(83,74,183,0.1); border-color: rgba(83,74,183,0.35); box-shadow: 0 2px 12px rgba(83,74,183,0.15); }
@@ -3047,7 +3049,7 @@ function FinanceView() {
 function AgendaView() {
   const ce = React.createElement;
 
-  const HOUR_START = 6, HOUR_END = 23, ROW_H = 68;
+  const HOUR_START = 6, HOUR_END = 23, ROW_H = 60;
   const COLORS = ['#534AB7','#3b82f6','#10b981','#f87171','#f59e0b','#e879f9'];
   const COLOR_LABELS = ['Roxo','Azul','Verde','Vermelho','Amber','Rosa'];
   const DAY_SHORT  = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
@@ -3098,7 +3100,8 @@ function AgendaView() {
   const [newIds,  setNewIds]    = React.useState(new Set());
   const [dying,   setDying]     = React.useState(new Set());
   const [nowStr,  setNowStr]    = React.useState(padTime(now0.getHours(),now0.getMinutes()));
-  const gridRef = React.useRef(null);
+  const gridRef  = React.useRef(null);
+  const swipeRef = React.useRef({x:0,y:0,active:false});
 
   /* load events */
   React.useEffect(() => {
@@ -3372,7 +3375,24 @@ function AgendaView() {
   );
 
   /* ── Main render ────────────────────────────────────────────── */
-  return ce('div',{className:'ag-view'},
+  const _swipeStart=e=>{
+    const t=e.touches?e.touches[0]:e;
+    if(e.target&&e.target.closest('button,input,textarea')) return;
+    swipeRef.current={x:t.clientX,y:t.clientY,active:true};
+  };
+  const _swipeEnd=e=>{
+    if(!swipeRef.current.active) return;
+    const t=e.changedTouches?e.changedTouches[0]:e;
+    const dx=t.clientX-swipeRef.current.x, dy=t.clientY-swipeRef.current.y;
+    swipeRef.current.active=false;
+    if(Math.abs(dx)<50||Math.abs(dy)>Math.abs(dx)*0.9) return;
+    if(dx<0) goNext(); else goBack();
+  };
+  return ce('div',{className:'ag-view',
+    onTouchStart:_swipeStart, onTouchEnd:_swipeEnd,
+    onMouseDown:_swipeStart, onMouseUp:_swipeEnd,
+    onMouseLeave:()=>{swipeRef.current.active=false;},
+  },
     renderModal(),
     ce('div',{className:'ag-header'},
       ce('div',{className:'ag-header-left'},
