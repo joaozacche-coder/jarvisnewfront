@@ -966,11 +966,11 @@
   @keyframes agFadeOut  { from{opacity:1;transform:scale(1)} to{opacity:0;transform:scale(0.96)} }
   @keyframes agShim     { 0%,100%{opacity:0.4} 50%{opacity:1} }
   @keyframes agPulse    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
-  @keyframes agSlideL   { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes agSlideR   { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes agSlideL   { from{opacity:0.1;transform:translateX(22%)} to{opacity:1;transform:translateX(0)} }
+  @keyframes agSlideR   { from{opacity:0.1;transform:translateX(-22%)} to{opacity:1;transform:translateX(0)} }
   @keyframes agSlideDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes agNowIn    { from{opacity:0} to{opacity:1} }
-  @keyframes agCellIn   { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+  @keyframes agCellIn   { from{opacity:0} to{opacity:1} }
   @keyframes agFadeIn   { from{opacity:0} to{opacity:1} }
 
   .ag-view {
@@ -1056,7 +1056,7 @@
   .ag-week-hd-cell--today .ag-week-hd-name { color: var(--accent); }
   .ag-week-grid { position: relative; }
   .ag-week-slot { flex: 1; height: 100%; cursor: pointer; position: relative; transition: background 0.1s; border-left: 0.5px solid rgba(255,255,255,0.05); }
-  .ag-week-slot:hover { background: rgba(83,74,183,0.08); }
+  .ag-week-slot:hover { background: rgba(83,74,183,0.06); }
   .ag-week-slot:hover::after { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 16px; color: rgba(83,74,183,0.7); pointer-events: none; font-weight: 300; }
   .ag-week-slot-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.09); }
   .ag-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent; }
@@ -1066,18 +1066,17 @@
   .ag-event--day { left: 56px; right: 12px; }
 
   /* ── Month view ── */
-  .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
+  .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
   .ag-month-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0 0 0; border-bottom: 0.5px solid rgba(255,255,255,0.1); flex-shrink: 0; }
   .ag-month-hd { text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 8px 0; }
   .ag-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0; flex-shrink: 0; }
   .ag-month-grid.ag-slide-l { animation: agSlideL 0.22s both; }
   .ag-month-grid.ag-slide-r { animation: agSlideR 0.22s both; }
   .ag-month-cell { min-height: 80px; border-radius: 0; padding: 8px 6px 6px; cursor: pointer; transition: background 0.15s; border-right: 0.5px solid rgba(255,255,255,0.06); border-bottom: 0.5px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; animation: agCellIn 0.22s calc(var(--ci,0)*8ms) both; }
-  .ag-month-cell:hover { background: rgba(255,255,255,0.04); }
-  .ag-month-cell:hover .ag-month-num:not(.ag-month-num--today) { background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .ag-month-cell--other { opacity: 0.25; pointer-events: none; }
+  .ag-month-cell:hover { background: rgba(255,255,255,0.04); border-radius: 8px; transition: background 0.15s; }
+  .ag-month-cell--other { visibility: hidden; pointer-events: none; cursor: default; }
   .ag-month-cell--today .ag-month-num { background: #534AB7; color: #fff !important; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; box-shadow: 0 0 0 3px rgba(83,74,183,0.28); }
-  .ag-month-cell--sel { background: rgba(83,74,183,0.1); border-color: rgba(83,74,183,0.35); box-shadow: 0 2px 12px rgba(83,74,183,0.15); }
+  .ag-month-cell--sel { background: transparent; }
   .ag-month-num { font-size: 14px; font-weight: 300; color: var(--text-2); line-height: 1.1; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
   .ag-month-dots { display: flex; gap: 3px; align-items: center; flex-wrap: wrap; justify-content: center; }
   .ag-month-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
@@ -3202,7 +3201,7 @@ function AgendaView() {
     const dayEvs=d=>events.filter(e=>evDate(e)===fmtDate(d));
     const isToday=d=>fmtDate(d)===todayStr;
     const isCurMonth=d=>d.getMonth()===month;
-    const isSelDay=d=>selDay&&fmtDate(d)===fmtDate(selDay);
+
 
 
     return ce('div',{className:'ag-month-wrap'},
@@ -3210,13 +3209,14 @@ function AgendaView() {
       ce('div',{className:`ag-month-grid${slideDir==='l'?' ag-slide-l':slideDir==='r'?' ag-slide-r':''}`},
         ...cells.map((d,i)=>{
           const evs=dayEvs(d), dots=evs.slice(0,3), extra=evs.length-3;
+          const inMonth = isCurMonth(d);
           return ce('div',{key:i,
-            className:`ag-month-cell${!isCurMonth(d)?' ag-month-cell--other':''}${isToday(d)?' ag-month-cell--today':''}${isSelDay(d)?' ag-month-cell--sel':''}`,
-            style:{'--ci':i},
-            onClick:()=>{ const nd=new Date(d); setCurDate(nd); setSelDay(nd); switchView('dia'); },
+            className:`ag-month-cell${!inMonth?' ag-month-cell--other':''}${isToday(d)?' ag-month-cell--today':''}`,
+            style:{'--ci':inMonth?i:0},
+            onClick: inMonth ? ()=>{ const nd=new Date(d); setCurDate(nd); setSelDay(nd); switchView('dia'); } : undefined,
           },
-            ce('span',{className:'ag-month-num'},d.getDate()),
-            evs.length>0&&ce('div',{className:'ag-month-dots'},
+            inMonth && ce('span',{className:'ag-month-num'},d.getDate()),
+            inMonth && evs.length>0 && ce('div',{className:'ag-month-dots'},
               ...dots.map((ev,j)=>ce('span',{key:j,className:'ag-month-dot',style:{background:evColor(ev)}})),
               extra>0&&ce('span',{className:'ag-month-more'},`+${extra}`)
             )
