@@ -753,7 +753,7 @@
   /* ─── Finance View ─── */
   @keyframes finFadeUp    { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes finSlideIn   { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
-  @keyframes finBarGrow   { from { height:8px; } to { height:var(--fh,8px); } }
+  @keyframes finBarGrow   { from { height:12px; } to { height:var(--fh,12px); } }
   @keyframes finNewItem   { from { opacity:0; transform:translateY(-10px) scaleY(0.85); transform-origin:top; } to { opacity:1; transform:translateY(0) scaleY(1); } }
   @keyframes finPulse     { 0%,100% { opacity:0.14; transform:scale(1); } 50% { opacity:0.22; transform:scale(1.08); } }
   @keyframes finConfetti  { 0% { transform:translate(0,0) rotate(0deg); opacity:1; } 100% { transform:translate(var(--cx,0px),var(--cy,-40px)) rotate(540deg); opacity:0; } }
@@ -770,22 +770,19 @@
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent;
   }
 
-  /* header */
   .fin-header { display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0; }
   .fin-title { font-size: 28px; font-weight: 300; color: var(--text); letter-spacing: -0.04em; margin: 0; animation: finFadeUp 0.3s both; }
   .fin-sub { display: block; font-size: 11px; color: var(--text-3); margin-top: 4px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: capitalize; animation: finFadeUp 0.3s 0.05s both; }
 
-  /* period pills */
   .fin-period-pills { display: flex; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 3px; position: relative; animation: finFadeUp 0.3s 0.08s both; }
   .fin-period-slider { position: absolute; top: 3px; bottom: 3px; border-radius: 7px; background: rgba(124,106,247,0.16); border: 1px solid rgba(124,106,247,0.3); transition: left 0.28s cubic-bezier(0.34,1.56,0.64,1), width 0.28s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; }
   .fin-period-btn { padding: 6px 14px; border: none; background: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; border-radius: 7px; transition: color 0.18s; position: relative; z-index: 1; white-space: nowrap; }
   .fin-period-btn--active   { color: var(--accent); }
   .fin-period-btn--inactive { color: var(--text-3); }
 
-  /* cards */
   .fin-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; flex-shrink: 0; }
   .fin-card {
-    padding: 12px 16px; border-radius: 14px;
+    padding: 10px 16px; border-radius: 14px; max-height: 72px;
     background: rgba(255,255,255,0.03); border: 1px solid var(--border);
     display: flex; flex-direction: column; gap: 4px;
     transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.18s;
@@ -794,38 +791,40 @@
   }
   .fin-card:hover { transform: translateY(-3px); }
   .fin-card--income  { border-top: 2px solid #1D9E75; }
-  .fin-card--income:hover  { box-shadow: 0 10px 28px rgba(29,158,117,0.16); background: rgba(29,158,117,0.04); }
+  .fin-card--income:hover  { box-shadow: 0 8px 24px rgba(29,158,117,0.28); background: rgba(29,158,117,0.04); }
   .fin-card--expense { border-top: 2px solid #f87171; }
-  .fin-card--expense:hover { box-shadow: 0 10px 28px rgba(248,113,113,0.16); background: rgba(248,113,113,0.04); }
+  .fin-card--expense:hover { box-shadow: 0 8px 24px rgba(248,113,113,0.28); background: rgba(248,113,113,0.04); }
   .fin-card--balance { border-top: 2px solid var(--accent); }
-  .fin-card--balance:hover { box-shadow: 0 10px 28px rgba(124,106,247,0.16); background: rgba(124,106,247,0.04); }
+  .fin-card--balance:hover { box-shadow: 0 8px 24px rgba(124,106,247,0.28); background: rgba(124,106,247,0.04); }
   .fin-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
   .fin-card--income  .fin-card-label { color: rgba(29,158,117,0.7); }
   .fin-card--expense .fin-card-label { color: rgba(248,113,113,0.7); }
   .fin-card--balance .fin-card-label { color: rgba(124,106,247,0.7); }
-  .fin-card-num { font-size: 24px; font-weight: 300; letter-spacing: -0.04em; line-height: 1.1; }
+  .fin-card-num { font-size: 22px; font-weight: 300; letter-spacing: -0.04em; line-height: 1.1; }
   .fin-card--income  .fin-card-num { color: #1D9E75; }
   .fin-card--expense .fin-card-num { color: #f87171; }
   .fin-card--balance .fin-card-num { color: var(--accent); }
   .fin-card-sub { font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
 
-  /* chart */
   .fin-chart-wrap  { flex-shrink: 0; animation: finFadeUp 0.4s 0.3s both; }
   .fin-chart-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
-  .fin-chart  { display: flex; gap: 6px; align-items: flex-end; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .fin-chart  { display: flex; gap: 6px; align-items: flex-end; padding-bottom: 2px; scroll-snap-type: x mandatory; overflow-x: auto; scrollbar-width: none; }
   .fin-chart::-webkit-scrollbar { display: none; }
-  .fin-month  { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; min-width: 38px; }
+  .fin-month  { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; min-width: 38px; scroll-snap-align: start; }
   .fin-bars   { display: flex; gap: 3px; align-items: flex-end; height: 88px; }
   .fin-bar-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
   .fin-bar {
     width: 13px; border-radius: 4px 4px 0 0;
-    height: var(--fh, 8px); min-height: 8px;
-    animation: finBarGrow 0.6s ease-out calc(var(--bi,0) * 0.06s) both;
+    height: 12px; min-height: 12px;
     cursor: pointer; transition: filter 0.15s;
   }
+  .fin-chart--visible .fin-bar {
+    height: var(--fh, 12px);
+    animation: finBarGrow 0.5s ease-out calc(var(--bi,0) * 0.06s) both;
+  }
   .fin-bar:hover { filter: brightness(1.25); }
-  .fin-bar--income  { background: linear-gradient(to top, #0e7a54, #1D9E75); }
-  .fin-bar--expense { background: linear-gradient(to top, #991b1b, #f87171); }
+  .fin-bar--income  { background: linear-gradient(to top, #0a6644, #1D9E75); }
+  .fin-bar--expense { background: linear-gradient(to top, #7f1d1d, #f87171); }
   .fin-bar-tooltip {
     position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
     background: #0D1420; border: 1px solid rgba(255,255,255,0.12);
@@ -836,7 +835,8 @@
   .fin-bar-wrap:hover .fin-bar-tooltip { opacity: 1; }
   .fin-month-label { font-size: 9.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-transform: capitalize; }
 
-  /* list */
+  .fin-list-wrap { transition: opacity 0.15s ease; }
+  .fin-list-wrap--hidden { opacity: 0; pointer-events: none; }
   .fin-list { display: flex; flex-direction: column; animation: finFadeUp 0.4s 0.55s both; }
   .fin-group-hd { display: flex; align-items: center; gap: 10px; padding: 14px 0 8px; }
   .fin-group-hd:first-child { padding-top: 0; }
@@ -845,7 +845,7 @@
   .fin-tx-item {
     display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 10px;
     transition: background 0.12s, transform 0.15s;
-    animation: finSlideIn 0.28s calc(var(--i,0)*28ms) both; cursor: default;
+    animation: finSlideIn 0.28s calc(var(--i,0)*40ms) both; cursor: default;
   }
   .fin-tx-item--new { animation: finNewItem 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
   .fin-tx-item:hover { background: rgba(255,255,255,0.03); transform: translateX(4px); }
@@ -854,27 +854,18 @@
   .fin-tx-title { font-size: 13px; color: var(--text); letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .fin-tx-meta { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
   .fin-cat-pill { font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-3); }
-  .fin-tx-date  { font-size: 9.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
-  .fin-tx-amount { font-size: 13px; font-weight: 500; font-family: 'Geist Mono', monospace; flex-shrink: 0; }
+  .fin-tx-date  { font-size: 9.5px; color: var(--text-3); font-family: 'Geist Mono', monospace; opacity: 0; transition: opacity 0.15s; }
+  .fin-tx-item:hover .fin-tx-date { opacity: 1; }
+  .fin-tx-amount { font-size: 13px; font-weight: 500; flex-shrink: 0; }
   .fin-tx-amount--income  { color: #1D9E75; }
   .fin-tx-amount--expense { color: #f87171; }
 
-  /* empty */
-  .fin-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 64px 0; animation: finFadeUp 0.4s both; }
-  .fin-empty-icon { font-size: 34px; animation: finPulse 2.8s ease-in-out infinite; }
-  .fin-empty-title { font-size: 15px; color: var(--text-2); font-weight: 400; margin: 0; }
-  .fin-empty-sub   { font-size: 12px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: center; max-width: 260px; line-height: 1.6; margin: 0; }
-  .fin-empty-btn   { padding: 9px 20px; border-radius: 10px; background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.25); color: var(--accent); cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 500; transition: all 0.15s; }
-  .fin-empty-btn:hover { background: rgba(124,106,247,0.2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(124,106,247,0.2); }
-
-  /* skeleton */
-  .fin-skel { border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: finSkelShim 1.4s ease-in-out infinite; }
-
-  .fin-card--flash-pos { animation: finFlashPos 0.55s ease-out; }
-  .fin-card--flash-neg { animation: finFlashNeg 0.55s ease-out; }
-  .fin-tx-item--dying { animation: finFadeOut 0.3s ease-out both; pointer-events:none; }
-  .fin-tx-delete { opacity:0; background:none; border:none; cursor:pointer; color:rgba(248,113,113,0.5); font-size:14px; padding:4px 6px; border-radius:6px; transition:opacity 0.15s, color 0.15s, background 0.12s; flex-shrink:0; }
+  .fin-tx-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+  .fin-tx-edit   { opacity:0; background:none; border:none; cursor:pointer; color:rgba(124,106,247,0.5); font-size:15px; padding:4px 5px; border-radius:6px; transition:opacity 0.15s, color 0.15s, background 0.12s; line-height:1; }
+  .fin-tx-delete { opacity:0; background:none; border:none; cursor:pointer; color:rgba(248,113,113,0.5); font-size:15px; padding:4px 5px; border-radius:6px; transition:opacity 0.15s, color 0.15s, background 0.12s; line-height:1; }
+  .fin-tx-item:hover .fin-tx-edit   { opacity:1; }
   .fin-tx-item:hover .fin-tx-delete { opacity:1; }
+  .fin-tx-edit:hover   { color:var(--accent); background:rgba(124,106,247,0.1); }
   .fin-tx-delete:hover { color:#f87171; background:rgba(248,113,113,0.1); }
   .fin-tx-confirm { display:flex; align-items:center; gap:6px; flex-shrink:0; }
   .fin-tx-confirm-lbl { font-size:11px; color:var(--text-3); white-space:nowrap; }
@@ -886,10 +877,25 @@
   .fin-total-income { color:rgba(29,158,117,0.7); }
   .fin-total-expense { color:rgba(248,113,113,0.7); }
 
-  /* FAB */
+  .fin-ver-mais { display:flex; justify-content:center; padding:16px 0 4px; }
+  .fin-ver-mais-btn { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:8px 20px; font-size:12px; color:var(--text-3); cursor:pointer; font-family:inherit; transition:all 0.15s; }
+  .fin-ver-mais-btn:hover { background:rgba(255,255,255,0.07); color:var(--text-2); }
+
+  .fin-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 64px 0; animation: finFadeUp 0.4s both; }
+  .fin-empty-icon { font-size: 34px; animation: finPulse 2.8s ease-in-out infinite; }
+  .fin-empty-title { font-size: 15px; color: var(--text-2); font-weight: 400; margin: 0; }
+  .fin-empty-sub   { font-size: 12px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: center; max-width: 260px; line-height: 1.6; margin: 0; }
+  .fin-empty-btn   { padding: 9px 20px; border-radius: 10px; background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.25); color: var(--accent); cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 500; transition: all 0.15s; }
+  .fin-empty-btn:hover { background: rgba(124,106,247,0.2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(124,106,247,0.2); }
+
+  .fin-skel { border-radius: 6px; background: linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: finSkelShim 1.4s ease-in-out infinite; }
+  .fin-card--flash-pos { animation: finFlashPos 0.55s ease-out; }
+  .fin-card--flash-neg { animation: finFlashNeg 0.55s ease-out; }
+  .fin-tx-item--dying { animation: finFadeOut 0.3s ease-out both; pointer-events:none; }
+
   .fin-fab {
     position: fixed; bottom: 32px; right: 32px; z-index: 50;
-    width: 52px; height: 52px; border-radius: 50%;
+    width: 56px; height: 56px; border-radius: 50%;
     background: var(--accent); border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 8px 24px rgba(124,106,247,0.42);
@@ -899,10 +905,8 @@
   .fin-fab-plus { display: inline-block; font-size: 24px; color: #fff; line-height: 1; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); }
   .fin-fab:hover .fin-fab-plus { transform: rotate(45deg); }
 
-  /* confetti */
   .fin-confetti-dot { position: fixed; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; z-index: 999; animation: finConfetti 0.75s ease-out both; }
 
-  /* modal */
   .fin-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.74); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: finFadeUp 0.16s both; }
   .fin-modal { background: #0D1420; border: 1px solid rgba(255,255,255,0.1); border-radius: 22px; padding: 26px; width: 420px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; gap: 16px; box-shadow: 0 32px 80px rgba(0,0,0,0.75); animation: finNewItem 0.28s cubic-bezier(0.34,1.56,0.64,1); }
   .fin-modal-hd { display: flex; align-items: center; justify-content: space-between; }
@@ -921,7 +925,7 @@
   .fin-amount-input { font-size: 42px; font-weight: 300; letter-spacing: -0.04em; background: none; border: none; outline: none; color: var(--text); font-family: inherit; text-align: center; width: 170px; padding: 0; }
   .fin-amount-input::placeholder { color: rgba(255,255,255,0.1); }
   .fin-modal-cats { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
-  .fin-modal-cat { padding: 8px 4px; border-radius: 9px; font-size: 11px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.14s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .fin-modal-cat { padding: 8px 4px; border-radius: 9px; font-size: 11px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.14px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .fin-modal-cat:hover { border-color: rgba(255,255,255,0.1); color: var(--text-2); background: rgba(255,255,255,0.06); }
   .fin-modal-cat--sel { border-color: rgba(124,106,247,0.38); color: var(--accent); background: rgba(124,106,247,0.1); }
   .fin-modal-cat-icon { font-size: 17px; }
@@ -948,11 +952,14 @@
     .fin-fab { bottom: 24px; right: 20px; }
     .fin-modal-overlay { align-items: flex-end; }
     .fin-modal { width: 100%; max-width: 100%; border-radius: 22px 22px 0 0; padding: 22px 20px 36px; }
+    .fin-tx-date { opacity: 1; }
+    .fin-tx-edit, .fin-tx-delete { opacity: 1; }
   }
   @media (min-width: 768px) and (max-width: 1023px) {
     .fin-view { padding: 32px 32px 32px calc(var(--sb-w) + 28px); }
   }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </head>
 <body>
@@ -2401,19 +2408,24 @@ function CountUp({end, duration, locale}) {
 
 function FinanceView() {
   const ce = React.createElement;
-  const [txns, setTxns]           = React.useState([]);
-  const [loading, setLoading]     = React.useState(true);
-  const [period, setPeriod]       = React.useState('month');
-  const [showModal, setShowModal] = React.useState(false);
-  const [modalType, setModalType] = React.useState('despesa');
+  const [txns, setTxns]               = React.useState([]);
+  const [loading, setLoading]         = React.useState(true);
+  const [period, setPeriod]           = React.useState('month');
+  const [listVisible, setListVisible] = React.useState(true);
+  const [showModal, setShowModal]     = React.useState(false);
+  const [editId, setEditId]           = React.useState(null);
+  const [modalType, setModalType]     = React.useState('despesa');
   const [modalAmount, setModalAmount] = React.useState('');
-  const [modalCat, setModalCat]   = React.useState('Outros');
-  const [modalDesc, setModalDesc] = React.useState('');
-  const [newIds, setNewIds]       = React.useState(new Set());
-  const [dyingIds, setDyingIds]   = React.useState(new Set());
-  const [deleteId, setDeleteId]   = React.useState(null);
-  const [balFlash, setBalFlash]   = React.useState(null);
-  const [confetti, setConfetti]   = React.useState([]);
+  const [modalCat, setModalCat]       = React.useState('Outros');
+  const [modalDesc, setModalDesc]     = React.useState('');
+  const [newIds, setNewIds]           = React.useState(new Set());
+  const [dyingIds, setDyingIds]       = React.useState(new Set());
+  const [deleteId, setDeleteId]       = React.useState(null);
+  const [balFlash, setBalFlash]       = React.useState(null);
+  const [confetti, setConfetti]       = React.useState([]);
+  const [pageSize, setPageSize]       = React.useState(20);
+  const [chartVisible, setChartVisible] = React.useState(false);
+  const chartRef = React.useRef(null);
 
   React.useEffect(() => {
     fetch('/api/transactions')
@@ -2421,6 +2433,25 @@ function FinanceView() {
       .then(d => { setTxns(d.transactions || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      fetch('/api/transactions')
+        .then(r => r.json())
+        .then(d => { if (d.transactions) setTxns(d.transactions); })
+        .catch(() => {});
+    }, 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  React.useEffect(() => {
+    if (loading || !chartRef.current) return;
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { setChartVisible(true); obs.disconnect(); }
+    }, { threshold: 0.3 });
+    obs.observe(chartRef.current);
+    return () => obs.disconnect();
+  }, [loading]);
 
   const now = new Date();
   const MONTH_FULL  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -2431,6 +2462,42 @@ function FinanceView() {
   const periodIdx = PERIODS.findIndex(p => p.k === period);
   const sliderLeft  = 'calc(3px + ' + periodIdx + ' * (100% - 6px) / 3)';
   const sliderWidth = 'calc((100% - 6px) / 3)';
+
+  const CAT_ICONS = {
+    'Alimentação':'🍽️',
+    'Transporte':'🚗',
+    'Marketing':'📢',
+    'Trabalho':'💼',
+    'Moradia':'🏠',
+    'Saúde':'💊',
+    'Lazer':'🎮',
+    'Outros':'📌',
+  };
+  const CAT_COLORS = {
+    'Alimentação':'rgba(251,146,60,0.2)',
+    'Transporte':'rgba(96,165,250,0.2)',
+    'Marketing':'rgba(167,139,250,0.2)',
+    'Trabalho':'rgba(52,211,153,0.2)',
+    'Moradia':'rgba(251,191,36,0.2)',
+    'Saúde':'rgba(244,63,94,0.2)',
+    'Lazer':'rgba(124,106,247,0.2)',
+    'Outros':'rgba(148,163,184,0.12)',
+  };
+  const CATS = Object.keys(CAT_ICONS);
+
+  const normCat = raw => {
+    if (!raw) return 'Outros';
+    const n = raw.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const found = CATS.find(k => k.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '') === n);
+    return found || 'Outros';
+  };
+
+  const changePeriod = p => {
+    if (p === period) return;
+    setListVisible(false);
+    setPageSize(20);
+    setTimeout(() => { setPeriod(p); setListVisible(true); }, 150);
+  };
 
   const periodStart = () => {
     const d = new Date();
@@ -2459,12 +2526,12 @@ function FinanceView() {
   const BAR_MAX = 80;
 
   const fmtCur   = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const fmtShort = n => 'R$ '+Math.round(n).toLocaleString('pt-BR');
+  const fmtShort = n => 'R$ '+Math.round(n).toLocaleString('pt-BR');
   const fmtDate  = iso => {
     if (!iso) return '';
     return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
   };
-  const fmtAmt   = (isIncome, n) => (isIncome ? '+' : '−') + 'R$ ' + fmtCur(n);
+  const fmtAmt = (isIncome, n) => (isIncome ? '+' : '−') + 'R$ ' + fmtCur(n);
 
   const todayD     = new Date(); todayD.setHours(0,0,0,0);
   const yesterdayD = new Date(todayD); yesterdayD.setDate(yesterdayD.getDate()-1);
@@ -2485,27 +2552,8 @@ function FinanceView() {
   });
   const GROUP_ORDER = ['Hoje','Ontem','Esta semana','Mais antigas'];
 
-  const CAT_ICONS  = {
-    'Alimentação':'🍽️',
-    'Transporte':'🚗',
-    'Marketing':'📢',
-    'Trabalho':'💼',
-    'Moradia':'🏠',
-    'Saúde':'💊',
-    'Lazer':'🎮',
-    'Outros':'📌',
-  };
-  const CAT_COLORS = {
-    'Alimentação':'rgba(251,146,60,0.2)',
-    'Transporte':'rgba(96,165,250,0.2)',
-    'Marketing':'rgba(167,139,250,0.2)',
-    'Trabalho':'rgba(52,211,153,0.2)',
-    'Moradia':'rgba(251,191,36,0.2)',
-    'Saúde':'rgba(244,63,94,0.2)',
-    'Lazer':'rgba(124,106,247,0.2)',
-    'Outros':'rgba(148,163,184,0.12)',
-  };
-  const CATS = Object.keys(CAT_ICONS);
+  const allItems = GROUP_ORDER.filter(g => groups[g] && groups[g].length > 0).flatMap(g => groups[g]);
+  const paginated = allItems.slice(0, pageSize);
 
   const fireConfetti = () => {
     const cols = ['#7C6AF7','#1D9E75','#f87171'];
@@ -2522,10 +2570,41 @@ function FinanceView() {
     }, 900);
   };
 
+  const closeModal = () => {
+    setShowModal(false); setEditId(null);
+    setModalAmount(''); setModalDesc(''); setModalCat('Outros'); setModalType('despesa');
+  };
+
+  const openEdit = t => {
+    const cat = normCat((t.content && t.content.category) || 'Outros');
+    setEditId(t.id);
+    setModalType((t.content && t.content.transaction_type) || 'despesa');
+    setModalAmount(String(parseFloat((t.content && t.content.amount) || 0)));
+    setModalCat(cat);
+    setModalDesc((t.content && t.content.description) || t.title || '');
+    setShowModal(true);
+  };
+
   const submitTx = () => {
     const amt = parseFloat(modalAmount);
     if (!modalAmount || amt <= 0) return;
     const isInc = modalType === 'receita';
+    if (editId) {
+      const orig = txns.find(t => t.id === editId);
+      if (!orig) { closeModal(); return; }
+      const updated = {
+        ...orig,
+        title: modalDesc.trim() || orig.title || (isInc ? 'Receita' : 'Despesa'),
+        content: { amount: amt, transaction_type: modalType, category: modalCat },
+      };
+      setTxns(prev => prev.map(t => t.id === editId ? updated : t));
+      closeModal();
+      fetch('/api/transactions/' + editId, {
+        method: 'PATCH', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ title: updated.title, amount: amt, transaction_type: modalType, category: modalCat }),
+      }).catch(() => {});
+      return;
+    }
     const tempId = '_tmp_' + Date.now();
     const optimistic = {
       id: tempId,
@@ -2536,8 +2615,7 @@ function FinanceView() {
     };
     setTxns(prev => [optimistic, ...prev]);
     setNewIds(prev => { const s = new Set(prev); s.add(tempId); return s; });
-    setShowModal(false);
-    setModalAmount(''); setModalDesc(''); setModalCat('Outros'); setModalType('despesa');
+    closeModal();
     setBalFlash(isInc ? 'pos' : 'neg');
     setTimeout(() => setBalFlash(null), 600);
     setTimeout(() => setNewIds(prev => { const s = new Set(prev); s.delete(tempId); return s; }), 700);
@@ -2551,9 +2629,7 @@ function FinanceView() {
       if (!real) return;
       setTxns(prev => prev.map(t => t.id === tempId ? {...real, id: real.id || tempId} : t));
     })
-    .catch(() => {
-      setTxns(prev => prev.filter(t => t.id !== tempId));
-    });
+    .catch(() => { setTxns(prev => prev.filter(t => t.id !== tempId)); });
   };
 
   const deleteTx = id => {
@@ -2591,17 +2667,17 @@ function FinanceView() {
   const cards = ce('div', {className:'fin-cards'},
     ce('div', {className:'fin-card fin-card--income', style:{'--ci':0}},
       ce('div', {className:'fin-card-label'}, '↑  RECEITAS'),
-      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(income), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(income), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, periodLabel)
     ),
     ce('div', {className:'fin-card fin-card--expense', style:{'--ci':1}},
       ce('div', {className:'fin-card-label'}, '↓  DESPESAS'),
-      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(expense), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, 'R$ ', ce(CountUp, {end:Math.round(expense), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, periodLabel)
     ),
     ce('div', {className:'fin-card fin-card--balance' + (balFlash ? ' fin-card--flash-'+balFlash : ''), style:{'--ci':2}},
       ce('div', {className:'fin-card-label'}, balance >= 0 ? '≡  SALDO' : '↘  SALDO'),
-      ce('div', {className:'fin-card-num'}, balance >= 0 ? '+R$ ' : '−R$ ', ce(CountUp, {end:Math.round(Math.abs(balance)), duration:700, locale:'pt-BR'})),
+      ce('div', {className:'fin-card-num'}, balance >= 0 ? '+R$ ' : '−R$ ', ce(CountUp, {end:Math.round(Math.abs(balance)), duration:700, locale:'pt-BR'})),
       ce('div', {className:'fin-card-sub'}, 'líquido')
     )
   );
@@ -2609,10 +2685,13 @@ function FinanceView() {
   /* ── Chart ── */
   const chart = ce('div', {className:'fin-chart-wrap'},
     ce('div', {className:'fin-chart-title'}, 'Histórico — últimos 6 meses'),
-    ce('div', {className:'fin-chart'},
+    ce('div', {
+      className: 'fin-chart' + (chartVisible ? ' fin-chart--visible' : ''),
+      ref: chartRef,
+    },
       chartData.map((m,i) => {
-        const incH = Math.max(8, Math.round((m.income / maxVal) * BAR_MAX));
-        const expH = Math.max(8, Math.round((m.expense / maxVal) * BAR_MAX));
+        const incH = Math.max(12, Math.round((m.income / maxVal) * BAR_MAX));
+        const expH = Math.max(12, Math.round((m.expense / maxVal) * BAR_MAX));
         return ce('div', {key:i, className:'fin-month'},
           ce('div', {className:'fin-bars'},
             ce('div', {className:'fin-bar-wrap'},
@@ -2632,7 +2711,7 @@ function FinanceView() {
 
   /* ── List ── */
   var txIdx = 0;
-  const list = filtered.length === 0
+  const listBody = filtered.length === 0
     ? ce('div', {className:'fin-empty'},
         ce('div', {className:'fin-empty-icon'}, '💸'),
         ce('p', {className:'fin-empty-title'}, 'Nenhuma transação em ' + (period==='week'?'esta semana':period==='year'?'este ano':curMonthName)),
@@ -2642,10 +2721,12 @@ function FinanceView() {
     : ce('div', {className:'fin-list'},
         ...GROUP_ORDER.filter(g => groups[g] && groups[g].length > 0).flatMap(g => {
           const items = groups[g].map(t => {
+            if (!paginated.includes(t)) return null;
             const i = txIdx++;
             const isIncome = t.content && t.content.transaction_type === 'receita';
-            const cat = (t.content && t.content.category) || 'Outros';
+            const cat = normCat((t.content && t.content.category) || 'Outros');
             const amt = parseFloat((t.content && t.content.amount) || 0);
+            const displayTitle = (t.content && t.content.description) || t.title || '—';
             const isNew  = newIds.has(t.id);
             const isDying = dyingIds.has(t.id);
             const isConfirming = deleteId === t.id;
@@ -2656,7 +2737,7 @@ function FinanceView() {
             },
               ce('div', {className:'fin-tx-icon', style:{background: CAT_COLORS[cat] || 'rgba(148,163,184,0.12)'}}, CAT_ICONS[cat] || '📌'),
               ce('div', {className:'fin-tx-info'},
-                ce('div', {className:'fin-tx-title'}, t.title || '—'),
+                ce('div', {className:'fin-tx-title'}, displayTitle),
                 ce('div', {className:'fin-tx-meta'},
                   ce('span', {className:'fin-cat-pill'}, cat),
                   ce('span', {className:'fin-tx-date'}, fmtDate(t.date || t.created_at))
@@ -2671,13 +2752,13 @@ function FinanceView() {
                     ce('button', {className:'fin-tx-confirm-yes', onClick:()=>deleteTx(t.id)}, 'sim'),
                     ce('button', {className:'fin-tx-confirm-no',  onClick:()=>setDeleteId(null)}, 'não')
                   )
-                : ce('button', {
-                    className:'fin-tx-delete',
-                    onClick: e => { e.stopPropagation(); setDeleteId(t.id); },
-                    title: 'Deletar',
-                  }, '🗑')
+                : ce('div', {className:'fin-tx-actions'},
+                    ce('button', {className:'fin-tx-edit',   onClick: e => { e.stopPropagation(); openEdit(t); },       title:'Editar'},  ce('i', {className:'ti ti-pencil'})),
+                    ce('button', {className:'fin-tx-delete', onClick: e => { e.stopPropagation(); setDeleteId(t.id); }, title:'Deletar'}, ce('i', {className:'ti ti-trash'}))
+                  )
             );
-          });
+          }).filter(Boolean);
+          if (items.length === 0) return [];
           return [
             ce('div', {key:'hd-'+g, className:'fin-group-hd'},
               ce('span', {className:'fin-group-lbl'}, g),
@@ -2686,25 +2767,32 @@ function FinanceView() {
             ...items,
           ];
         }),
+        pageSize < allItems.length
+          ? ce('div', {className:'fin-ver-mais'},
+              ce('button', {className:'fin-ver-mais-btn', onClick:()=>setPageSize(prev => prev + 20)}, 'Ver mais')
+            )
+          : null,
         ce('div', {className:'fin-total-row'},
           ce('span', null,
-            ce('span', {className:'fin-total-income'}, '↑ R$ '+fmtCur(income)),
+            ce('span', {className:'fin-total-income'}, '↑ R$ '+fmtCur(income)),
             '  ·  ',
-            ce('span', {className:'fin-total-expense'}, '↓ R$ '+fmtCur(expense))
+            ce('span', {className:'fin-total-expense'}, '↓ R$ '+fmtCur(expense))
           ),
           ce('span', null, 'total do período')
         )
       );
 
+  const list = ce('div', {className:'fin-list-wrap' + (listVisible ? '' : ' fin-list-wrap--hidden')}, listBody);
+
   /* ── Modal ── */
   const modal = showModal ? ce('div', {
     className:'fin-modal-overlay',
-    onClick: e => { if(e.target===e.currentTarget) setShowModal(false); },
+    onClick: e => { if(e.target===e.currentTarget) closeModal(); },
   },
     ce('div', {className:'fin-modal'},
       ce('div', {className:'fin-modal-hd'},
-        ce('div', {className:'fin-modal-title'}, 'Nova Transação'),
-        ce('button', {className:'fin-modal-x', onClick:()=>setShowModal(false)}, '×')
+        ce('div', {className:'fin-modal-title'}, editId ? 'Editar Transação' : 'Nova Transação'),
+        ce('button', {className:'fin-modal-x', onClick: closeModal}, '×')
       ),
       ce('div', {className:'fin-toggle-wrap'},
         ce('div', {className:'fin-toggle-slider fin-toggle-slider--'+modalType}),
@@ -2718,7 +2806,7 @@ function FinanceView() {
             className:'fin-amount-input', type:'text', inputMode:'decimal', placeholder:'0,00',
             value:modalAmount, autoFocus:true,
             onChange: e => setModalAmount(e.target.value.replace(',','.')),
-            onKeyDown: e => { if(e.key==='Enter') submitTx(); if(e.key==='Escape') setShowModal(false); },
+            onKeyDown: e => { if(e.key==='Enter') submitTx(); if(e.key==='Escape') closeModal(); },
           })
         )
       ),
@@ -2736,15 +2824,15 @@ function FinanceView() {
         className:'fin-modal-desc', type:'text', placeholder:'Descrição (opcional)',
         value:modalDesc,
         onChange: e => setModalDesc(e.target.value),
-        onKeyDown: e => { if(e.key==='Enter') submitTx(); if(e.key==='Escape') setShowModal(false); },
+        onKeyDown: e => { if(e.key==='Enter') submitTx(); if(e.key==='Escape') closeModal(); },
       }),
       ce('div', {className:'fin-modal-actions'},
-        ce('button', {className:'fin-modal-cancel', onClick:()=>setShowModal(false)}, 'Cancelar'),
+        ce('button', {className:'fin-modal-cancel', onClick: closeModal}, 'Cancelar'),
         ce('button', {
           className:'fin-modal-confirm fin-modal-confirm--'+modalType,
-          onClick:submitTx,
+          onClick: submitTx,
           disabled: !modalAmount || parseFloat(modalAmount) <= 0,
-        }, modalType==='receita' ? 'Registrar receita' : 'Registrar despesa')
+        }, editId ? 'Salvar' : (modalType==='receita' ? 'Registrar receita' : 'Registrar despesa'))
       )
     )
   ) : null;
@@ -2765,13 +2853,13 @@ function FinanceView() {
         PERIODS.map(p => ce('button', {
           key:p.k,
           className:'fin-period-btn '+(period===p.k?'fin-period-btn--active':'fin-period-btn--inactive'),
-          onClick:()=>setPeriod(p.k),
+          onClick:()=>changePeriod(p.k),
         }, p.l))
       )
     ),
     loading ? skelCards : cards,
-    loading ? null    : chart,
-    loading ? skelList : list,
+    loading ? null      : chart,
+    loading ? skelList  : list,
     ce('button', {className:'fin-fab', onClick:()=>setShowModal(true)},
       ce('span', {className:'fin-fab-plus'}, '+')
     )
