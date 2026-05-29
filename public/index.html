@@ -990,6 +990,8 @@
   .ag-nav-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.28); color: var(--text); }
   .ag-nav-today { padding: 5px 14px; border-radius: 99px; background: rgba(83,74,183,0.18); border: 1px solid #534AB7; color: var(--accent); cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; transition: all 0.15s; }
   .ag-nav-today:hover { background: rgba(83,74,183,0.32); box-shadow: 0 4px 14px rgba(83,74,183,0.28); }
+  .ag-nav-back-week { padding: 5px 12px; border-radius: 8px; background: transparent; border: 0.5px solid rgba(255,255,255,0.15); color: var(--text-3); cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500; transition: all 0.15s; white-space: nowrap; }
+  .ag-nav-back-week:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.28); color: var(--text); }
 
   /* View pills toggle */
   .ag-view-pills { display: flex; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 3px; gap: 2px; }
@@ -1011,7 +1013,9 @@
   .ag-hour-row:hover .ag-week-slot { background: rgba(255,255,255,0.025); }
   .ag-hour-label { width: 48px; flex-shrink: 0; font-size: 9px; color: var(--text-3); font-family: 'Geist Mono', monospace; text-align: right; padding-right: 10px; padding-top: 4px; user-select: none; letter-spacing: 0.04em; }
   .ag-hour-line { flex: 1; padding-top: 14px; }
-  .ag-hour-line-inner { height: 1px; background: rgba(255,255,255,0.06); }
+  .ag-hour-line-inner { height: 1px; background: rgba(255,255,255,0.1); }
+  .ag-hour-half-line { height: 1px; background: rgba(255,255,255,0.05); margin-top: calc(68px / 2 - 2px); margin-left: 0; }
+  .ag-week-half-line { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255,255,255,0.045); pointer-events: none; }
 
   /* Now indicator */
   .ag-now-line { position: absolute; left: 42px; right: 0; z-index: 5; display: flex; align-items: center; pointer-events: none; animation: agNowIn 0.5s 0.3s both; }
@@ -1051,7 +1055,7 @@
   .ag-week-grid { position: relative; }
   .ag-week-slot { flex: 1; height: 100%; cursor: pointer; position: relative; transition: background 0.1s; border-left: 1px solid rgba(255,255,255,0.04); }
   .ag-week-slot:hover { background: rgba(255,255,255,0.03); }
-  .ag-week-slot-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.04); }
+  .ag-week-slot-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.09); }
   .ag-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.07) transparent; }
 
   /* ── Day view ── */
@@ -3233,7 +3237,7 @@ function AgendaView() {
           className:`ag-week-hd-cell${sameDay(d,new Date())?' ag-week-hd-cell--today':''}`,
           onClick:()=>{ setCurDate(d); switchView('dia'); },
         },
-          ce('span',{className:'ag-week-hd-name'},DAY_SHORT[d.getDay()]),
+          ce('span',{className:'ag-week-hd-name'},DAY_LONG[d.getDay()]),
           ce('span',{className:'ag-week-hd-num'},d.getDate())
         ))
       ),
@@ -3247,11 +3251,12 @@ function AgendaView() {
             return ce('div',{key:h,className:'ag-hour-row',style:{top:hi*ROW_H+'px',height:ROW_H+'px'}},
               ce('div',{className:'ag-hour-label'},`${h}h`),
               ...days.map((d,di)=>ce('div',{key:di,className:'ag-week-slot',onClick:()=>openCreate(fmtDate(d),h)},
-                ce('div',{className:'ag-week-slot-line'})
+                ce('div',{className:'ag-week-slot-line'}),
+                ce('div',{className:'ag-week-half-line'})
               ))
             );
           }),
-          nowTop!==null&&sameDay(new Date(),new Date())&&ce('div',{className:'ag-now-line',style:{top:nowTop+'px',left:'48px'}},
+          nowTop!==null&&days.some(d=>sameDay(d,new Date()))&&ce('div',{className:'ag-now-line',style:{top:nowTop+'px',left:'48px'}},
             ce('div',{className:'ag-now-dot'}), ce('div',{className:'ag-now-track'})
           ),
           ...events.filter(ev=>days.some(d=>fmtDate(d)===evDate(ev))).map((ev,idx)=>{
@@ -3295,7 +3300,7 @@ function AgendaView() {
           const h=HOUR_START+hi;
           return ce('div',{key:h,className:'ag-hour-row',style:{top:hi*ROW_H+'px',height:ROW_H+'px'},onClick:()=>openCreate(dayStr,h)},
             ce('div',{className:'ag-hour-label'},`${h}h`),
-            ce('div',{className:'ag-hour-line'},ce('div',{className:'ag-hour-line-inner'}))
+            ce('div',{className:'ag-hour-line'},ce('div',{className:'ag-hour-line-inner'}),ce('div',{className:'ag-hour-half-line'}))
           );
         }),
         isToday&&nowTop!==null&&ce('div',{className:'ag-now-line',style:{top:nowTop+'px'}},
@@ -3370,6 +3375,7 @@ function AgendaView() {
         ce('h2',{className:'ag-title'},headerTitle())
       ),
       ce('div',{className:'ag-header-right'},
+        view==='dia'&&ce('button',{className:'ag-nav-back-week',onClick:()=>switchView('semana')},'← Semana'),
         ce('div',{className:'ag-view-pills'},
           ...(['dia','semana','mes']).map(v=>ce('button',{key:v,
             className:`ag-view-pill${view===v?' ag-view-pill--active':''}`,
