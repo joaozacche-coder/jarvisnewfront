@@ -3143,9 +3143,9 @@ function AgendaView({onChat}={}) {
   /* briefing fetch */
   const fetchBriefing=()=>{
     setBriefLoad(true); setBriefText(''); setBriefDisp('');
-    fetch('https://jarvisia-production.up.railway.app/chat',{
+    fetch('/api/chat',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:'me dá um briefing rápido do dia de hoje: tarefas pendentes, eventos de hoje e contexto dos clientes ativos. Responda em no máximo 3 linhas diretas, sem markdown.',user_id:'JoaoZacche'})
+      body:JSON.stringify({message:'me dá um briefing rápido do dia de hoje: tarefas pendentes, eventos de hoje e contexto dos clientes ativos. Responda em no máximo 3 linhas diretas, sem markdown.'})
     }).then(r=>r.json()).then(d=>{setBriefText(d.response||d.message||'');setBriefLoad(false);}).catch(()=>{setBriefText('Não foi possível carregar o briefing.');setBriefLoad(false);});
   };
   React.useEffect(()=>{ if(view==='dia') fetchBriefing(); },[view]);
