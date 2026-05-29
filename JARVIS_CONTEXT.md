@@ -188,8 +188,8 @@ LIVEKIT_API_SECRET=...
 ### FASE 1 — Telas internas
 1. ~~**Tela de Tarefas**~~ ✅ — dados reais do Supabase, loading state, modal Nova Tarefa, toggle done/undone, stats ao vivo
 2. ~~**Tela de Clientes**~~ ✅ — 3 clientes fixos sempre visíveis, CountUp, avatar, ponto pulsante, divider animado, cursor piscando, estado vazio, modal Novo Cliente, busca de contexto robusta
-3. ~~**Tela de Finanças**~~ ✅ — transações reais, saldo, gráfico de barras, modal Nova Transação, animações fin-*
-4. **Tela de Agenda** — eventos do dia/semana
+3. ~~**Tela de Finanças**~~ ✅ — transações reais, saldo, gráfico IntersectionObserver, edit modal, paginação, normCat, auto-refresh 30s, Tabler icons
+4. ~~**Tela de Agenda**~~ ✅ — 3 views Dia/Semana/Mês, swipe/drag, slide animation, time grid ROW_H=60px, now-line, event cards, FAB+modal, briefing diário estruturado (EVENTOS/TAREFAS/FOCO com ícones)
 5. **Tela de Segundo Cérebro** — notas, aprendizados, áreas de vida
 
 ### FASE 2 — Chat inteligente com blocos
@@ -201,7 +201,7 @@ LIVEKIT_API_SECRET=...
 9. Conectar microfone do frontend ao agente LiveKit que já está rodando
 
 ### FASE 4 — Automação e proatividade
-10. Briefing diário automático toda manhã
+10. ~~Briefing diário automático toda manhã~~ ✅ — integrado na view Dia da Agenda
 11. Notificações push de lembretes
 
 ### FASE 5 — Escala
@@ -271,10 +271,45 @@ LIVEKIT_API_SECRET=...
 - Next.js route /api/context/route.ts criada (proxy para Railway /context)
 - Frontend: após fetch do /clients, enriquece via Promise.all cada cliente sem has_context via /api/context?name=X separado — garante que Gracie Barra e outros mostrem contexto mesmo que /clients não retorne has_context=true
 
-**Jarvis 9 (atual):**
+**Jarvis 9:**
 - Backend: endpoints GET /transactions e POST /transactions adicionados em api.py; TransactionBody Pydantic model; entries tipo "transaction" com content.amount, content.transaction_type (receita/despesa), content.category
 - Next.js route /api/transactions/route.ts criada (proxy para Railway /transactions)
 - Tela de Finanças (FinanceView) construída no index.html: header com saldo total CountUp pt-BR, 3 cards de resumo (receitas/despesas/saldo com animação staggered), gráfico de barras CSS-only últimos 6 meses (finBarGrow via --fh CSS var), lista de transações agrupada por data (Hoje/Ontem/Esta semana/Mais antigas), FAB fixo + modal Nova Transação com toggle receita/despesa e pills de categoria, estado vazio animado
 - CountUp atualizado com prop locale para pt-BR (toLocaleString)
 - is-finance adicionado ao App className; orb some quando finance ativa; FinanceView adicionado ao render chain do App
 - CSS prefixado com fin- (finFadeUp, finSlideIn, finBarGrow, finPop keyframes)
+
+**Jarvis 11 (atual):**
+- Tela de Agenda construída (AgendaView): time grid 6am-23h (ROW_H=64px), semana navegável com animação slide (agSlideL/agSlideR), indicador de hora atual pulsante (agPulse), event cards posicionados absolutamente por start_time/end_time com cor customizada via hexAlpha() → CSS custom props (--ev-bg/border/shadow)
+- FAB + modal criar/editar evento: título, data, horário início/fim, descrição, cliente, 6 cores
+- Optimistic UI com temp IDs + swap após resposta; dying animation ao deletar
+- is-agenda adicionado ao App className; orb/canvas dimmed quando agenda ativa; CSS prefixado ag-
+- Backend: EventBody Pydantic model, endpoints GET/POST/PATCH/DELETE /events em api.py
+- Next.js routes: /api/events/route.ts (GET+POST) e /api/events/[id]/route.ts (PATCH+DELETE)
+- Refinamentos finais da Tela de Finanças: getCat() substitui normCat(); período sem container; cards gap:2px; barras mín 6px
+
+**Jarvis 10:**
+- Refinamentos da Tela de Finanças: cards 10px padding + max-height 72px + font 22px; FAB 56px; barras do gráfico com gradiente mais escuro; remoção de monospace nos valores de transação; stagger de lista 40ms
+- Barras do gráfico crescem via IntersectionObserver (fin-chart--visible class → finBarGrow 0.5s ease-out)
+- Scroll-snap horizontal no gráfico para mobile
+- Edição de transação: ti-pencil aparece no hover → abre modal pré-preenchido; PATCH /transactions/:id no backend e Next.js route
+- Título da transação usa content.description se existir, senão title da entry
+- Paginação: 20 transações por página + botão "Ver mais" carrega próximas 20
+- normCat(): normaliza categoria com toLowerCase+normalize('NFD') para ignorar acentos
+- Auto-refresh silencioso a cada 30 segundos via setInterval
+- Troca de período com fade: setListVisible(false) → 150ms → setPeriod → setListVisible(true)
+- Date das transações oculto por padrão (desktop), aparece no hover; sempre visível no mobile
+- Ícones Tabler Icons webfont adicionados ao head (ti-trash, ti-pencil substituem emoji 🗑)
+- Endpoint PATCH /transactions/{tx_id} adicionado ao api.py
+
+**Jarvis 12 (2026-05-29):**
+- AgendaView completa: 3 views (Dia/Semana/Mês) com slide animado agSlideL/agSlideR (translateX 22%)
+- Navegação swipe/drag: swipeRef detecta toque ou mouse com threshold 50px + dominância horizontal (|dy|<|dx|*0.9)
+- View Mês: células fora do mês com visibility:hidden (mantém grid), borders right+bottom, hover com border-radius 8px, animação agCellIn (pure fade, delay 8ms*--ci), sem selDay
+- ROW_H reduzido de 68 → 60px; now-line calcula nowTop=(total-HOUR_START)*ROW_H
+- Briefing diário expandível: card 44px colapsado → 520px expandido via max-height transition cubic-bezier(0.4,0,0.2,1)
+- Prompt estruturado obrigatório: `EVENTOS: / TAREFAS: / FOCO:` — eventos reais do dia são injetados como contexto (`evsStr`)
+- Parser no frontend: regex `/EVENTOS:\s*(.+?)(?=\nTAREFAS:|\nFOCO:|$)/s` extrai 3 seções; fallback para texto puro se formato diferir
+- Visual estruturado: ti-calendar roxo (Eventos), ti-circle-check verde (Tarefas), ti-target âmbar (Foco com destaque)
+- Preview colapsado mostra conteúdo de EVENTOS sem o label; footer com "→ Abrir chat" + "↻ Atualizar" + timestamp
+- Briefing auto-abre ao entrar na view Dia; fetch via /api/chat proxy (sem CORS)
