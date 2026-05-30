@@ -1209,15 +1209,16 @@
   .pv-tab-underline { position:absolute; bottom:0; left:0; width:calc(100%/6); height:2px; background:#534AB7; border-radius:2px 2px 0 0; transition:transform 0.28s cubic-bezier(0.4,0,0.2,1); pointer-events:none; }
   .pv-content { flex:1; overflow-y:auto; padding:22px 28px 80px; transition:opacity 0.12s; }
   .pv-content--out { opacity:0; }
-  .pv-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-  .pv-card { position:relative; background:rgba(255,255,255,0.03); border:0.5px solid rgba(255,255,255,0.07); border-left:3px solid var(--pv-tag-color,rgba(83,74,183,0.5)); border-radius:12px; padding:14px; cursor:pointer; transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),border-color 0.15s,box-shadow 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*30ms) both; }
-  .pv-card:hover { transform:translateY(-3px); border-color:rgba(83,74,183,0.45); box-shadow:0 8px 24px rgba(83,74,183,0.25); transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s; }
-  .pv-card:hover .pv-card-actions { opacity:1; }
+  /* REGRA: botões de ação SEMPRE visíveis. Nunca usar opacity:0 em ações primárias.
+     Hover só intensifica — nunca é o único trigger para mostrar ação. */
+  .pv-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .pv-card { position:relative; background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-left:3px solid var(--pv-tag-color,#534AB7); border-radius:14px; padding:16px 18px; cursor:pointer; transition:background 0.2s,transform 0.2s cubic-bezier(0.34,1.56,0.64,1),border-color 0.2s,box-shadow 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*30ms) both; }
+  .pv-card:hover { background:rgba(83,74,183,0.12); transform:translateY(-3px); border-color:rgba(83,74,183,0.4); box-shadow:0 8px 28px rgba(83,74,183,0.25); }
   .pv-card--new { animation:pvGlow 1.4s both; }
-  .pv-card-actions { position:absolute; top:10px; right:10px; display:flex; gap:4px; opacity:0; transition:opacity 0.15s; z-index:2; }
-  .pv-card-action-btn { background:rgba(8,12,20,0.82); border:0.5px solid rgba(255,255,255,0.1); border-radius:6px; color:var(--text-3); cursor:pointer; font-size:12px; padding:4px 6px; transition:color 0.12s,background 0.12s; line-height:1; }
-  .pv-card-action-btn:hover { color:var(--text); background:rgba(255,255,255,0.1); }
-  .pv-card-action-btn--del:hover { color:#ef4444; background:rgba(239,68,68,0.12); }
+  .pv-card-actions { position:absolute; top:10px; right:10px; display:flex; gap:3px; z-index:2; }
+  .pv-card-action-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:7px; color:rgba(255,255,255,0.6); cursor:pointer; font-size:12px; padding:5px 7px; transition:color 0.15s,background 0.15s,transform 0.1s; line-height:1; }
+  .pv-card-action-btn:hover { color:#a78bfa; background:rgba(83,74,183,0.3); transform:scale(1.1); border-color:rgba(83,74,183,0.4); }
+  .pv-card-action-btn--del:hover { color:#f87171; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.3); transform:scale(1.1); }
   .pv-tag-filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
   .pv-tag-filter-pill { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.1); border-radius:99px; color:var(--text-3); cursor:pointer; font-size:11px; font-weight:600; padding:4px 11px; transition:all 0.15s; }
   .pv-tag-filter-pill:hover { border-color:rgba(83,74,183,0.4); color:rgba(124,106,247,0.8); background:rgba(83,74,183,0.07); }
@@ -1228,7 +1229,7 @@
   .pv-empty-motivational p { font-size:13px; color:var(--text-3); margin:0; max-width:280px; line-height:1.6; }
   .pv-empty-cta { background:rgba(83,74,183,0.18); border:0.5px solid rgba(83,74,183,0.4); border-radius:10px; color:rgba(124,106,247,0.9); cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; padding:9px 20px; transition:background 0.15s; margin-top:4px; }
   .pv-empty-cta:hover { background:rgba(83,74,183,0.3); }
-  .pv-card-title { font-size:14px; font-weight:500; color:var(--text); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pv-card-title { font-size:14px; font-weight:500; color:rgba(255,255,255,0.92); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:52px; }
   .pv-card-preview { font-size:12px; color:var(--text); opacity:0.5; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin:4px 0 10px; }
   .pv-card-foot { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; }
   .pv-tags { display:flex; flex-wrap:wrap; gap:4px; }
@@ -1255,70 +1256,82 @@
   .pv-link-url { font-size:11px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:3px 0 10px; }
   .pv-link-copy { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:13px; padding:2px 6px; border-radius:5px; transition:color 0.12s,background 0.12s; }
   .pv-link-copy:hover { color:var(--text); background:rgba(255,255,255,0.07); }
-  .pv-pw-list { display:flex; flex-direction:column; gap:8px; }
-  .pv-pw-row { background:rgba(255,255,255,0.03); border:0.5px solid rgba(255,255,255,0.07); border-radius:10px; padding:12px 14px; display:flex; align-items:center; gap:12px; transition:border-color 0.15s; }
-  .pv-pw-row:hover { border-color:rgba(83,74,183,0.3); }
-  .pv-pw-left { flex:1; min-width:0; }
-  .pv-pw-site { font-size:13.5px; font-weight:500; color:var(--text); }
-  .pv-pw-user { font-size:12px; color:var(--text-3); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .pv-pw-center { font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.55); min-width:80px; }
-  .pv-pw-val { color:rgba(124,106,247,0.9); }
-  .pv-pw-actions { display:flex; gap:3px; }
-  .pv-pw-btn { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:14px; padding:5px 6px; border-radius:6px; transition:color 0.12s,background 0.12s; }
-  .pv-pw-btn:hover { color:var(--text); background:rgba(255,255,255,0.08); }
-  .pv-pw-btn--del:hover { color:#ef4444; background:rgba(239,68,68,0.1); }
-  .pv-pw-lock { display:inline-flex; align-items:center; justify-content:center; width:32px; flex-shrink:0; color:rgba(124,106,247,0.6); font-size:16px; transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
-  .pv-pw-row:hover .pv-pw-lock { transform:rotate(360deg); }
-  .pv-pw-strength { height:3px; border-radius:99px; margin-top:5px; max-width:80px; transition:width 0.3s,background 0.3s; }
-  .pv-pw-del-confirm { display:flex; align-items:center; gap:6px; animation:pvFadeUp 0.15s both; }
-  .pv-pw-del-confirm-msg { font-size:11px; color:rgba(239,68,68,0.8); flex:1; }
-  .pv-pw-del-yes { background:rgba(239,68,68,0.15); border:0.5px solid rgba(239,68,68,0.35); border-radius:5px; color:#ef4444; cursor:pointer; font-family:inherit; font-size:11px; padding:3px 8px; }
-  .pv-pw-del-no { background:none; border:none; color:var(--text-3); cursor:pointer; font-family:inherit; font-size:11px; padding:3px 6px; }
-  .pv-kanban { display:flex; gap:14px; align-items:flex-start; overflow-x:auto; padding-bottom:20px; min-height:200px; }
+  /* SENHAS — pill buttons sempre visíveis */
+  .pv-pw-list { display:flex; flex-direction:column; gap:10px; }
+  .pv-pw-card { background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:16px; transition:border-color 0.2s,background 0.2s; }
+  .pv-pw-card:hover { border-color:rgba(83,74,183,0.4); background:rgba(83,74,183,0.07); }
+  .pv-pw-card-top { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .pv-pw-icon { width:36px; height:36px; background:rgba(83,74,183,0.2); border:1px solid rgba(83,74,183,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#818cf8; font-size:16px; transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+  .pv-pw-card:hover .pv-pw-icon { transform:rotate(360deg); }
+  .pv-pw-info { flex:1; min-width:0; }
+  .pv-pw-site { font-size:14px; font-weight:600; color:rgba(255,255,255,0.92); }
+  .pv-pw-user { font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pv-pw-masked { font-family:'Geist Mono',monospace; font-size:15px; color:rgba(255,255,255,0.35); letter-spacing:4px; margin-bottom:10px; padding:4px 0; }
+  .pv-pw-revealed { font-family:'Geist Mono',monospace; font-size:13px; color:#818cf8; margin-bottom:10px; word-break:break-all; background:rgba(83,74,183,0.1); border:1px solid rgba(83,74,183,0.25); border-radius:8px; padding:7px 10px; animation:pvFadeUp 0.15s both; }
+  .pv-pw-strength { height:3px; border-radius:99px; margin-top:4px; max-width:70px; transition:width 0.3s,background 0.3s; }
+  .pv-pw-footer { display:flex; flex-wrap:wrap; gap:6px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
+  .pv-pw-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:rgba(255,255,255,0.7); cursor:pointer; font-family:inherit; font-size:12px; font-weight:500; padding:5px 10px; transition:background 0.15s,transform 0.1s,border-color 0.15s; white-space:nowrap; }
+  .pv-pw-pill:hover { background:rgba(255,255,255,0.12); transform:scale(1.03); }
+  .pv-pw-pill--del { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.2); color:#f87171; }
+  .pv-pw-pill--del:hover { background:rgba(239,68,68,0.16); }
+  .pv-pw-pill--ok { color:#4ade80; background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.2); }
+  .pv-pw-pill--active { color:#818cf8; background:rgba(83,74,183,0.2); border-color:rgba(83,74,183,0.4); }
+    .pv-kanban { display:flex; gap:14px; align-items:flex-start; overflow-x:auto; padding-bottom:20px; min-height:200px; }
   .pv-kol { flex:1; min-width:200px; background:rgba(255,255,255,0.02); border:0.5px solid rgba(255,255,255,0.06); border-top:3px solid var(--kol-color,rgba(83,74,183,0.5)); border-radius:12px; padding:14px; transition:border-color 0.15s,background 0.15s; }
   .pv-kol--over { border-color:rgba(83,74,183,0.5); background:rgba(83,74,183,0.07); }
   .pv-kol-hd { display:flex; align-items:center; gap:7px; margin-bottom:12px; }
   .pv-kol-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-  .pv-kol-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-2); flex:1; }
+  .pv-kol-label { font-size:13px; font-weight:600; color:rgba(255,255,255,0.85); flex:1; }
   .pv-kol-count { font-size:11px; color:var(--text-3); background:rgba(255,255,255,0.06); border-radius:4px; padding:1px 6px; }
   .pv-kol-add { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:18px; line-height:1; padding:0 2px; transition:color 0.12s; border-radius:4px; }
   .pv-kol-add:hover { color:rgba(124,106,247,0.9); }
   .pv-kol-cards { display:flex; flex-direction:column; gap:8px; }
-  .pv-kcard { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; cursor:grab; transition:box-shadow 0.15s,opacity 0.15s,transform 0.15s; animation:pvFadeUp 0.25s calc(var(--si,0)*40ms) both; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
-  .pv-kcard:hover { box-shadow:0 4px 14px rgba(0,0,0,0.28); }
+  .pv-kcard { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.07); border-left:3px solid var(--kcard-color,rgba(124,106,247,0.4)); border-radius:8px; padding:10px 12px; cursor:grab; transition:box-shadow 0.15s,opacity 0.15s,transform 0.15s,background 0.15s; animation:pvFadeUp 0.25s calc(var(--si,0)*40ms) both; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .pv-kcard:hover { background:rgba(255,255,255,0.065); box-shadow:0 6px 18px rgba(0,0,0,0.3); }
   .pv-kcard--dragging { opacity:0.35; transform:rotate(2deg) scale(1.06); box-shadow:0 22px 46px rgba(83,74,183,0.5); cursor:grabbing; }
   .pv-kcard--new { animation:pvBounce 0.4s both; }
   .pv-kcard-title { font-size:13px; color:var(--text); line-height:1.4; flex:1; }
-  .pv-kcard-del { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:12px; padding:1px 3px; border-radius:3px; opacity:0; transition:opacity 0.12s,color 0.12s; flex-shrink:0; }
-  .pv-kcard:hover .pv-kcard-del { opacity:1; }
-  .pv-kcard-del:hover { color:#ef4444; }
+  .pv-kcard-btns { display:flex; gap:3px; flex-shrink:0; }
+  .pv-kcard-del { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); cursor:pointer; font-size:11px; padding:3px 5px; border-radius:5px; transition:color 0.12s,background 0.12s; }
+  .pv-kcard-del:hover { color:#f87171; background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.25); }
+  .pv-kcard-edit { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); cursor:pointer; font-size:11px; padding:3px 5px; border-radius:5px; transition:color 0.12s,background 0.12s; }
+  .pv-kcard-edit:hover { color:#a78bfa; background:rgba(83,74,183,0.2); border-color:rgba(83,74,183,0.35); }
   .pv-kol-new { margin-bottom:8px; }
   .pv-kol-input { width:100%; background:rgba(255,255,255,0.06); border:0.5px solid rgba(83,74,183,0.4); border-radius:7px; color:var(--text); font-family:inherit; font-size:13px; padding:8px 10px; outline:none; box-sizing:border-box; margin-bottom:6px; }
   .pv-kol-new-btns { display:flex; gap:6px; }
   .pv-kol-save { background:rgba(83,74,183,0.25); border:none; border-radius:6px; color:rgba(124,106,247,0.9); cursor:pointer; font-family:inherit; font-size:12px; padding:5px 10px; }
   .pv-kol-cancel { background:none; border:none; color:var(--text-3); cursor:pointer; font-family:inherit; font-size:12px; padding:5px 10px; }
   .pv-goals { display:flex; flex-direction:column; gap:10px; }
-  .pv-goal { background:rgba(255,255,255,0.03); border:0.5px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px; transition:border-color 0.15s; animation:pvFadeUp 0.3s calc(var(--si,0)*50ms) both; }
-  .pv-goal:hover { border-color:rgba(83,74,183,0.3); }
+  .pv-goal { background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:16px 18px; transition:border-color 0.2s,background 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*50ms) both; }
+  .pv-goal:hover { border-color:rgba(83,74,183,0.4); background:rgba(83,74,183,0.06); }
   .pv-goal--new { animation:pvGlow 1.4s both; }
-  .pv-goal-hd { display:flex; align-items:center; cursor:pointer; margin-bottom:10px; gap:10px; }
+  .pv-goal-hd { display:flex; align-items:flex-start; margin-bottom:8px; gap:10px; }
   .pv-goal-left { flex:1; min-width:0; }
-  .pv-goal-title { font-size:14px; font-weight:500; color:var(--text); }
+  .pv-goal-top-actions { display:flex; gap:4px; flex-shrink:0; }
+  .pv-goal-act-btn { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:7px; color:rgba(255,255,255,0.45); cursor:pointer; font-size:12px; padding:4px 7px; transition:color 0.12s,background 0.12s,transform 0.1s; line-height:1; }
+  .pv-goal-act-btn:hover { color:#a78bfa; background:rgba(83,74,183,0.25); transform:scale(1.08); }
+  .pv-goal-act-btn--del:hover { color:#f87171; background:rgba(239,68,68,0.12); }
+  .pv-goal-prog-area { display:flex; align-items:center; gap:12px; margin:8px 0; }
+  .pv-goal-actions-row { display:flex; gap:8px; margin-top:8px; }
+  .pv-goal-title { font-size:16px; font-weight:700; color:rgba(255,255,255,0.92); }
   .pv-goal-due { font-size:11px; color:var(--text-3); margin-top:2px; display:inline-block; }
   .pv-goal-due--urgent { color:#f87171; background:rgba(248,113,113,0.12); border-radius:4px; padding:1px 6px; animation:agPulse 2s ease-in-out infinite; }
   .pv-goal-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-  .pv-goal-pct { font-size:12px; font-weight:600; color:rgba(124,106,247,0.9); font-family:'Geist Mono',monospace; min-width:34px; text-align:right; }
+  .pv-goal-pct { font-size:28px; font-weight:800; color:#818cf8; font-family:'Geist Mono',monospace; line-height:1; flex-shrink:0; }
   .pv-goal-chev { font-size:12px; color:var(--text-3); }
-  .pv-goal-bar-wrap { height:8px; background:rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; }
-  .pv-goal-bar { height:100%; width:var(--pct,0%); background:linear-gradient(90deg,#534AB7,#7C6AF7); border-radius:3px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .pv-goal-bar-wrap { height:10px; background:rgba(255,255,255,0.07); border-radius:99px; overflow:hidden; flex:1; }
+  .pv-goal-bar { height:100%; width:var(--pct,0%); background:linear-gradient(90deg,#534AB7,#818cf8); border-radius:99px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
   .pv-goal-exp { margin-top:12px; padding-top:12px; border-top:0.5px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:10px; }
   .pv-goal-prog-row { display:flex; align-items:center; gap:10px; }
   .pv-goal-range { flex:1; accent-color:#534AB7; }
   .pv-goal-lbl { font-size:11px; color:var(--text-3); white-space:nowrap; }
   .pv-goal-stepper { display:flex; align-items:center; gap:8px; }
-  .pv-goal-step-btn { background:rgba(83,74,183,0.15); border:0.5px solid rgba(83,74,183,0.3); border-radius:6px; color:rgba(124,106,247,0.9); cursor:pointer; font-size:20px; font-weight:300; width:30px; height:30px; display:flex; align-items:center; justify-content:center; transition:background 0.12s,transform 0.1s; padding:0; line-height:1; }
-  .pv-goal-step-btn:hover { background:rgba(83,74,183,0.3); transform:scale(1.12); }
-  .pv-goal-step-btn:active { transform:scale(0.92); }
+  .pv-goal-step-plus { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:8px; color:#4ade80; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; padding:6px 16px; transition:background 0.15s,transform 0.1s; }
+  .pv-goal-step-plus:hover { background:rgba(34,197,94,0.2); transform:scale(1.04); }
+  .pv-goal-step-plus:active { transform:scale(0.97); }
+  .pv-goal-step-minus { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:8px; color:#f87171; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; padding:6px 16px; transition:background 0.15s,transform 0.1s; }
+  .pv-goal-step-minus:hover { background:rgba(239,68,68,0.15); transform:scale(1.04); }
+  .pv-goal-step-minus:active { transform:scale(0.97); }
   .pv-goal-step-val { font-size:15px; font-weight:700; color:rgba(124,106,247,0.9); font-family:'Geist Mono',monospace; min-width:40px; text-align:center; }
   .pv-goal-rel-date { font-size:11px; color:var(--text-3); margin-top:3px; }
   .pv-goal-rel-date--urgent { color:#f87171; background:rgba(248,113,113,0.1); border-radius:4px; padding:1px 6px; display:inline-block; }
@@ -3785,6 +3798,8 @@ function PersonalView({onChat}={}) {
   const [newIds,      setNewIds]      = React.useState(new Set());
   const [tagFilter,   setTagFilter]   = React.useState(null);
   const [pwDelConfirm,setPwDelConfirm]= React.useState(null);
+  const [pwRevealAt,  setPwRevealAt]  = React.useState({});
+  const [pvTick,      setPvTick]      = React.useState(0);
   const [editPw,       setEditPw]      = React.useState(null);
   const [pwEditForm,   setPwEditForm]  = React.useState({site:'',user:'',password:'',notes:''});
   const [pwEditLoading,setPwEditLoading]=React.useState(false);
@@ -3795,6 +3810,12 @@ function PersonalView({onChat}={}) {
   const [editNote,    setEditNote]    = React.useState(null);
 
   React.useEffect(()=>{ loadTab(tab); }, [tab]);
+  React.useEffect(()=>{
+    const hasVis=Object.values(pwVisible).some(Boolean);
+    if(!hasVis) return;
+    const id=setInterval(()=>setPvTick(t=>t+1),1000);
+    return ()=>clearInterval(id);
+  },[pwVisible]);
 
   const loadTab = async (t) => {
     setLoading(true);
@@ -3908,8 +3929,13 @@ function PersonalView({onChat}={}) {
   };
   const revealPw = async(pw) => {
     const d=await getDecrypted(pw); if(!d) return;
+    const end=Date.now()+5000;
+    setPwRevealAt(p=>({...p,[pw.id]:end}));
     setPwVisible(p=>({...p,[pw.id]:true}));
-    setTimeout(()=>setPwVisible(p=>({...p,[pw.id]:false})),5000);
+    setTimeout(()=>{
+      setPwVisible(p=>({...p,[pw.id]:false}));
+      setPwRevealAt(p=>{const n={...p};delete n[pw.id];return n;});
+    },5000);
   };
   const copyPw = async(pw, type) => {
     const d=await getDecrypted(pw); if(!d) return;
@@ -4112,7 +4138,7 @@ function PersonalView({onChat}={}) {
     ?ce('div',{className:'pv-empty-motivational'},
         ce('i',{className:'ti ti-lock pv-empty-big-icon'}),
         ce('h3',null,'Nenhuma senha salva.'),
-        ce('p',null,'Criptografia AES-256 — só você tem acesso.'),
+        ce('p',null,'Criptografia AES-256 — s\xf3 voc\xea tem acesso.'),
         ce('button',{className:'pv-empty-cta',onClick:()=>setModal('password')},'+ Primeira senha')
       )
     :ce('div',{className:'pv-pw-list'},
@@ -4120,28 +4146,44 @@ function PersonalView({onChat}={}) {
         const dec=pwDecrypted[pw.id]; const vis=pwVisible[pw.id];
         const str=dec?pwStrength(dec.password):null;
         const confirmDel=pwDelConfirm===pw.id;
-        return ce('div',{key:pw.id,className:'pv-pw-row'},
-          ce('i',{className:'ti ti-lock pv-pw-lock'}),
-          ce('div',{className:'pv-pw-left'},
-            ce('div',{className:'pv-pw-site'},pw.title||'Site'),
-            ce('div',{className:'pv-pw-user'},dec?dec.user:'••••••'),
-            str&&ce('div',{className:'pv-pw-strength',style:{width:str.w,background:str.color}})
+        const secsLeft=pwRevealAt[pw.id]?Math.max(0,Math.ceil((pwRevealAt[pw.id]-Date.now())/1000)):5;
+        return ce('div',{key:pw.id,className:'pv-pw-card'},
+          ce('div',{className:'pv-pw-card-top'},
+            ce('div',{className:'pv-pw-icon'},ce('i',{className:'ti ti-lock'})),
+            ce('div',{className:'pv-pw-info'},
+              ce('div',{className:'pv-pw-site'},pw.title||'Site'),
+              ce('div',{className:'pv-pw-user'},dec?dec.user:'N\xe3o revelado'),
+              str&&ce('div',{className:'pv-pw-strength',style:{width:str.w,background:str.color}})
+            )
           ),
-          ce('div',{className:'pv-pw-center'},
-            vis&&dec?ce('span',{className:'pv-pw-val'},dec.password):ce('span',null,'••••••••')
-          ),
+          vis&&dec
+            ?ce('div',{className:'pv-pw-revealed'},dec.password)
+            :ce('div',{className:'pv-pw-masked'},'••••••••'),
           confirmDel
-            ?ce('div',{className:'pv-pw-del-confirm'},
-                ce('span',{className:'pv-pw-del-confirm-msg'},'Excluir?'),
-                ce('button',{className:'pv-pw-del-yes',onClick:()=>{deletePw(pw.id);setPwDelConfirm(null);}},'✓ Sim'),
-                ce('button',{className:'pv-pw-del-no',onClick:()=>setPwDelConfirm(null)},'× Não')
+            ?ce('div',{className:'pv-pw-footer'},
+                ce('span',{style:{fontSize:'12px',color:'rgba(239,68,68,0.8)',flex:1,display:'flex',alignItems:'center'}},'Confirmar exclus\xe3o?'),
+                ce('button',{className:'pv-pw-pill pv-pw-pill--ok',onClick:()=>{deletePw(pw.id);setPwDelConfirm(null);}},ce('i',{className:'ti ti-check'}),' Sim'),
+                ce('button',{className:'pv-pw-pill',onClick:()=>setPwDelConfirm(null)},'\xd7 N\xe3o')
               )
-            :ce('div',{className:'pv-pw-actions'},
-                ce('button',{className:'pv-pw-btn',title:'Copiar usuário',onClick:()=>copyPw(pw,'user')}, pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'})),
-                ce('button',{className:'pv-pw-btn',title:'Copiar senha',onClick:()=>copyPw(pw,'password')}, pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'})),
-                ce('button',{className:'pv-pw-btn',title:'Editar',onClick:()=>openPwEdit(pw)}, ce('i',{className:'ti ti-pencil'})),
-                ce('button',{className:'pv-pw-btn',title:vis?'Ocultar':'Mostrar',onClick:()=>revealPw(pw)}, ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'})),
-                ce('button',{className:'pv-pw-btn pv-pw-btn--del',title:'Excluir',onClick:()=>setPwDelConfirm(pw.id)}, ce('i',{className:'ti ti-trash'}))
+            :ce('div',{className:'pv-pw-footer'},
+                ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_user']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'user')},
+                  pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'}),
+                  pwCopied[pw.id+'_user']?'Copiado!':'Usu\xe1rio'
+                ),
+                ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_password']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'password')},
+                  pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'}),
+                  pwCopied[pw.id+'_password']?'Copiado!':'Copiar'
+                ),
+                ce('button',{className:'pv-pw-pill'+(vis?' pv-pw-pill--active':''),onClick:()=>revealPw(pw)},
+                  ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'}),
+                  vis?('⏱ '+secsLeft+'s'):'Ver'
+                ),
+                ce('button',{className:'pv-pw-pill',onClick:()=>openPwEdit(pw)},
+                  ce('i',{className:'ti ti-pencil'}),'Editar'
+                ),
+                ce('button',{className:'pv-pw-pill pv-pw-pill--del',onClick:()=>setPwDelConfirm(pw.id)},
+                  ce('i',{className:'ti ti-trash'}),'Excluir'
+                )
               )
         );
       })
@@ -4172,12 +4214,15 @@ function PersonalView({onChat}={}) {
         ce('div',{className:'pv-kol-cards'},...cards.map((card,i)=>ce('div',{
             key:card.id,
             className:'pv-kcard'+(dragId===card.id?' pv-kcard--dragging':'')+(newIds.has(card.id)?' pv-kcard--new':''),
-            draggable:true,style:{'--si':i},
+            draggable:true,style:{'--si':i,'--kcard-color':col.topColor},
             onDragStart:()=>setDragId(card.id),
             onDragEnd:()=>{setDragId(null);setDragOver(null);}
           },
           ce('div',{className:'pv-kcard-title'},card.title),
-          ce('button',{className:'pv-kcard-del',onClick:()=>deleteCard(card.id,col.id)},ce('i',{className:'ti ti-x'}))
+          ce('div',{className:'pv-kcard-btns'},
+            ce('button',{className:'pv-kcard-edit',title:'Renomear',onClick:(e)=>{e.stopPropagation();const t=window.prompt('Novo título:',card.title);if(t&&t.trim()&&t.trim()!==card.title){api('/api/personal/'+card.id,'PATCH',{title:t.trim()}).then(()=>setKanban(p=>({...p,[col.id]:p[col.id].map(c=>c.id===card.id?{...c,title:t.trim()}:c)})));}}},ce('i',{className:'ti ti-pencil'})),
+            ce('button',{className:'pv-kcard-del',title:'Excluir',onClick:(e)=>{e.stopPropagation();deleteCard(card.id,col.id);}},ce('i',{className:'ti ti-x'}))
+          )
         )))
       );
     })
@@ -4213,29 +4258,23 @@ function PersonalView({onChat}={}) {
     :goals.map((g,i)=>{
       const pct=parseInt((g.content&&g.content.progress)||0);
       const rd=fmtRelDate(g.content&&g.content.due_date||g.due_date||'');
-      const exp=expGoal===g.id;
       return ce('div',{key:g.id,className:'pv-goal'+(newIds.has(g.id)?' pv-goal--new':''),style:{'--si':i}},
-        ce('div',{className:'pv-goal-hd',onClick:()=>setExpGoal(exp?null:g.id)},
+        ce('div',{className:'pv-goal-hd'},
           ce('div',{className:'pv-goal-left'},
             ce('div',{className:'pv-goal-title'},g.title),
             rd&&ce('div',{className:'pv-goal-rel-date pv-goal-rel-date'+rd.cls},rd.text)
           ),
-          ce('div',{className:'pv-goal-right'},
-            ce('span',{className:'pv-goal-pct'},pct+'%'),
-            ce('i',{className:'ti '+(exp?'ti-chevron-up':'ti-chevron-down')+' pv-goal-chev'})
+          ce('div',{className:'pv-goal-top-actions'},
+            ce('button',{className:'pv-goal-act-btn pv-goal-act-btn--del',title:'Excluir',onClick:e=>{e.stopPropagation();deleteGoal(g.id);}},ce('i',{className:'ti ti-trash'}))
           )
         ),
-        ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':pct+'%'}})),
-        exp&&ce('div',{className:'pv-goal-exp'},
-          ce('div',{className:'pv-goal-prog-row'},
-            ce('label',{className:'pv-goal-lbl'},'Progresso:'),
-            ce('div',{className:'pv-goal-stepper'},
-              ce('button',{className:'pv-goal-step-btn',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.max(0,pct-5),e.currentTarget);}},'−'),
-              ce('span',{className:'pv-goal-step-val'},pct+'%'),
-              ce('button',{className:'pv-goal-step-btn',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+')
-            )
-          ),
-          ce('button',{className:'pv-btn-del',onClick:()=>deleteGoal(g.id)},'Excluir meta')
+        ce('div',{className:'pv-goal-prog-area'},
+          ce('span',{className:'pv-goal-pct'},pct+'%'),
+          ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':pct+'%'}}))
+        ),
+        ce('div',{className:'pv-goal-actions-row'},
+          ce('button',{className:'pv-goal-step-minus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.max(0,pct-5),e.currentTarget);}},'− 5%'),
+          ce('button',{className:'pv-goal-step-plus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+5%')
         )
       );
     })
