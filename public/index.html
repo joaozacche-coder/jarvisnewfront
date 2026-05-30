@@ -3785,6 +3785,9 @@ function PersonalView({onChat}={}) {
   const [newIds,      setNewIds]      = React.useState(new Set());
   const [tagFilter,   setTagFilter]   = React.useState(null);
   const [pwDelConfirm,setPwDelConfirm]= React.useState(null);
+  const [editPw,       setEditPw]      = React.useState(null);
+  const [pwEditForm,   setPwEditForm]  = React.useState({site:'',user:'',password:'',notes:''});
+  const [pwEditLoading,setPwEditLoading]=React.useState(false);
   const [confettiPcs, setConfettiPcs] = React.useState([]);
   const [noteSaving,  setNoteSaving]  = React.useState(false);
   const [noteTagsArr, setNoteTagsArr] = React.useState([]);
@@ -3917,6 +3920,22 @@ function PersonalView({onChat}={}) {
     if(type==='password') setTimeout(()=>navigator.clipboard.writeText(''),30000);
   };
   const deletePw = async(id) => { await api(`/api/personal/${id}`,'DELETE'); setPasswords(p=>p.filter(pw=>pw.id!==id)); };
+  const openPwEdit = async(pw) => {
+    const d=await getDecrypted(pw);
+    setPwEditForm({site:pw.title||'',user:d?d.user:'',password:d?d.password:'',notes:d&&d.notes||''});
+    setEditPw(pw); setModal('edit-password');
+  };
+  const savePwEdit = async() => {
+    if(!editPw) return;
+    setPwEditLoading(true);
+    try {
+      const encData=await encrypt(JSON.stringify({user:pwEditForm.user,password:pwEditForm.password,notes:pwEditForm.notes}));
+      await api('/api/personal/'+editPw.id,'PATCH',{title:pwEditForm.site,content:{encrypted:true,data:encData}});
+      setPasswords(p=>p.map(pw=>pw.id===editPw.id?{...pw,title:pwEditForm.site,content:{encrypted:true,data:encData}}:pw));
+      setPwDecrypted(p=>{const n={...p};delete n[editPw.id];return n;});
+      setModal(null); setEditPw(null);
+    } finally { setPwEditLoading(false); }
+  };
 
   /* ── Kanban ── */
   const createCard = async(col) => {
@@ -4120,6 +4139,7 @@ function PersonalView({onChat}={}) {
             :ce('div',{className:'pv-pw-actions'},
                 ce('button',{className:'pv-pw-btn',title:'Copiar usuário',onClick:()=>copyPw(pw,'user')}, pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'})),
                 ce('button',{className:'pv-pw-btn',title:'Copiar senha',onClick:()=>copyPw(pw,'password')}, pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'})),
+                ce('button',{className:'pv-pw-btn',title:'Editar',onClick:()=>openPwEdit(pw)}, ce('i',{className:'ti ti-pencil'})),
                 ce('button',{className:'pv-pw-btn',title:vis?'Ocultar':'Mostrar',onClick:()=>revealPw(pw)}, ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'})),
                 ce('button',{className:'pv-pw-btn pv-pw-btn--del',title:'Excluir',onClick:()=>setPwDelConfirm(pw.id)}, ce('i',{className:'ti ti-trash'}))
               )
@@ -4291,6 +4311,12 @@ function PersonalView({onChat}={}) {
       ce('input',{key:'p',type:'password',className:'pv-modal-input',placeholder:'Senha',value:pwForm.password,onChange:e=>setPwForm(p=>({...p,password:e.target.value}))}),
       ce('input',{key:'n',className:'pv-modal-input',placeholder:'Notas opcionais',value:pwForm.notes,onChange:e=>setPwForm(p=>({...p,notes:e.target.value}))})
     ],savePw,'Salvar criptografado');
+    if(modal==='edit-password') return overlay('Editar Senha',[
+      ce('input',{key:'s',className:'pv-modal-input',placeholder:'Site / App',value:pwEditForm.site,onChange:e=>setPwEditForm(p=>({...p,site:e.target.value}))}),
+      ce('input',{key:'u',className:'pv-modal-input',placeholder:'Usuário / Email',value:pwEditForm.user,onChange:e=>setPwEditForm(p=>({...p,user:e.target.value}))}),
+      ce('input',{key:'p',type:'text',className:'pv-modal-input',placeholder:'Senha',value:pwEditForm.password,onChange:e=>setPwEditForm(p=>({...p,password:e.target.value}))}),
+      ce('input',{key:'n',className:'pv-modal-input',placeholder:'Notas opcionais',value:pwEditForm.notes,onChange:e=>setPwEditForm(p=>({...p,notes:e.target.value}))})
+    ],savePwEdit,pwEditLoading?'Salvando…':'Salvar');
     if(modal==='goal') return overlay('Nova Meta',[
       ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título da meta',value:goalForm.title,onChange:e=>setGoalForm(p=>({...p,title:e.target.value}))}),
       ce('input',{key:'d',type:'date',className:'pv-modal-input',value:goalForm.due_date,onChange:e=>setGoalForm(p=>({...p,due_date:e.target.value}))}),
