@@ -1215,10 +1215,15 @@
   .pv-card { position:relative; background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-left:3px solid var(--pv-tag-color,#534AB7); border-radius:14px; padding:16px 18px; cursor:pointer; transition:background 0.2s,transform 0.2s cubic-bezier(0.34,1.56,0.64,1),border-color 0.2s,box-shadow 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*30ms) both; }
   .pv-card:hover { background:rgba(83,74,183,0.12); transform:translateY(-3px); border-color:rgba(83,74,183,0.4); box-shadow:0 8px 28px rgba(83,74,183,0.25); }
   .pv-card--new { animation:pvGlow 1.4s both; }
-  .pv-card-actions { position:absolute; top:10px; right:10px; display:flex; gap:3px; z-index:2; }
-  .pv-card-action-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:7px; color:rgba(255,255,255,0.6); cursor:pointer; font-size:12px; padding:5px 7px; transition:color 0.15s,background 0.15s,transform 0.1s; line-height:1; }
-  .pv-card-action-btn:hover { color:#a78bfa; background:rgba(83,74,183,0.3); transform:scale(1.1); border-color:rgba(83,74,183,0.4); }
-  .pv-card-action-btn--del:hover { color:#f87171; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.3); transform:scale(1.1); }
+  .pv-note-del-x { position:absolute; top:10px; right:12px; width:20px; height:20px; background:transparent; border:none; color:rgba(255,255,255,0.25); font-size:16px; line-height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,transform 0.15s; z-index:2; }
+  .pv-note-del-x:hover { color:#f87171; transform:scale(1.2); }
+  @keyframes pvDelSpring { 0%{opacity:0;transform:scale(0.85) translateY(12px)} 60%{transform:scale(1.04) translateY(-3px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes pvDelExit   { to{opacity:0;transform:scale(0.9) translateY(8px)} }
+  @keyframes pvCardDie   { to{opacity:0;transform:translateY(-8px) scale(0.95)} }
+  .pv-del-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:9999; }
+  .pv-del-modal { background:linear-gradient(145deg,#1e1833,#12102a); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:32px 28px 24px; width:320px; text-align:center; animation:pvDelSpring 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+  .pv-del-modal--exit { animation:pvDelExit 0.2s ease-in forwards; }
+  .pv-card--dying { animation:pvCardDie 0.25s ease-in forwards; pointer-events:none; }
   .pv-tag-filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
   .pv-tag-filter-pill { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.1); border-radius:99px; color:var(--text-3); cursor:pointer; font-size:11px; font-weight:600; padding:4px 11px; transition:all 0.15s; }
   .pv-tag-filter-pill:hover { border-color:rgba(83,74,183,0.4); color:rgba(124,106,247,0.8); background:rgba(83,74,183,0.07); }
@@ -3808,6 +3813,9 @@ function PersonalView({onChat}={}) {
   const [noteTagsArr, setNoteTagsArr] = React.useState([]);
   const [noteTagInput,setNoteTagInput]= React.useState('');
   const [editNote,    setEditNote]    = React.useState(null);
+  const [noteDelConfirm,setNoteDelConfirm]= React.useState(null);
+  const [noteDelExiting,setNoteDelExiting]= React.useState(false);
+  const [noteDying,     setNoteDying]     = React.useState(new Set());
 
   React.useEffect(()=>{ loadTab(tab); }, [tab]);
   React.useEffect(()=>{
@@ -3902,8 +3910,11 @@ function PersonalView({onChat}={}) {
     } finally { setNoteSaving(false); }
   };
   const deleteNote = async(id) => {
+    setNoteDying(s=>{const d=new Set(s);d.add(id);return d;});
+    await new Promise(r=>setTimeout(r,250));
     await api(`/api/personal/${id}`,'DELETE');
-    setNotes(p=>p.filter(n=>n.id!==id)); if(selNote&&selNote.id===id) setSelNote(null);
+    setNotes(p=>p.filter(n=>n.id!==id));
+    setNoteDying(s=>{const d=new Set(s);d.delete(id);return d;});
   };
 
   /* ── Links ── */
@@ -4074,14 +4085,11 @@ function PersonalView({onChat}={}) {
                 const accent=firstTag?tagColor(firstTag):'rgba(83,74,183,0.5)';
                 return ce('div',{
                   key:n.id,
-                  className:'pv-card'+(newIds.has(n.id)?' pv-card--new':''),
+                  className:'pv-card'+(newIds.has(n.id)?' pv-card--new':'')+(noteDying.has(n.id)?' pv-card--dying':''),
                   style:{'--si':i,'--pv-tag-color':accent},
-                  onClick:()=>setSelNote(n)
+                  onClick:()=>{setEditNote(n);setNoteForm({title:n.title||'',body:(n.content&&n.content.body)||''});setNoteTagsArr((n.tags||[]).filter(t=>t!=='contexto-vivo'));setNoteTagInput('');setModal('note-edit');}
                 },
-                ce('div',{className:'pv-card-actions'},
-                  ce('button',{className:'pv-card-action-btn',title:'Editar',onClick:e=>{e.stopPropagation();setEditNote(n);setNoteForm({title:n.title||'',body:(n.content&&n.content.body)||''});setNoteTagsArr((n.tags||[]).filter(t=>t!=='contexto-vivo'));setNoteTagInput('');setModal('note-edit');}},ce('i',{className:'ti ti-pencil'})),
-                  ce('button',{className:'pv-card-action-btn pv-card-action-btn--del',title:'Excluir',onClick:e=>{e.stopPropagation();deleteNote(n.id);}},ce('i',{className:'ti ti-trash'}))
-                ),
+                ce('button',{className:'pv-note-del-x',title:'Excluir',onClick:e=>{e.stopPropagation();setNoteDelConfirm(n);setNoteDelExiting(false);}},'×'),
                 ce('div',{className:'pv-card-title'},n.title||'Sem título'),
                 ce('p',{className:'pv-card-preview'},(n.content&&n.content.body)||''),
                 ce('div',{className:'pv-card-foot'},
@@ -4089,17 +4097,16 @@ function PersonalView({onChat}={}) {
                   ce('span',{className:'pv-note-rel-date'},fmtNoteDate(n.created_at))
                 ));
               })),
-      selNote&&ce('div',{className:'pv-panel-backdrop',onClick:()=>setSelNote(null)}),
-      selNote&&ce('div',{className:'pv-panel'},
-        ce('div',{className:'pv-panel-hd'},
-          ce('span',{className:'pv-panel-title'},selNote.title||'Sem título'),
-          ce('button',{className:'pv-panel-del',onClick:()=>deleteNote(selNote.id)},ce('i',{className:'ti ti-trash'})),
-          ce('button',{className:'pv-panel-close',onClick:()=>setSelNote(null)},'×')
-        ),
-        ce('div',{className:'pv-panel-body'},(selNote.content&&selNote.content.body)||''),
-        ce('div',{className:'pv-panel-foot'},
-          ce('button',{className:'pv-chat-btn',onClick:()=>onChat&&onChat('me fala sobre a nota: '+selNote.title)},
-            'Perguntar ao Jarvis →'
+      noteDelConfirm&&ce('div',{className:'pv-del-modal-overlay',onClick:()=>{if(!noteDelExiting){setNoteDelExiting(true);setTimeout(()=>setNoteDelConfirm(null),200);}}},
+        ce('div',{className:'pv-del-modal'+(noteDelExiting?' pv-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+          ce('div',{style:{width:52,height:52,background:'rgba(239,68,68,0.12)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}},
+            ce('i',{className:'ti ti-trash-x',style:{fontSize:26,color:'#f87171'}})
+          ),
+          ce('div',{style:{fontSize:17,fontWeight:700,color:'rgba(255,255,255,0.92)',marginBottom:8}},'Excluir nota?'),
+          ce('div',{style:{fontSize:13,color:'rgba(255,255,255,0.45)',marginBottom:24}},noteDelConfirm.title||'Esta nota será apagada permanentemente.'),
+          ce('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+            ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.7)',cursor:'pointer',fontSize:14,fontWeight:600},onClick:()=>{setNoteDelExiting(true);setTimeout(()=>setNoteDelConfirm(null),200);}},'Cancelar'),
+            ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(239,68,68,0.15)',border:'1px solid rgba(239,68,68,0.4)',color:'#f87171',cursor:'pointer',fontSize:14,fontWeight:600},onClick:async()=>{const nd=noteDelConfirm;setNoteDelExiting(true);setTimeout(()=>setNoteDelConfirm(null),200);await deleteNote(nd.id);}},'Excluir')
           )
         )
       )
