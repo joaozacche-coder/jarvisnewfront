@@ -14,6 +14,7 @@
 4. **Sempre faça commit e push** ao final de cada tarefa concluída
 5. **Atualize JARVIS_CONTEXT.md** ao final de cada sessão
 6. **Prompts cirúrgicos** — mexa APENAS no que foi pedido, nada mais
+7. **Bugs visíveis = corrigir sem pedir permissão** — se durante a leitura do código encontrar inconsistência, CSS conflitante, ou comportamento não intencional, corrige junto com a tarefa principal e documenta no commit.
 
 ---
 
@@ -112,7 +113,7 @@ Em vez de ler arquivos inteiros, use estas referências rápidas:
 → `public/index.html`: `TasksView` (React.createElement) → `/api/tasks` → Railway `/tasks`
 
 **"Como a tela de Clientes funciona?"**
-→ `public/index.html`: `ClientsView` com `_FIXED_CLIENTS` base → `/api/clients` (dados básicos) + `/api/context?name=X` (contexto vivo separado) → Railway
+→ `public/index.html`: `ClientsView` com `_FIXED_CLIENTS` base → `/api/clients` + `/api/context?name=X` → Railway `/clients` e `/context`
 
 **"Como o Jarvis decide o que fazer?"**
 → `api.py`: Gemini recebe system prompt + ferramentas → function calling → `_executar_ferramenta()`
