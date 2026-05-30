@@ -1188,7 +1188,8 @@
   /* ─── PersonalView ─────────────────────────────────────────────────── */
   .is-personal .orb-ambient { opacity: 0 !important; transition: opacity 0.5s; }
   .is-personal .bg-layer canvas { opacity: 0.04 !important; transition: opacity 0.5s; }
-  @keyframes pvFadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pvFadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pvConfetti { 0%{opacity:1;transform:translate(0,0) rotate(0deg)} 100%{opacity:0;transform:translate(var(--cx,40px),var(--cy,-100px)) rotate(var(--cr,360deg))} }
   @keyframes pvSlideIn { from{opacity:0;transform:translateX(100%)} to{opacity:1;transform:translateX(0)} }
   @keyframes pvPop { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
   @keyframes pvGlow { 0%{box-shadow:0 0 0 0 rgba(124,106,247,0.55)} 60%{box-shadow:0 0 0 8px rgba(124,106,247,0)} 100%{box-shadow:none} }
@@ -1266,8 +1267,15 @@
   .pv-pw-btn { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:14px; padding:5px 6px; border-radius:6px; transition:color 0.12s,background 0.12s; }
   .pv-pw-btn:hover { color:var(--text); background:rgba(255,255,255,0.08); }
   .pv-pw-btn--del:hover { color:#ef4444; background:rgba(239,68,68,0.1); }
+  .pv-pw-lock { display:inline-flex; align-items:center; justify-content:center; width:32px; flex-shrink:0; color:rgba(124,106,247,0.6); font-size:16px; transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+  .pv-pw-row:hover .pv-pw-lock { transform:rotate(360deg); }
+  .pv-pw-strength { height:3px; border-radius:99px; margin-top:5px; max-width:80px; transition:width 0.3s,background 0.3s; }
+  .pv-pw-del-confirm { display:flex; align-items:center; gap:6px; animation:pvFadeUp 0.15s both; }
+  .pv-pw-del-confirm-msg { font-size:11px; color:rgba(239,68,68,0.8); flex:1; }
+  .pv-pw-del-yes { background:rgba(239,68,68,0.15); border:0.5px solid rgba(239,68,68,0.35); border-radius:5px; color:#ef4444; cursor:pointer; font-family:inherit; font-size:11px; padding:3px 8px; }
+  .pv-pw-del-no { background:none; border:none; color:var(--text-3); cursor:pointer; font-family:inherit; font-size:11px; padding:3px 6px; }
   .pv-kanban { display:flex; gap:14px; align-items:flex-start; overflow-x:auto; padding-bottom:20px; min-height:200px; }
-  .pv-kol { flex:1; min-width:200px; background:rgba(255,255,255,0.02); border:0.5px solid rgba(255,255,255,0.06); border-radius:12px; padding:14px; transition:border-color 0.15s,background 0.15s; }
+  .pv-kol { flex:1; min-width:200px; background:rgba(255,255,255,0.02); border:0.5px solid rgba(255,255,255,0.06); border-top:3px solid var(--kol-color,rgba(83,74,183,0.5)); border-radius:12px; padding:14px; transition:border-color 0.15s,background 0.15s; }
   .pv-kol--over { border-color:rgba(83,74,183,0.5); background:rgba(83,74,183,0.07); }
   .pv-kol-hd { display:flex; align-items:center; gap:7px; margin-bottom:12px; }
   .pv-kol-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
@@ -1278,7 +1286,7 @@
   .pv-kol-cards { display:flex; flex-direction:column; gap:8px; }
   .pv-kcard { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; cursor:grab; transition:box-shadow 0.15s,opacity 0.15s,transform 0.15s; animation:pvFadeUp 0.25s calc(var(--si,0)*40ms) both; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
   .pv-kcard:hover { box-shadow:0 4px 14px rgba(0,0,0,0.28); }
-  .pv-kcard--dragging { opacity:0.4; transform:rotate(2deg); box-shadow:0 10px 28px rgba(83,74,183,0.4); cursor:grabbing; }
+  .pv-kcard--dragging { opacity:0.35; transform:rotate(2deg) scale(1.06); box-shadow:0 22px 46px rgba(83,74,183,0.5); cursor:grabbing; }
   .pv-kcard--new { animation:pvBounce 0.4s both; }
   .pv-kcard-title { font-size:13px; color:var(--text); line-height:1.4; flex:1; }
   .pv-kcard-del { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:12px; padding:1px 3px; border-radius:3px; opacity:0; transition:opacity 0.12s,color 0.12s; flex-shrink:0; }
@@ -1301,12 +1309,28 @@
   .pv-goal-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
   .pv-goal-pct { font-size:12px; font-weight:600; color:rgba(124,106,247,0.9); font-family:'Geist Mono',monospace; min-width:34px; text-align:right; }
   .pv-goal-chev { font-size:12px; color:var(--text-3); }
-  .pv-goal-bar-wrap { height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
+  .pv-goal-bar-wrap { height:8px; background:rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; }
   .pv-goal-bar { height:100%; width:var(--pct,0%); background:linear-gradient(90deg,#534AB7,#7C6AF7); border-radius:3px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
   .pv-goal-exp { margin-top:12px; padding-top:12px; border-top:0.5px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:10px; }
   .pv-goal-prog-row { display:flex; align-items:center; gap:10px; }
   .pv-goal-range { flex:1; accent-color:#534AB7; }
   .pv-goal-lbl { font-size:11px; color:var(--text-3); white-space:nowrap; }
+  .pv-goal-stepper { display:flex; align-items:center; gap:8px; }
+  .pv-goal-step-btn { background:rgba(83,74,183,0.15); border:0.5px solid rgba(83,74,183,0.3); border-radius:6px; color:rgba(124,106,247,0.9); cursor:pointer; font-size:20px; font-weight:300; width:30px; height:30px; display:flex; align-items:center; justify-content:center; transition:background 0.12s,transform 0.1s; padding:0; line-height:1; }
+  .pv-goal-step-btn:hover { background:rgba(83,74,183,0.3); transform:scale(1.12); }
+  .pv-goal-step-btn:active { transform:scale(0.92); }
+  .pv-goal-step-val { font-size:15px; font-weight:700; color:rgba(124,106,247,0.9); font-family:'Geist Mono',monospace; min-width:40px; text-align:center; }
+  .pv-goal-rel-date { font-size:11px; color:var(--text-3); margin-top:3px; }
+  .pv-goal-rel-date--urgent { color:#f87171; background:rgba(248,113,113,0.1); border-radius:4px; padding:1px 6px; display:inline-block; }
+  .pv-confetti-p { position:fixed; width:7px; height:7px; border-radius:2px; pointer-events:none; z-index:9999; animation:pvConfetti 0.9s ease-out both; }
+  .pv-modal-tag-chips { display:flex; flex-wrap:wrap; gap:5px; min-height:28px; }
+  .pv-modal-chip { background:rgba(83,74,183,0.18); border:0.5px solid rgba(83,74,183,0.35); border-radius:99px; color:rgba(124,106,247,0.9); display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:3px 8px; animation:pvFadeUp 0.15s both; }
+  .pv-modal-chip-x { background:none; border:none; color:rgba(124,106,247,0.6); cursor:pointer; font-size:13px; padding:0; line-height:1; }
+  .pv-modal-chip-x:hover { color:#ef4444; }
+  .pv-modal-tag-input { background:transparent; border:none; color:var(--text); font-family:inherit; font-size:13px; outline:none; min-width:80px; flex:1; padding:2px 0; }
+  .pv-modal-tag-wrap { background:rgba(255,255,255,0.05); border:0.5px solid rgba(255,255,255,0.1); border-radius:10px; padding:6px 10px; display:flex; flex-wrap:wrap; gap:5px; align-items:center; cursor:text; transition:border-color 0.15s; }
+  .pv-modal-tag-wrap:focus-within { border-color:rgba(83,74,183,0.55); }
+  .pv-note-rel-date { font-size:10px; color:var(--text-3); opacity:0.7; }
   .pv-btn-del { background:none; border:0.5px solid rgba(239,68,68,0.3); border-radius:6px; color:rgba(239,68,68,0.7); cursor:pointer; font-family:inherit; font-size:12px; padding:5px 12px; transition:background 0.12s; align-self:flex-start; }
   .pv-btn-del:hover { background:rgba(239,68,68,0.1); }
   .pv-profile { max-width:540px; }
@@ -3760,6 +3784,12 @@ function PersonalView({onChat}={}) {
   const [goalForm,    setGoalForm]    = React.useState({title:'',due_date:'',progress:0});
   const [newIds,      setNewIds]      = React.useState(new Set());
   const [tagFilter,   setTagFilter]   = React.useState(null);
+  const [pwDelConfirm,setPwDelConfirm]= React.useState(null);
+  const [confettiPcs, setConfettiPcs] = React.useState([]);
+  const [noteSaving,  setNoteSaving]  = React.useState(false);
+  const [noteTagsArr, setNoteTagsArr] = React.useState([]);
+  const [noteTagInput,setNoteTagInput]= React.useState('');
+  const [editNote,    setEditNote]    = React.useState(null);
 
   React.useEffect(()=>{ loadTab(tab); }, [tab]);
 
@@ -3828,10 +3858,24 @@ function PersonalView({onChat}={}) {
 
   /* ── Notes ── */
   const saveNote = async() => {
-    const tags=noteForm.tags.split(',').map(t=>t.trim()).filter(Boolean);
-    const entry=await api('/api/personal','POST',{title:noteForm.title||'Sem título',content:{body:noteForm.body},tags,type:'note'});
-    setNotes(p=>[entry,...p]); highlight(entry.id);
-    setModal(null); setNoteForm({title:'',body:'',tags:''});
+    setNoteSaving(true);
+    try {
+      const tags=[...noteTagsArr];
+      const entry=await api('/api/personal','POST',{title:noteForm.title||'Sem título',content:{body:noteForm.body},tags,type:'note'});
+      setNotes(p=>[entry,...p]); highlight(entry.id);
+      setModal(null); setNoteForm({title:'',body:''}); setNoteTagsArr([]); setNoteTagInput('');
+    } finally { setNoteSaving(false); }
+  };
+  const saveNoteEdit = async() => {
+    if(!editNote) return;
+    setNoteSaving(true);
+    try {
+      const tags=[...noteTagsArr];
+      const nc={...(editNote.content||{}),body:noteForm.body};
+      await api('/api/personal/'+editNote.id,'PATCH',{title:noteForm.title||'Sem título',content:nc,tags});
+      setNotes(p=>p.map(n=>n.id===editNote.id?{...n,title:noteForm.title,content:nc,tags}:n));
+      setModal(null); setEditNote(null); setNoteForm({title:'',body:''}); setNoteTagsArr([]); setNoteTagInput('');
+    } finally { setNoteSaving(false); }
   };
   const deleteNote = async(id) => {
     await api(`/api/personal/${id}`,'DELETE');
@@ -3891,17 +3935,33 @@ function PersonalView({onChat}={}) {
     setKanban(p=>({...p,[col]:p[col].filter(c=>c.id!==id)}));
   };
 
+  const fireConfetti = (anchorEl) => {
+    const colors=['#7C6AF7','#3BB0A8','#F59E0B','#34D399','#f87171','#60A5FA'];
+    const rect=anchorEl?anchorEl.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight/2,width:0,height:0};
+    const x=rect.left+rect.width/2; const y=rect.top+rect.height/2;
+    const pieces=Array.from({length:16},(_,i)=>({
+      id:Date.now()+i, color:colors[i%colors.length],
+      cx:(Math.random()-0.5)*180+'px', cy:-(40+Math.random()*120)+'px',
+      cr:(Math.random()*540-270)+'deg', x, y
+    }));
+    setConfettiPcs(pieces);
+    setTimeout(()=>setConfettiPcs([]),950);
+  };
+
   /* ── Goals ── */
   const saveGoal = async() => {
     const entry=await api('/api/personal','POST',{title:goalForm.title,content:{progress:parseInt(goalForm.progress)||0,due_date:goalForm.due_date},type:'goal'});
     setGoals(p=>[entry,...p]); highlight(entry.id);
     setModal(null); setGoalForm({title:'',due_date:'',progress:0});
   };
-  const updateProgress = async(id, val) => {
+  const updateProgress = async(id, val, anchorEl=null) => {
     const g=goals.find(x=>x.id===id); if(!g) return;
-    const nc={...(g.content||{}),progress:parseInt(val)};
+    const newPct=parseInt(val); const oldPct=parseInt((g.content&&g.content.progress)||0);
+    const nc={...(g.content||{}),progress:newPct};
     setGoals(p=>p.map(x=>x.id===id?{...x,content:nc}:x));
     await api(`/api/personal/${id}`,'PATCH',{content:nc});
+    const milestones=[25,50,75,100];
+    if(anchorEl&&milestones.some(m=>oldPct<m&&newPct>=m)) fireConfetti(anchorEl);
   };
   const deleteGoal = async(id) => { await api(`/api/personal/${id}`,'DELETE'); setGoals(p=>p.filter(g=>g.id!==id)); };
 
@@ -3925,7 +3985,7 @@ function PersonalView({onChat}={}) {
 
   const LINK_CATS = ['Curso','Ferramenta','Referência','Outro'];
   const CAT_COLOR = {Curso:'#7C6AF7',Ferramenta:'#3BB0A8','Referência':'#F59E0B',Outro:'#6B7280'};
-  const K_COLS = [{id:'todo',label:'A Fazer',dot:'rgba(124,106,247,0.8)'},{id:'doing',label:'Em Progresso',dot:'rgba(59,176,168,0.8)'},{id:'done',label:'Concluído',dot:'rgba(52,211,153,0.8)'}];
+  const K_COLS = [{id:'todo',label:'A Fazer',dot:'#6366f1',topColor:'#6366f1'},{id:'doing',label:'Em Progresso',dot:'#f59e0b',topColor:'#f59e0b'},{id:'done',label:'Concluído',dot:'#22c55e',topColor:'#22c55e'}];
   const PROF_SECS = [
     {id:'personal',label:'Dados Pessoais',fields:[{key:'name',label:'Nome',type:'text'},{key:'email',label:'Email',type:'email'},{key:'phone',label:'Telefone',type:'tel'},{key:'address',label:'Endereço',type:'text'}]},
     {id:'docs',label:'Documentos',fields:[{key:'cpf',label:'CPF',type:'text'},{key:'rg',label:'RG',type:'text'},{key:'cnh',label:'CNH',type:'text'}]},
@@ -3974,13 +4034,14 @@ function PersonalView({onChat}={}) {
                   onClick:()=>setSelNote(n)
                 },
                 ce('div',{className:'pv-card-actions'},
+                  ce('button',{className:'pv-card-action-btn',title:'Editar',onClick:e=>{e.stopPropagation();setEditNote(n);setNoteForm({title:n.title||'',body:(n.content&&n.content.body)||''});setNoteTagsArr((n.tags||[]).filter(t=>t!=='contexto-vivo'));setNoteTagInput('');setModal('note-edit');}},ce('i',{className:'ti ti-pencil'})),
                   ce('button',{className:'pv-card-action-btn pv-card-action-btn--del',title:'Excluir',onClick:e=>{e.stopPropagation();deleteNote(n.id);}},ce('i',{className:'ti ti-trash'}))
                 ),
                 ce('div',{className:'pv-card-title'},n.title||'Sem título'),
                 ce('p',{className:'pv-card-preview'},(n.content&&n.content.body)||''),
                 ce('div',{className:'pv-card-foot'},
                   ce('div',{className:'pv-tags'},...tags.map((t,j)=>ce('span',{key:j,className:'pv-tag',style:{background:tagColor(t)+'22',color:tagColor(t),borderRadius:'4px',padding:'2px 7px',fontSize:'10px',fontWeight:600}},t))),
-                  ce('span',{className:'pv-date'},fmtDate(n.created_at))
+                  ce('span',{className:'pv-note-rel-date'},fmtNoteDate(n.created_at))
                 ));
               })),
       selNote&&ce('div',{className:'pv-panel-backdrop',onClick:()=>setSelNote(null)}),
@@ -4019,31 +4080,57 @@ function PersonalView({onChat}={}) {
     })
   );
 
-  const renderPasswords = () => ce('div',{className:'pv-pw-list'},
-    ...passwords.map(pw=>{
-      const dec=pwDecrypted[pw.id]; const vis=pwVisible[pw.id];
-      return ce('div',{key:pw.id,className:'pv-pw-row'},
-        ce('div',{className:'pv-pw-left'},
-          ce('div',{className:'pv-pw-site'},pw.title||'Site'),
-          ce('div',{className:'pv-pw-user'},dec?dec.user:'••••••')
-        ),
-        ce('div',{className:'pv-pw-center'},
-          vis&&dec?ce('span',{className:'pv-pw-val'},dec.password):ce('span',null,'••••••••')
-        ),
-        ce('div',{className:'pv-pw-actions'},
-          ce('button',{className:'pv-pw-btn',title:'Copiar usuário',onClick:()=>copyPw(pw,'user')}, pwCopied[`${pw.id}_user`]?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'})),
-          ce('button',{className:'pv-pw-btn',title:'Copiar senha',onClick:()=>copyPw(pw,'password')}, pwCopied[`${pw.id}_password`]?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'})),
-          ce('button',{className:'pv-pw-btn',title:vis?'Ocultar':'Mostrar',onClick:()=>revealPw(pw)}, ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'})),
-          ce('button',{className:'pv-pw-btn pv-pw-btn--del',title:'Excluir',onClick:()=>deletePw(pw.id)}, ce('i',{className:'ti ti-trash'}))
-        )
-      );
-    })
-  );
+  const pwStrength = (pw) => {
+    if(!pw||pw.length<4) return {w:'20%',color:'#ef4444'};
+    if(pw.length<8) return {w:'45%',color:'#f59e0b'};
+    const u=/[A-Z]/.test(pw); const s=/[^a-zA-Z0-9]/.test(pw);
+    if(pw.length>=12&&u&&s) return {w:'100%',color:'#22c55e'};
+    if(pw.length>=8&&(u||s)) return {w:'70%',color:'#f59e0b'};
+    return {w:'55%',color:'#f59e0b'};
+  };
 
-  const renderKanban = () => ce('div',{className:'pv-kanban'},
+  const renderPasswords = () => passwords.length===0
+    ?ce('div',{className:'pv-empty-motivational'},
+        ce('i',{className:'ti ti-lock pv-empty-big-icon'}),
+        ce('h3',null,'Nenhuma senha salva.'),
+        ce('p',null,'Criptografia AES-256 — só você tem acesso.'),
+        ce('button',{className:'pv-empty-cta',onClick:()=>setModal('password')},'+ Primeira senha')
+      )
+    :ce('div',{className:'pv-pw-list'},
+      ...passwords.map(pw=>{
+        const dec=pwDecrypted[pw.id]; const vis=pwVisible[pw.id];
+        const str=dec?pwStrength(dec.password):null;
+        const confirmDel=pwDelConfirm===pw.id;
+        return ce('div',{key:pw.id,className:'pv-pw-row'},
+          ce('i',{className:'ti ti-lock pv-pw-lock'}),
+          ce('div',{className:'pv-pw-left'},
+            ce('div',{className:'pv-pw-site'},pw.title||'Site'),
+            ce('div',{className:'pv-pw-user'},dec?dec.user:'••••••'),
+            str&&ce('div',{className:'pv-pw-strength',style:{width:str.w,background:str.color}})
+          ),
+          ce('div',{className:'pv-pw-center'},
+            vis&&dec?ce('span',{className:'pv-pw-val'},dec.password):ce('span',null,'••••••••')
+          ),
+          confirmDel
+            ?ce('div',{className:'pv-pw-del-confirm'},
+                ce('span',{className:'pv-pw-del-confirm-msg'},'Excluir?'),
+                ce('button',{className:'pv-pw-del-yes',onClick:()=>{deletePw(pw.id);setPwDelConfirm(null);}},'✓ Sim'),
+                ce('button',{className:'pv-pw-del-no',onClick:()=>setPwDelConfirm(null)},'× Não')
+              )
+            :ce('div',{className:'pv-pw-actions'},
+                ce('button',{className:'pv-pw-btn',title:'Copiar usuário',onClick:()=>copyPw(pw,'user')}, pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'})),
+                ce('button',{className:'pv-pw-btn',title:'Copiar senha',onClick:()=>copyPw(pw,'password')}, pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'})),
+                ce('button',{className:'pv-pw-btn',title:vis?'Ocultar':'Mostrar',onClick:()=>revealPw(pw)}, ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'})),
+                ce('button',{className:'pv-pw-btn pv-pw-btn--del',title:'Excluir',onClick:()=>setPwDelConfirm(pw.id)}, ce('i',{className:'ti ti-trash'}))
+              )
+        );
+      })
+    );
+
+    const renderKanban = () => ce('div',{className:'pv-kanban'},
     ...K_COLS.map(col=>{
       const cards=kanban[col.id]||[];
-      return ce('div',{key:col.id,className:'pv-kol'+(dragOver===col.id?' pv-kol--over':''),
+      return ce('div',{key:col.id,className:'pv-kol'+(dragOver===col.id?' pv-kol--over':''),style:{'--kol-color':col.topColor},
           onDragOver:e=>{e.preventDefault();setDragOver(col.id);},
           onDragLeave:()=>setDragOver(null),
           onDrop:e=>{e.preventDefault();if(!dragId)return;const from=Object.keys(kanban).find(k=>kanban[k].some(c=>c.id===dragId));if(from)moveCard(dragId,from,col.id);setDragId(null);setDragOver(null);}
@@ -4076,37 +4163,64 @@ function PersonalView({onChat}={}) {
     })
   );
 
+  const fmtNoteDate = (iso) => {
+    if(!iso) return '';
+    const abs=Math.abs(Math.ceil((new Date(iso)-new Date())/86400000));
+    if(abs===0) return 'hoje';
+    if(abs===1) return 'ontem';
+    if(abs<7) return abs+'d atrás';
+    if(abs<30) return Math.floor(abs/7)+'sem';
+    return fmtDate(iso);
+  };
+
+  const fmtRelDate = (iso) => {
+    if(!iso) return null;
+    const d=Math.ceil((new Date(iso)-new Date())/86400000);
+    if(d<0) return {text:'Vencida há '+Math.abs(d)+'d',cls:'--urgent'};
+    if(d===0) return {text:'Vence hoje',cls:'--urgent'};
+    if(d<=7) return {text:'Vence em '+d+'d',cls:'--urgent'};
+    return {text:'Vence em '+d+'d',cls:''};
+  };
+
   const renderGoals = () => ce('div',{className:'pv-goals'},
     loading?ce('div',{className:'pv-loading'})
-    :goals.length===0?ce('div',{className:'pv-empty'},ce('i',{className:'ti ti-target pv-empty-icon'}),ce('p',null,'Nenhuma meta'))
+    :goals.length===0?ce('div',{className:'pv-empty-motivational'},
+        ce('i',{className:'ti ti-target pv-empty-big-icon'}),
+        ce('h3',null,'Nenhuma meta ainda.'),
+        ce('p',null,'Metas claras transformam intenção em resultado.'),
+        ce('button',{className:'pv-empty-cta',onClick:()=>setModal('goal')},'+ Primeira meta')
+      )
     :goals.map((g,i)=>{
       const pct=parseInt((g.content&&g.content.progress)||0);
-      const due=g.content&&g.content.due_date||g.due_date||'';
-      const days=daysUntil(due); const urgent=days!==null&&days<=7;
+      const rd=fmtRelDate(g.content&&g.content.due_date||g.due_date||'');
       const exp=expGoal===g.id;
       return ce('div',{key:g.id,className:'pv-goal'+(newIds.has(g.id)?' pv-goal--new':''),style:{'--si':i}},
         ce('div',{className:'pv-goal-hd',onClick:()=>setExpGoal(exp?null:g.id)},
           ce('div',{className:'pv-goal-left'},
             ce('div',{className:'pv-goal-title'},g.title),
-            due&&ce('div',{className:'pv-goal-due'+(urgent?' pv-goal-due--urgent':'')},urgent?(days<0?'Atrasada':'Urgente: '):'')+due
+            rd&&ce('div',{className:'pv-goal-rel-date pv-goal-rel-date'+rd.cls},rd.text)
           ),
           ce('div',{className:'pv-goal-right'},
-            ce('span',{className:'pv-goal-pct'},`${pct}%`),
-            ce('i',{className:`ti ${exp?'ti-chevron-up':'ti-chevron-down'} pv-goal-chev`})
+            ce('span',{className:'pv-goal-pct'},pct+'%'),
+            ce('i',{className:'ti '+(exp?'ti-chevron-up':'ti-chevron-down')+' pv-goal-chev'})
           )
         ),
-        ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':`${pct}%`}})),
+        ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':pct+'%'}})),
         exp&&ce('div',{className:'pv-goal-exp'},
           ce('div',{className:'pv-goal-prog-row'},
             ce('label',{className:'pv-goal-lbl'},'Progresso:'),
-            ce('input',{type:'range',min:0,max:100,value:pct,onChange:e=>updateProgress(g.id,e.target.value),className:'pv-goal-range'}),
-            ce('span',{className:'pv-goal-pct'},`${pct}%`)
+            ce('div',{className:'pv-goal-stepper'},
+              ce('button',{className:'pv-goal-step-btn',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.max(0,pct-5),e.currentTarget);}},'−'),
+              ce('span',{className:'pv-goal-step-val'},pct+'%'),
+              ce('button',{className:'pv-goal-step-btn',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+')
+            )
           ),
           ce('button',{className:'pv-btn-del',onClick:()=>deleteGoal(g.id)},'Excluir meta')
         )
       );
     })
   );
+
 
   const renderProfile = () => {
     const init=(profileData.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
@@ -4145,11 +4259,27 @@ function PersonalView({onChat}={}) {
           ce('div',{className:'pv-modal-foot'},ce('button',{className:'pv-modal-cancel',onClick:close},'Cancelar'),ce('button',{className:'pv-modal-save',onClick:onSave},saveLabel))
         )
       );
+    const tagChipUI = ce('div',{key:'tc',className:'pv-modal-tag-wrap',onClick:e=>{const inp=e.currentTarget.querySelector('.pv-modal-tag-input');if(inp)inp.focus();}},
+      ...noteTagsArr.map((t,i)=>ce('span',{key:i,className:'pv-modal-chip'},
+        t,
+        ce('button',{className:'pv-modal-chip-x',onClick:()=>setNoteTagsArr(p=>p.filter((_,j)=>j!==i))},'×')
+      )),
+      ce('input',{className:'pv-modal-tag-input',placeholder:noteTagsArr.length?'':'Tags…',value:noteTagInput,onChange:e=>setNoteTagInput(e.target.value),
+        onKeyDown:e=>{
+          if((e.key==='Enter'||e.key===',')&&noteTagInput.trim()){e.preventDefault();setNoteTagsArr(p=>[...p,noteTagInput.trim()]);setNoteTagInput('');}
+          if(e.key==='Backspace'&&!noteTagInput&&noteTagsArr.length){setNoteTagsArr(p=>p.slice(0,-1));}
+        }})
+    );
     if(modal==='note') return overlay('Nova Nota',[
       ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título',value:noteForm.title,onChange:e=>setNoteForm(p=>({...p,title:e.target.value}))}),
       ce('textarea',{key:'b',className:'pv-modal-input pv-modal-ta',placeholder:'Conteúdo…',value:noteForm.body,onChange:e=>setNoteForm(p=>({...p,body:e.target.value})),rows:6}),
-      ce('input',{key:'g',className:'pv-modal-input',placeholder:'Tags (separadas por vírgula)',value:noteForm.tags,onChange:e=>setNoteForm(p=>({...p,tags:e.target.value}))})
-    ],saveNote);
+      tagChipUI
+    ],saveNote,noteSaving?'Salvando…':'Salvar');
+    if(modal==='note-edit') return overlay('Editar Nota',[
+      ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título',value:noteForm.title,onChange:e=>setNoteForm(p=>({...p,title:e.target.value}))}),
+      ce('textarea',{key:'b',className:'pv-modal-input pv-modal-ta',placeholder:'Conteúdo…',value:noteForm.body,onChange:e=>setNoteForm(p=>({...p,body:e.target.value})),rows:6}),
+      tagChipUI
+    ],saveNoteEdit,noteSaving?'Salvando…':'Salvar');
     if(modal==='link') return overlay('Novo Link',[
       ce('input',{key:'u',className:'pv-modal-input',placeholder:'URL',value:linkForm.url,onChange:e=>setLinkForm(p=>({...p,url:e.target.value}))}),
       ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título (opcional)',value:linkForm.title,onChange:e=>setLinkForm(p=>({...p,title:e.target.value}))}),
@@ -4196,6 +4326,9 @@ function PersonalView({onChat}={}) {
       tab==='kanban'?renderKanban():
       tab==='goals'?renderGoals():
       tab==='profile'?renderProfile():null
+    ),
+    confettiPcs.length>0&&ce('div',{style:{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999}},
+      ...confettiPcs.map(p=>ce('div',{key:p.id,className:'pv-confetti-p',style:{background:p.color,left:p.x+'px',top:p.y+'px','--cx':p.cx,'--cy':p.cy,'--cr':p.cr}}))
     ),
     renderModal()
   );
