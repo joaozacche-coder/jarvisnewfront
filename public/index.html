@@ -1224,6 +1224,9 @@
   .pv-del-modal { background:linear-gradient(145deg,#1e1833,#12102a); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:32px 28px 24px; width:320px; text-align:center; animation:pvDelSpring 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
   .pv-del-modal--exit { animation:pvDelExit 0.2s ease-in forwards; }
   .pv-card--dying { animation:pvCardDie 0.25s ease-in forwards; pointer-events:none; }
+  .pv-goal-del-modal { background:linear-gradient(145deg,#1a1530,#0f0d22); border:1px solid rgba(83,74,183,0.25); border-radius:20px; padding:32px 28px 24px; width:320px; text-align:center; animation:pvDelSpring 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+  .pv-goal-del-modal--exit { animation:pvDelExit 0.2s ease-in forwards; }
+  .pv-goal-del-icon { width:52px; height:52px; background:rgba(83,74,183,0.15); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
   .pv-tag-filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
   .pv-tag-filter-pill { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.1); border-radius:99px; color:var(--text-3); cursor:pointer; font-size:11px; font-weight:600; padding:4px 11px; transition:all 0.15s; }
   .pv-tag-filter-pill:hover { border-color:rgba(83,74,183,0.4); color:rgba(124,106,247,0.8); background:rgba(83,74,183,0.07); }
@@ -1261,19 +1264,23 @@
   .pv-link-url { font-size:11px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:3px 0 10px; }
   .pv-link-copy { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:13px; padding:2px 6px; border-radius:5px; transition:color 0.12s,background 0.12s; }
   .pv-link-copy:hover { color:var(--text); background:rgba(255,255,255,0.07); }
+  .pv-link-pencil { position:absolute; top:10px; right:36px; width:20px; height:20px; background:transparent; border:none; color:rgba(255,255,255,0.25); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,transform 0.15s; z-index:2; }
+  .pv-link-pencil:hover { color:#a78bfa; transform:scale(1.1); }
+  .pv-link-del-x { position:absolute; top:10px; right:12px; width:20px; height:20px; background:transparent; border:none; color:rgba(255,255,255,0.25); font-size:16px; line-height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,transform 0.15s; z-index:2; }
+  .pv-link-del-x:hover { color:#f87171; transform:scale(1.2); }
   /* SENHAS — pill buttons sempre visíveis */
   .pv-pw-list { display:flex; flex-direction:column; gap:10px; }
   .pv-pw-card { background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:16px; transition:border-color 0.2s,background 0.2s; }
   .pv-pw-card:hover { border-color:rgba(83,74,183,0.4); background:rgba(83,74,183,0.07); }
   .pv-pw-card-top { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
-  .pv-pw-icon { width:36px; height:36px; background:rgba(83,74,183,0.2); border:1px solid rgba(83,74,183,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#818cf8; font-size:16px; transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+  .pv-pw-icon { width:40px; height:40px; background:linear-gradient(135deg,#534AB7,#6d28d9); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; font-size:18px; transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
   .pv-pw-card:hover .pv-pw-icon { transform:rotate(360deg); }
   .pv-pw-info { flex:1; min-width:0; }
   .pv-pw-site { font-size:14px; font-weight:600; color:rgba(255,255,255,0.92); }
-  .pv-pw-user { font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .pv-pw-masked { font-family:'Geist Mono',monospace; font-size:15px; color:rgba(255,255,255,0.35); letter-spacing:4px; margin-bottom:10px; padding:4px 0; }
+  .pv-pw-user { font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-bottom:2px solid #f59e0b; padding-bottom:2px; display:inline-block; max-width:100%; }
+  .pv-pw-masked { font-family:'Geist Mono',monospace; font-size:20px; color:rgba(255,255,255,0.6); letter-spacing:4px; margin-bottom:10px; padding:4px 0; }
   .pv-pw-revealed { font-family:'Geist Mono',monospace; font-size:13px; color:#818cf8; margin-bottom:10px; word-break:break-all; background:rgba(83,74,183,0.1); border:1px solid rgba(83,74,183,0.25); border-radius:8px; padding:7px 10px; animation:pvFadeUp 0.15s both; }
-  .pv-pw-strength { height:3px; border-radius:99px; margin-top:4px; max-width:70px; transition:width 0.3s,background 0.3s; }
+  .pv-pw-strength { height:3px; border-radius:99px; margin-top:4px; width:80px; transition:width 0.3s,background 0.3s; }
   .pv-pw-footer { display:flex; flex-wrap:wrap; gap:6px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
   .pv-pw-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:rgba(255,255,255,0.7); cursor:pointer; font-family:inherit; font-size:12px; font-weight:500; padding:5px 10px; transition:background 0.15s,transform 0.1s,border-color 0.15s; white-space:nowrap; }
   .pv-pw-pill:hover { background:rgba(255,255,255,0.12); transform:scale(1.03); }
@@ -1291,11 +1298,11 @@
   .pv-kol-add { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:18px; line-height:1; padding:0 2px; transition:color 0.12s; border-radius:4px; }
   .pv-kol-add:hover { color:rgba(124,106,247,0.9); }
   .pv-kol-cards { display:flex; flex-direction:column; gap:8px; }
-  .pv-kcard { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.07); border-left:3px solid var(--kcard-color,rgba(124,106,247,0.4)); border-radius:8px; padding:10px 12px; cursor:grab; transition:box-shadow 0.15s,opacity 0.15s,transform 0.15s,background 0.15s; animation:pvFadeUp 0.25s calc(var(--si,0)*40ms) both; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .pv-kcard { background:rgba(255,255,255,0.04); border:0.5px solid rgba(255,255,255,0.07); border-left:3px solid var(--kcard-color,rgba(124,106,247,0.4)); border-radius:8px; padding:10px 12px; cursor:grab; transition:box-shadow 0.15s,opacity 0.15s,transform 0.15s,background 0.15s; animation:pvFadeUp 0.25s calc(var(--si,0)*40ms) both; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; position:relative; }
   .pv-kcard:hover { background:rgba(255,255,255,0.065); box-shadow:0 6px 18px rgba(0,0,0,0.3); }
   .pv-kcard--dragging { opacity:0.35; transform:rotate(2deg) scale(1.06); box-shadow:0 22px 46px rgba(83,74,183,0.5); cursor:grabbing; }
   .pv-kcard--new { animation:pvBounce 0.4s both; }
-  .pv-kcard-title { font-size:13px; color:var(--text); line-height:1.4; flex:1; }
+  .pv-kcard-title { font-size:13px; color:var(--text); line-height:1.4; flex:1; text-transform:capitalize; padding-right:22px; }
   .pv-kcard-btns { display:flex; gap:3px; flex-shrink:0; }
   .pv-kcard-del { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); cursor:pointer; font-size:11px; padding:3px 5px; border-radius:5px; transition:color 0.12s,background 0.12s; }
   .pv-kcard-del:hover { color:#f87171; background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.25); }
@@ -1307,7 +1314,7 @@
   .pv-kol-save { background:rgba(83,74,183,0.25); border:none; border-radius:6px; color:rgba(124,106,247,0.9); cursor:pointer; font-family:inherit; font-size:12px; padding:5px 10px; }
   .pv-kol-cancel { background:none; border:none; color:var(--text-3); cursor:pointer; font-family:inherit; font-size:12px; padding:5px 10px; }
   .pv-goals { display:flex; flex-direction:column; gap:10px; }
-  .pv-goal { background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:16px 18px; transition:border-color 0.2s,background 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*50ms) both; }
+  .pv-goal { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px 22px; transition:border-color 0.2s,background 0.2s; animation:pvFadeUp 0.3s calc(var(--si,0)*50ms) both; position:relative; }
   .pv-goal:hover { border-color:rgba(83,74,183,0.4); background:rgba(83,74,183,0.06); }
   .pv-goal--new { animation:pvGlow 1.4s both; }
   .pv-goal-hd { display:flex; align-items:flex-start; margin-bottom:8px; gap:10px; }
@@ -1318,14 +1325,14 @@
   .pv-goal-act-btn--del:hover { color:#f87171; background:rgba(239,68,68,0.12); }
   .pv-goal-prog-area { display:flex; align-items:center; gap:12px; margin:8px 0; }
   .pv-goal-actions-row { display:flex; gap:8px; margin-top:8px; }
-  .pv-goal-title { font-size:16px; font-weight:700; color:rgba(255,255,255,0.92); }
+  .pv-goal-title { font-size:17px; font-weight:700; color:rgba(255,255,255,0.95); }
   .pv-goal-due { font-size:11px; color:var(--text-3); margin-top:2px; display:inline-block; }
   .pv-goal-due--urgent { color:#f87171; background:rgba(248,113,113,0.12); border-radius:4px; padding:1px 6px; animation:agPulse 2s ease-in-out infinite; }
   .pv-goal-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-  .pv-goal-pct { font-size:28px; font-weight:800; color:#818cf8; font-family:'Geist Mono',monospace; line-height:1; flex-shrink:0; }
+  .pv-goal-pct { font-size:32px; font-weight:800; background:linear-gradient(90deg,#818cf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-family:'Geist Mono',monospace; line-height:1; flex-shrink:0; }
   .pv-goal-chev { font-size:12px; color:var(--text-3); }
-  .pv-goal-bar-wrap { height:10px; background:rgba(255,255,255,0.07); border-radius:99px; overflow:hidden; flex:1; }
-  .pv-goal-bar { height:100%; width:var(--pct,0%); background:linear-gradient(90deg,#534AB7,#818cf8); border-radius:99px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .pv-goal-bar-wrap { height:12px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; flex:1; }
+  .pv-goal-bar { height:100%; width:var(--pct,0%); background:linear-gradient(90deg,#534AB7,#818cf8,#a78bfa); border-radius:99px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
   .pv-goal-exp { margin-top:12px; padding-top:12px; border-top:0.5px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:10px; }
   .pv-goal-prog-row { display:flex; align-items:center; gap:10px; }
   .pv-goal-range { flex:1; accent-color:#534AB7; }
@@ -1340,6 +1347,7 @@
   .pv-goal-step-val { font-size:15px; font-weight:700; color:rgba(124,106,247,0.9); font-family:'Geist Mono',monospace; min-width:40px; text-align:center; }
   .pv-goal-rel-date { font-size:11px; color:var(--text-3); margin-top:3px; }
   .pv-goal-rel-date--urgent { color:#f87171; background:rgba(248,113,113,0.1); border-radius:4px; padding:1px 6px; display:inline-block; }
+  .pv-goal-rel-date--amber { color:#f59e0b; background:rgba(245,158,11,0.1); border-radius:4px; padding:1px 6px; display:inline-block; }
   .pv-confetti-p { position:fixed; width:7px; height:7px; border-radius:2px; pointer-events:none; z-index:9999; animation:pvConfetti 0.9s ease-out both; }
   .pv-modal-tag-chips { display:flex; flex-wrap:wrap; gap:5px; min-height:28px; }
   .pv-modal-chip { background:rgba(83,74,183,0.18); border:0.5px solid rgba(83,74,183,0.35); border-radius:99px; color:rgba(124,106,247,0.9); display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:3px 8px; animation:pvFadeUp 0.15s both; }
@@ -3816,6 +3824,20 @@ function PersonalView({onChat}={}) {
   const [noteDelConfirm,setNoteDelConfirm]= React.useState(null);
   const [noteDelExiting,setNoteDelExiting]= React.useState(false);
   const [noteDying,     setNoteDying]     = React.useState(new Set());
+  const [linkDelConfirm,setLinkDelConfirm]= React.useState(null);
+  const [linkDelExiting,setLinkDelExiting]= React.useState(false);
+  const [linkDying,     setLinkDying]     = React.useState(new Set());
+  const [editLink,      setEditLink]      = React.useState(null);
+  const [linkEditForm,  setLinkEditForm]  = React.useState({title:'',url:'',category:'Outro'});
+  const [pwDelModal,    setPwDelModal]    = React.useState(null);
+  const [pwDelModalExit,setPwDelModalExit]= React.useState(false);
+  const [kDelConfirm,   setKDelConfirm]   = React.useState(null);
+  const [kDelExiting,   setKDelExiting]   = React.useState(false);
+  const [kEditCard,     setKEditCard]     = React.useState(null);
+  const [kEditTxt,      setKEditTxt]      = React.useState('');
+  const [goalDelConfirm,setGoalDelConfirm]= React.useState(null);
+  const [goalDelExiting,setGoalDelExiting]= React.useState(false);
+  const [goalEditForm,  setGoalEditForm]  = React.useState(null);
 
   React.useEffect(()=>{ loadTab(tab); }, [tab]);
   React.useEffect(()=>{
@@ -3923,7 +3945,20 @@ function PersonalView({onChat}={}) {
     setLinks(p=>[entry,...p]); highlight(entry.id);
     setModal(null); setLinkForm({url:'',title:'',category:'Outro'});
   };
-  const deleteLink = async(id) => { await api(`/api/personal/${id}`,'DELETE'); setLinks(p=>p.filter(l=>l.id!==id)); };
+  const deleteLink = async(id) => {
+    setLinkDying(s=>{const d=new Set(s);d.add(id);return d;});
+    await new Promise(r=>setTimeout(r,250));
+    await api(`/api/personal/${id}`,'DELETE');
+    setLinks(p=>p.filter(l=>l.id!==id));
+    setLinkDying(s=>{const d=new Set(s);d.delete(id);return d;});
+  };
+  const saveLinkEdit = async() => {
+    if(!editLink) return;
+    const nc={url:linkEditForm.url,category:linkEditForm.category};
+    await api('/api/personal/'+editLink.id,'PATCH',{title:linkEditForm.title||linkEditForm.url,content:nc});
+    setLinks(p=>p.map(l=>l.id===editLink.id?{...l,title:linkEditForm.title||linkEditForm.url,content:nc}:l));
+    setModal(null); setEditLink(null);
+  };
 
   /* ── Passwords ── */
   const savePw = async() => {
@@ -4003,6 +4038,23 @@ function PersonalView({onChat}={}) {
     setConfettiPcs(pieces);
     setTimeout(()=>setConfettiPcs([]),950);
   };
+  const fireGoalConfetti = (anchorEl) => {
+    const colors=['#534AB7','#818cf8','#a78bfa','#6d28d9','#7C6AF7','#4338ca'];
+    const rect=anchorEl?anchorEl.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight/2,width:0,height:0};
+    const cx=rect.left+rect.width/2; const cy=rect.top+rect.height/2;
+    for(let i=0;i<12;i++){
+      const el=document.createElement('div');
+      const dx=(Math.random()-0.5)*160; const dy=-(60+Math.random()*80);
+      const deg=Math.random()*720-360;
+      el.style.cssText='position:fixed;left:'+cx+'px;top:'+cy+'px;width:8px;height:8px;background:'+colors[i%colors.length]+';border-radius:2px;pointer-events:none;z-index:9999;transition:transform 0.6s ease-out,opacity 0.6s ease-out;opacity:1;';
+      document.body.appendChild(el);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        el.style.transform='translate('+dx+'px,'+dy+'px) rotate('+deg+'deg)';
+        el.style.opacity='0';
+      }));
+      setTimeout(()=>el.remove(),650);
+    }
+  };
 
   /* ── Goals ── */
   const saveGoal = async() => {
@@ -4017,9 +4069,23 @@ function PersonalView({onChat}={}) {
     setGoals(p=>p.map(x=>x.id===id?{...x,content:nc}:x));
     await api(`/api/personal/${id}`,'PATCH',{content:nc});
     const milestones=[25,50,75,100];
-    if(anchorEl&&milestones.some(m=>oldPct<m&&newPct>=m)) fireConfetti(anchorEl);
+    if(anchorEl&&milestones.some(m=>oldPct<m&&newPct>=m)) fireGoalConfetti(anchorEl);
   };
   const deleteGoal = async(id) => { await api(`/api/personal/${id}`,'DELETE'); setGoals(p=>p.filter(g=>g.id!==id)); };
+  const saveGoalEdit = async() => {
+    if(!goalEditForm) return;
+    const g=goals.find(x=>x.id===goalEditForm.id); if(!g) return;
+    const nc={...(g.content||{}),due_date:goalEditForm.due_date};
+    await api('/api/personal/'+goalEditForm.id,'PATCH',{title:goalEditForm.title,content:nc});
+    setGoals(p=>p.map(x=>x.id===goalEditForm.id?{...x,title:goalEditForm.title,content:nc}:x));
+    setModal(null); setGoalEditForm(null);
+  };
+  const renameCard = async() => {
+    if(!kEditCard||!kEditTxt.trim()) return;
+    await api('/api/personal/'+kEditCard.id,'PATCH',{title:kEditTxt.trim()});
+    setKanban(p=>({...p,[kEditCard.col]:p[kEditCard.col].map(c=>c.id===kEditCard.id?{...c,title:kEditTxt.trim()}:c)}));
+    setModal(null); setKEditCard(null);
+  };
 
   /* ── Profile ── */
   const saveField = async(field, val) => {
@@ -4113,24 +4179,47 @@ function PersonalView({onChat}={}) {
     );
   };
 
-    const renderLinks = () => ce('div',{className:'pv-grid'},
-    ...links.map((l,i)=>{
-      const url=l.content&&l.content.url||''; const cat=l.content&&l.content.category||'Outro';
-      const dom=getDomain(url);
-      return ce('div',{key:l.id,className:'pv-card pv-card--link'+(newIds.has(l.id)?' pv-card--new':''),style:{'--si':i,'--cat-color':CAT_COLOR[cat]||'#6B7280'},onClick:()=>window.open(url.startsWith('http')?url:'https://'+url,'_blank')},
-        ce('div',{className:'pv-link-top'},
-          ce('img',{className:'pv-favicon',src:`https://www.google.com/s2/favicons?domain=${dom}&sz=32`,alt:'',onError:e=>{e.target.style.display='none'}}),
-          ce('span',{className:'pv-tag',style:{background:CAT_COLOR[cat]||'#6B7280'}},cat)
-        ),
-        ce('div',{className:'pv-card-title'},l.title||dom),
-        ce('p',{className:'pv-link-url'},url.replace(/^https?:\/\//,'')),
-        ce('div',{className:'pv-card-foot'},
-          ce('span',{className:'pv-date'},fmtDate(l.created_at)),
-          ce('button',{className:'pv-link-copy',onClick:e=>{e.stopPropagation();navigator.clipboard.writeText(url);},title:'Copiar URL'},ce('i',{className:'ti ti-copy'}))
+    const renderLinks = () => {
+    const linkModal=linkDelConfirm&&ce('div',{className:'pv-del-modal-overlay',onClick:()=>{if(!linkDelExiting){setLinkDelExiting(true);setTimeout(()=>setLinkDelConfirm(null),200);}}},
+      ce('div',{className:'pv-del-modal'+(linkDelExiting?' pv-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+        ce('div',{style:{width:52,height:52,background:'rgba(239,68,68,0.12)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}},ce('i',{className:'ti ti-link-off',style:{fontSize:26,color:'#f87171'}})),
+        ce('div',{style:{fontSize:17,fontWeight:700,color:'rgba(255,255,255,0.92)',marginBottom:8}},'Excluir link?'),
+        ce('div',{style:{fontSize:13,color:'rgba(255,255,255,0.45)',marginBottom:24}},(linkDelConfirm&&linkDelConfirm.title)||(linkDelConfirm&&linkDelConfirm.content&&linkDelConfirm.content.url)||'Este link será apagado.'),
+        ce('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.7)',cursor:'pointer',fontSize:14,fontWeight:600},onClick:()=>{setLinkDelExiting(true);setTimeout(()=>setLinkDelConfirm(null),200);}},'Cancelar'),
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(239,68,68,0.15)',border:'1px solid rgba(239,68,68,0.4)',color:'#f87171',cursor:'pointer',fontSize:14,fontWeight:600},onClick:async()=>{const ld=linkDelConfirm;setLinkDelExiting(true);setTimeout(()=>setLinkDelConfirm(null),200);await deleteLink(ld.id);}},'Excluir')
         )
+      )
+    );
+    const grid=links.length===0
+      ?ce('div',{className:'pv-empty-motivational'},
+          ce('i',{className:'ti ti-link pv-empty-big-icon'}),
+          ce('h3',null,'Nenhum link salvo.'),
+          ce('p',null,'Salve links importantes para acessar depois.'),
+          ce('button',{className:'pv-empty-cta',onClick:()=>setModal('link')},'+ Primeiro link')
+        )
+      :ce('div',{className:'pv-grid'},
+        ...links.map((l,i)=>{
+          const url=l.content&&l.content.url||''; const cat=l.content&&l.content.category||'Outro';
+          const dom=getDomain(url);
+          return ce('div',{key:l.id,className:'pv-card pv-card--link'+(newIds.has(l.id)?' pv-card--new':'')+(linkDying.has(l.id)?' pv-card--dying':''),style:{'--si':i,'--cat-color':CAT_COLOR[cat]||'#6B7280'},onClick:()=>window.open(url.startsWith('http')?url:'https://'+url,'_blank')},
+            ce('button',{className:'pv-link-pencil',title:'Editar',onClick:e=>{e.stopPropagation();setEditLink(l);setLinkEditForm({title:l.title||'',url:url,category:cat});setModal('link-edit');}},ce('i',{className:'ti ti-pencil'})),
+            ce('button',{className:'pv-link-del-x',title:'Excluir',onClick:e=>{e.stopPropagation();setLinkDelConfirm(l);setLinkDelExiting(false);}},'×'),
+            ce('div',{className:'pv-link-top'},
+              ce('img',{className:'pv-favicon',src:`https://www.google.com/s2/favicons?domain=${dom}&sz=32`,alt:'',onError:e=>{e.target.style.display='none'}}),
+              ce('span',{className:'pv-tag',style:{background:CAT_COLOR[cat]||'#6B7280'}},cat)
+            ),
+            ce('div',{className:'pv-card-title'},l.title||dom),
+            ce('p',{className:'pv-link-url'},url.replace(/^https?:\/\//,'')),
+            ce('div',{className:'pv-card-foot'},
+              ce('span',{className:'pv-date'},fmtDate(l.created_at)),
+              ce('button',{className:'pv-link-copy',onClick:e=>{e.stopPropagation();navigator.clipboard.writeText(url);},title:'Copiar URL'},ce('i',{className:'ti ti-copy'}))
+            )
+          );
+        })
       );
-    })
-  );
+    return ce('div',null,grid,linkModal);
+  };
 
   const pwStrength = (pw) => {
     if(!pw||pw.length<4) return {w:'20%',color:'#ef4444'};
@@ -4141,99 +4230,114 @@ function PersonalView({onChat}={}) {
     return {w:'55%',color:'#f59e0b'};
   };
 
-  const renderPasswords = () => passwords.length===0
-    ?ce('div',{className:'pv-empty-motivational'},
-        ce('i',{className:'ti ti-lock pv-empty-big-icon'}),
-        ce('h3',null,'Nenhuma senha salva.'),
-        ce('p',null,'Criptografia AES-256 — s\xf3 voc\xea tem acesso.'),
-        ce('button',{className:'pv-empty-cta',onClick:()=>setModal('password')},'+ Primeira senha')
+  const renderPasswords = () => {
+    const pwModal=pwDelModal&&ce('div',{className:'pv-del-modal-overlay',onClick:()=>{if(!pwDelModalExit){setPwDelModalExit(true);setTimeout(()=>setPwDelModal(null),200);}}},
+      ce('div',{className:'pv-del-modal'+(pwDelModalExit?' pv-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+        ce('div',{style:{width:52,height:52,background:'rgba(239,68,68,0.12)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}},ce('i',{className:'ti ti-lock-off',style:{fontSize:26,color:'#f87171'}})),
+        ce('div',{style:{fontSize:17,fontWeight:700,color:'rgba(255,255,255,0.92)',marginBottom:8}},'Excluir senha?'),
+        ce('div',{style:{fontSize:13,color:'rgba(255,255,255,0.45)',marginBottom:24}},(pwDelModal&&pwDelModal.title)||'Esta senha será apagada.'),
+        ce('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.7)',cursor:'pointer',fontSize:14,fontWeight:600},onClick:()=>{setPwDelModalExit(true);setTimeout(()=>setPwDelModal(null),200);}},'Cancelar'),
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(239,68,68,0.15)',border:'1px solid rgba(239,68,68,0.4)',color:'#f87171',cursor:'pointer',fontSize:14,fontWeight:600},onClick:async()=>{const p=pwDelModal;setPwDelModalExit(true);setTimeout(()=>setPwDelModal(null),200);await deletePw(p.id);}},'Excluir')
+        )
       )
-    :ce('div',{className:'pv-pw-list'},
-      ...passwords.map(pw=>{
-        const dec=pwDecrypted[pw.id]; const vis=pwVisible[pw.id];
-        const str=dec?pwStrength(dec.password):null;
-        const confirmDel=pwDelConfirm===pw.id;
-        const secsLeft=pwRevealAt[pw.id]?Math.max(0,Math.ceil((pwRevealAt[pw.id]-Date.now())/1000)):5;
-        return ce('div',{key:pw.id,className:'pv-pw-card'},
-          ce('div',{className:'pv-pw-card-top'},
-            ce('div',{className:'pv-pw-icon'},ce('i',{className:'ti ti-lock'})),
-            ce('div',{className:'pv-pw-info'},
-              ce('div',{className:'pv-pw-site'},pw.title||'Site'),
-              ce('div',{className:'pv-pw-user'},dec?dec.user:'N\xe3o revelado'),
-              str&&ce('div',{className:'pv-pw-strength',style:{width:str.w,background:str.color}})
+    );
+    const list=passwords.length===0
+      ?ce('div',{className:'pv-empty-motivational'},
+          ce('i',{className:'ti ti-lock pv-empty-big-icon'}),
+          ce('h3',null,'Nenhuma senha salva.'),
+          ce('p',null,'Criptografia AES-256 — só você tem acesso.'),
+          ce('button',{className:'pv-empty-cta',onClick:()=>setModal('password')},'+ Primeira senha')
+        )
+      :ce('div',{className:'pv-pw-list'},
+        ...passwords.map(pw=>{
+          const dec=pwDecrypted[pw.id]; const vis=pwVisible[pw.id];
+          const str=dec?pwStrength(dec.password):null;
+          const secsLeft=pwRevealAt[pw.id]?Math.max(0,Math.ceil((pwRevealAt[pw.id]-Date.now())/1000)):5;
+          return ce('div',{key:pw.id,className:'pv-pw-card'},
+            ce('div',{className:'pv-pw-card-top'},
+              ce('div',{className:'pv-pw-icon'},ce('i',{className:'ti ti-lock'})),
+              ce('div',{className:'pv-pw-info'},
+                ce('div',{className:'pv-pw-site'},pw.title||'Site'),
+                ce('div',{className:'pv-pw-user'},dec?dec.user:'Não revelado'),
+                str&&ce('div',{className:'pv-pw-strength',style:{width:str.w,background:str.color}})
+              )
+            ),
+            vis&&dec
+              ?ce('div',{className:'pv-pw-revealed'},dec.password)
+              :ce('div',{className:'pv-pw-masked'},'••••••••'),
+            ce('div',{className:'pv-pw-footer'},
+              ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_user']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'user')},
+                pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'}),
+                pwCopied[pw.id+'_user']?'Copiado!':'Usuário'
+              ),
+              ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_password']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'password')},
+                pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'}),
+                pwCopied[pw.id+'_password']?'Copiado!':'Copiar'
+              ),
+              ce('button',{className:'pv-pw-pill'+(vis?' pv-pw-pill--active':''),onClick:()=>revealPw(pw)},
+                ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'}),
+                vis?('⏱ '+secsLeft+'s'):'Ver'
+              ),
+              ce('button',{className:'pv-pw-pill',onClick:()=>openPwEdit(pw)},ce('i',{className:'ti ti-pencil'}),'Editar'),
+              ce('button',{className:'pv-pw-pill pv-pw-pill--del',onClick:()=>{setPwDelModal(pw);setPwDelModalExit(false);}},ce('i',{className:'ti ti-trash'}),'Excluir')
+            )
+          );
+        })
+      );
+    return ce('div',null,list,pwModal);
+  };
+
+    const renderKanban = () => {
+    const kDelModal=kDelConfirm&&ce('div',{className:'pv-del-modal-overlay',onClick:()=>{if(!kDelExiting){setKDelExiting(true);setTimeout(()=>setKDelConfirm(null),200);}}},
+      ce('div',{className:'pv-del-modal'+(kDelExiting?' pv-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+        ce('div',{style:{width:52,height:52,background:'rgba(239,68,68,0.12)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}},ce('i',{className:'ti ti-layout-kanban',style:{fontSize:26,color:'#f87171'}})),
+        ce('div',{style:{fontSize:17,fontWeight:700,color:'rgba(255,255,255,0.92)',marginBottom:8}},'Excluir card?'),
+        ce('div',{style:{fontSize:13,color:'rgba(255,255,255,0.45)',marginBottom:24}},(kDelConfirm&&kDelConfirm.title)||'Este card será apagado.'),
+        ce('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.7)',cursor:'pointer',fontSize:14,fontWeight:600},onClick:()=>{setKDelExiting(true);setTimeout(()=>setKDelConfirm(null),200);}},'Cancelar'),
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(239,68,68,0.15)',border:'1px solid rgba(239,68,68,0.4)',color:'#f87171',cursor:'pointer',fontSize:14,fontWeight:600},onClick:async()=>{const kd=kDelConfirm;setKDelExiting(true);setTimeout(()=>setKDelConfirm(null),200);await deleteCard(kd.id,kd.col);}},'Excluir')
+        )
+      )
+    );
+    const board=ce('div',{className:'pv-kanban'},
+      ...K_COLS.map(col=>{
+        const cards=kanban[col.id]||[];
+        return ce('div',{key:col.id,className:'pv-kol'+(dragOver===col.id?' pv-kol--over':''),style:{'--kol-color':col.topColor},
+            onDragOver:e=>{e.preventDefault();setDragOver(col.id);},
+            onDragLeave:()=>setDragOver(null),
+            onDrop:e=>{e.preventDefault();if(!dragId)return;const from=Object.keys(kanban).find(k=>kanban[k].some(c=>c.id===dragId));if(from)moveCard(dragId,from,col.id);setDragId(null);setDragOver(null);}
+          },
+          ce('div',{className:'pv-kol-hd'},
+            ce('span',{className:'pv-kol-dot',style:{background:col.dot}}),
+            ce('span',{className:'pv-kol-label'},col.label),
+            ce('span',{className:'pv-kol-count'},cards.length),
+            ce('button',{className:'pv-kol-add',onClick:()=>{setNewCardCol(col.id);setNewCardTxt('');}},'+')
+          ),
+          newCardCol===col.id&&ce('div',{className:'pv-kol-new'},
+            ce('input',{className:'pv-kol-input',placeholder:'Título…',value:newCardTxt,onChange:e=>setNewCardTxt(e.target.value),autoFocus:true,
+              onKeyDown:e=>{if(e.key==='Enter')createCard(col.id);if(e.key==='Escape')setNewCardCol(null);}}),
+            ce('div',{className:'pv-kol-new-btns'},
+              ce('button',{className:'pv-kol-save',onClick:()=>createCard(col.id)},'Adicionar'),
+              ce('button',{className:'pv-kol-cancel',onClick:()=>setNewCardCol(null)},'Cancelar')
             )
           ),
-          vis&&dec
-            ?ce('div',{className:'pv-pw-revealed'},dec.password)
-            :ce('div',{className:'pv-pw-masked'},'••••••••'),
-          confirmDel
-            ?ce('div',{className:'pv-pw-footer'},
-                ce('span',{style:{fontSize:'12px',color:'rgba(239,68,68,0.8)',flex:1,display:'flex',alignItems:'center'}},'Confirmar exclus\xe3o?'),
-                ce('button',{className:'pv-pw-pill pv-pw-pill--ok',onClick:()=>{deletePw(pw.id);setPwDelConfirm(null);}},ce('i',{className:'ti ti-check'}),' Sim'),
-                ce('button',{className:'pv-pw-pill',onClick:()=>setPwDelConfirm(null)},'\xd7 N\xe3o')
-              )
-            :ce('div',{className:'pv-pw-footer'},
-                ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_user']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'user')},
-                  pwCopied[pw.id+'_user']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-user'}),
-                  pwCopied[pw.id+'_user']?'Copiado!':'Usu\xe1rio'
-                ),
-                ce('button',{className:'pv-pw-pill'+(pwCopied[pw.id+'_password']?' pv-pw-pill--ok':''),onClick:()=>copyPw(pw,'password')},
-                  pwCopied[pw.id+'_password']?ce('i',{className:'ti ti-check'}):ce('i',{className:'ti ti-copy'}),
-                  pwCopied[pw.id+'_password']?'Copiado!':'Copiar'
-                ),
-                ce('button',{className:'pv-pw-pill'+(vis?' pv-pw-pill--active':''),onClick:()=>revealPw(pw)},
-                  ce('i',{className:vis?'ti ti-eye-off':'ti ti-eye'}),
-                  vis?('⏱ '+secsLeft+'s'):'Ver'
-                ),
-                ce('button',{className:'pv-pw-pill',onClick:()=>openPwEdit(pw)},
-                  ce('i',{className:'ti ti-pencil'}),'Editar'
-                ),
-                ce('button',{className:'pv-pw-pill pv-pw-pill--del',onClick:()=>setPwDelConfirm(pw.id)},
-                  ce('i',{className:'ti ti-trash'}),'Excluir'
-                )
-              )
+          ce('div',{className:'pv-kol-cards'},...cards.map((card,i)=>ce('div',{
+              key:card.id,
+              className:'pv-kcard'+(dragId===card.id?' pv-kcard--dragging':'')+(newIds.has(card.id)?' pv-kcard--new':''),
+              draggable:true,style:{'--si':i,'--kcard-color':col.topColor},
+              onDragStart:()=>setDragId(card.id),
+              onDragEnd:()=>{setDragId(null);setDragOver(null);},
+              onClick:()=>{setKEditCard({id:card.id,col:col.id,title:card.title});setKEditTxt(card.title);setModal('kanban-edit');}
+            },
+            ce('div',{className:'pv-kcard-title'},card.title),
+            ce('button',{className:'pv-note-del-x',title:'Excluir',style:{top:'8px',right:'8px'},onClick:e=>{e.stopPropagation();setKDelConfirm({id:card.id,col:col.id,title:card.title});setKDelExiting(false);}},'×')
+          )))
         );
       })
     );
-
-    const renderKanban = () => ce('div',{className:'pv-kanban'},
-    ...K_COLS.map(col=>{
-      const cards=kanban[col.id]||[];
-      return ce('div',{key:col.id,className:'pv-kol'+(dragOver===col.id?' pv-kol--over':''),style:{'--kol-color':col.topColor},
-          onDragOver:e=>{e.preventDefault();setDragOver(col.id);},
-          onDragLeave:()=>setDragOver(null),
-          onDrop:e=>{e.preventDefault();if(!dragId)return;const from=Object.keys(kanban).find(k=>kanban[k].some(c=>c.id===dragId));if(from)moveCard(dragId,from,col.id);setDragId(null);setDragOver(null);}
-        },
-        ce('div',{className:'pv-kol-hd'},
-          ce('span',{className:'pv-kol-dot',style:{background:col.dot}}),
-          ce('span',{className:'pv-kol-label'},col.label),
-          ce('span',{className:'pv-kol-count'},cards.length),
-          ce('button',{className:'pv-kol-add',onClick:()=>{setNewCardCol(col.id);setNewCardTxt('');}},'+')
-        ),
-        newCardCol===col.id&&ce('div',{className:'pv-kol-new'},
-          ce('input',{className:'pv-kol-input',placeholder:'Título…',value:newCardTxt,onChange:e=>setNewCardTxt(e.target.value),autoFocus:true,
-            onKeyDown:e=>{if(e.key==='Enter')createCard(col.id);if(e.key==='Escape')setNewCardCol(null);}}),
-          ce('div',{className:'pv-kol-new-btns'},
-            ce('button',{className:'pv-kol-save',onClick:()=>createCard(col.id)},'Adicionar'),
-            ce('button',{className:'pv-kol-cancel',onClick:()=>setNewCardCol(null)},'Cancelar')
-          )
-        ),
-        ce('div',{className:'pv-kol-cards'},...cards.map((card,i)=>ce('div',{
-            key:card.id,
-            className:'pv-kcard'+(dragId===card.id?' pv-kcard--dragging':'')+(newIds.has(card.id)?' pv-kcard--new':''),
-            draggable:true,style:{'--si':i,'--kcard-color':col.topColor},
-            onDragStart:()=>setDragId(card.id),
-            onDragEnd:()=>{setDragId(null);setDragOver(null);}
-          },
-          ce('div',{className:'pv-kcard-title'},card.title),
-          ce('div',{className:'pv-kcard-btns'},
-            ce('button',{className:'pv-kcard-edit',title:'Renomear',onClick:(e)=>{e.stopPropagation();const t=window.prompt('Novo título:',card.title);if(t&&t.trim()&&t.trim()!==card.title){api('/api/personal/'+card.id,'PATCH',{title:t.trim()}).then(()=>setKanban(p=>({...p,[col.id]:p[col.id].map(c=>c.id===card.id?{...c,title:t.trim()}:c)})));}}},ce('i',{className:'ti ti-pencil'})),
-            ce('button',{className:'pv-kcard-del',title:'Excluir',onClick:(e)=>{e.stopPropagation();deleteCard(card.id,col.id);}},ce('i',{className:'ti ti-x'}))
-          )
-        )))
-      );
-    })
-  );
+    return ce('div',null,board,kDelModal);
+  };
 
   const fmtNoteDate = (iso) => {
     if(!iso) return '';
@@ -4251,41 +4355,57 @@ function PersonalView({onChat}={}) {
     if(d<0) return {text:'Vencida há '+Math.abs(d)+'d',cls:'--urgent'};
     if(d===0) return {text:'Vence hoje',cls:'--urgent'};
     if(d<=7) return {text:'Vence em '+d+'d',cls:'--urgent'};
+    if(d<=30) return {text:'Vence em '+d+'d',cls:'--amber'};
     return {text:'Vence em '+d+'d',cls:''};
   };
 
-  const renderGoals = () => ce('div',{className:'pv-goals'},
-    loading?ce('div',{className:'pv-loading'})
-    :goals.length===0?ce('div',{className:'pv-empty-motivational'},
-        ce('i',{className:'ti ti-target pv-empty-big-icon'}),
-        ce('h3',null,'Nenhuma meta ainda.'),
-        ce('p',null,'Metas claras transformam intenção em resultado.'),
-        ce('button',{className:'pv-empty-cta',onClick:()=>setModal('goal')},'+ Primeira meta')
-      )
-    :goals.map((g,i)=>{
-      const pct=parseInt((g.content&&g.content.progress)||0);
-      const rd=fmtRelDate(g.content&&g.content.due_date||g.due_date||'');
-      return ce('div',{key:g.id,className:'pv-goal'+(newIds.has(g.id)?' pv-goal--new':''),style:{'--si':i}},
-        ce('div',{className:'pv-goal-hd'},
-          ce('div',{className:'pv-goal-left'},
-            ce('div',{className:'pv-goal-title'},g.title),
-            rd&&ce('div',{className:'pv-goal-rel-date pv-goal-rel-date'+rd.cls},rd.text)
-          ),
-          ce('div',{className:'pv-goal-top-actions'},
-            ce('button',{className:'pv-goal-act-btn pv-goal-act-btn--del',title:'Excluir',onClick:e=>{e.stopPropagation();deleteGoal(g.id);}},ce('i',{className:'ti ti-trash'}))
-          )
-        ),
-        ce('div',{className:'pv-goal-prog-area'},
-          ce('span',{className:'pv-goal-pct'},pct+'%'),
-          ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':pct+'%'}}))
-        ),
-        ce('div',{className:'pv-goal-actions-row'},
-          ce('button',{className:'pv-goal-step-minus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.max(0,pct-5),e.currentTarget);}},'− 5%'),
-          ce('button',{className:'pv-goal-step-plus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+5%')
+  const renderGoals = () => {
+    const gDelModal=goalDelConfirm&&ce('div',{className:'pv-del-modal-overlay',onClick:()=>{if(!goalDelExiting){setGoalDelExiting(true);setTimeout(()=>setGoalDelConfirm(null),200);}}},
+      ce('div',{className:'pv-goal-del-modal'+(goalDelExiting?' pv-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+        ce('div',{className:'pv-goal-del-icon'},ce('i',{className:'ti ti-target',style:{fontSize:26,color:'#818cf8'}})),
+        ce('div',{style:{fontSize:17,fontWeight:700,color:'rgba(255,255,255,0.92)',marginBottom:8}},'Excluir meta?'),
+        ce('div',{style:{fontSize:13,color:'rgba(255,255,255,0.45)',marginBottom:24}},(goalDelConfirm&&goalDelConfirm.title)||'Esta meta será apagada.'),
+        ce('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.7)',cursor:'pointer',fontSize:14,fontWeight:600},onClick:()=>{setGoalDelExiting(true);setTimeout(()=>setGoalDelConfirm(null),200);}},'Cancelar'),
+          ce('button',{style:{flex:1,padding:'10px 0',borderRadius:10,background:'rgba(83,74,183,0.2)',border:'1px solid rgba(83,74,183,0.5)',color:'#818cf8',cursor:'pointer',fontSize:14,fontWeight:600},onClick:async()=>{const gd=goalDelConfirm;setGoalDelExiting(true);setTimeout(()=>setGoalDelConfirm(null),200);await deleteGoal(gd.id);}},'Excluir')
         )
+      )
+    );
+    const body=loading?ce('div',{className:'pv-loading'})
+      :goals.length===0?ce('div',{className:'pv-empty-motivational'},
+          ce('i',{className:'ti ti-target pv-empty-big-icon'}),
+          ce('h3',null,'Nenhuma meta ainda.'),
+          ce('p',null,'Metas claras transformam intenção em resultado.'),
+          ce('button',{className:'pv-empty-cta',onClick:()=>setModal('goal')},'+ Primeira meta')
+        )
+      :ce('div',{className:'pv-goals'},
+        ...goals.map((g,i)=>{
+          const pct=parseInt((g.content&&g.content.progress)||0);
+          const rd=fmtRelDate(g.content&&g.content.due_date||g.due_date||'');
+          return ce('div',{key:g.id,className:'pv-goal'+(newIds.has(g.id)?' pv-goal--new':''),style:{'--si':i,'--pct':pct+'%'}},
+            ce('button',{className:'pv-note-del-x',title:'Excluir',style:{top:'14px',right:'14px'},onClick:e=>{e.stopPropagation();setGoalDelConfirm(g);setGoalDelExiting(false);}},'×'),
+            ce('div',{className:'pv-goal-hd'},
+              ce('div',{className:'pv-goal-left'},
+                ce('div',{className:'pv-goal-title'},g.title),
+                rd&&ce('div',{className:'pv-goal-rel-date pv-goal-rel-date'+rd.cls},rd.text)
+              )
+            ),
+            ce('div',{className:'pv-goal-prog-area'},
+              ce('span',{className:'pv-goal-pct'},pct+'%'),
+              ce('div',{className:'pv-goal-bar-wrap'},ce('div',{className:'pv-goal-bar',style:{'--pct':pct+'%'}}))
+            ),
+            ce('div',{className:'pv-goal-actions-row'},
+              ce('button',{className:'pv-goal-step-minus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.max(0,pct-5),e.currentTarget);}},'− 5%'),
+              ce('button',{className:'pv-goal-step-plus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+5%'),
+              ce('button',{className:'pv-pw-pill',style:{marginLeft:'auto',padding:'6px 12px',fontSize:11},onClick:e=>{e.stopPropagation();setGoalEditForm({id:g.id,title:g.title,due_date:(g.content&&g.content.due_date)||''});setModal('goal-edit');}},
+                ce('i',{className:'ti ti-pencil'}),' Editar'
+              )
+            )
+          );
+        })
       );
-    })
-  );
+    return ce('div',null,body,gDelModal);
+  };
 
 
   const renderProfile = () => {
@@ -4346,6 +4466,11 @@ function PersonalView({onChat}={}) {
       ce('textarea',{key:'b',className:'pv-modal-input pv-modal-ta',placeholder:'Conteúdo…',value:noteForm.body,onChange:e=>setNoteForm(p=>({...p,body:e.target.value})),rows:6}),
       tagChipUI
     ],saveNoteEdit,noteSaving?'Salvando…':'Salvar');
+    if(modal==='link-edit') return overlay('Editar Link',[
+      ce('input',{key:'u',className:'pv-modal-input',placeholder:'URL',value:linkEditForm.url,onChange:e=>setLinkEditForm(p=>({...p,url:e.target.value}))}),
+      ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título',value:linkEditForm.title,onChange:e=>setLinkEditForm(p=>({...p,title:e.target.value}))}),
+      ce('div',{key:'c',className:'pv-modal-cats'},...LINK_CATS.map(cat=>ce('button',{key:cat,className:'pv-cat-btn'+(linkEditForm.category===cat?' pv-cat-btn--active':''),onClick:()=>setLinkEditForm(p=>({...p,category:cat}))},cat)))
+    ],saveLinkEdit,'Salvar');
     if(modal==='link') return overlay('Novo Link',[
       ce('input',{key:'u',className:'pv-modal-input',placeholder:'URL',value:linkForm.url,onChange:e=>setLinkForm(p=>({...p,url:e.target.value}))}),
       ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título (opcional)',value:linkForm.title,onChange:e=>setLinkForm(p=>({...p,title:e.target.value}))}),
@@ -4363,6 +4488,14 @@ function PersonalView({onChat}={}) {
       ce('input',{key:'p',type:'text',className:'pv-modal-input',placeholder:'Senha',value:pwEditForm.password,onChange:e=>setPwEditForm(p=>({...p,password:e.target.value}))}),
       ce('input',{key:'n',className:'pv-modal-input',placeholder:'Notas opcionais',value:pwEditForm.notes,onChange:e=>setPwEditForm(p=>({...p,notes:e.target.value}))})
     ],savePwEdit,pwEditLoading?'Salvando…':'Salvar');
+    if(modal==='kanban-edit') return overlay('Editar Card',[
+      ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título',value:kEditTxt,onChange:e=>setKEditTxt(e.target.value),
+        onKeyDown:e=>{if(e.key==='Enter')renameCard();}})
+    ],renameCard,'Salvar');
+    if(modal==='goal-edit') return overlay('Editar Meta',[
+      ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título da meta',value:goalEditForm?goalEditForm.title:'',onChange:e=>setGoalEditForm(p=>p?{...p,title:e.target.value}:p)}),
+      ce('input',{key:'d',type:'date',className:'pv-modal-input',value:goalEditForm?goalEditForm.due_date:'',onChange:e=>setGoalEditForm(p=>p?{...p,due_date:e.target.value}:p)})
+    ],saveGoalEdit,'Salvar');
     if(modal==='goal') return overlay('Nova Meta',[
       ce('input',{key:'t',className:'pv-modal-input',placeholder:'Título da meta',value:goalForm.title,onChange:e=>setGoalForm(p=>({...p,title:e.target.value}))}),
       ce('input',{key:'d',type:'date',className:'pv-modal-input',value:goalForm.due_date,onChange:e=>setGoalForm(p=>({...p,due_date:e.target.value}))}),
