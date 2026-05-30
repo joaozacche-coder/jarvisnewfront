@@ -1264,10 +1264,10 @@
   .pv-link-url { font-size:11px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:3px 0 10px; }
   .pv-link-copy { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:13px; padding:2px 6px; border-radius:5px; transition:color 0.12s,background 0.12s; }
   .pv-link-copy:hover { color:var(--text); background:rgba(255,255,255,0.07); }
-  .pv-link-pencil { position:absolute; top:10px; right:36px; width:20px; height:20px; background:transparent; border:none; color:rgba(255,255,255,0.25); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,transform 0.15s; z-index:2; }
-  .pv-link-pencil:hover { color:#a78bfa; transform:scale(1.1); }
-  .pv-link-del-x { position:absolute; top:10px; right:12px; width:20px; height:20px; background:transparent; border:none; color:rgba(255,255,255,0.25); font-size:16px; line-height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,transform 0.15s; z-index:2; }
-  .pv-link-del-x:hover { color:#f87171; transform:scale(1.2); }
+  .pv-link-pencil { position:absolute; top:10px; right:36px; width:20px; height:20px; background:rgba(0,0,0,0.4); border:none; border-radius:50%; color:rgba(255,255,255,0.5); font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,background 0.15s,transform 0.15s; z-index:10; }
+  .pv-link-pencil:hover { color:#a78bfa; background:rgba(83,74,183,0.5); transform:scale(1.1); }
+  .pv-link-del-x { position:absolute; top:10px; right:10px; width:20px; height:20px; background:rgba(0,0,0,0.4); border:none; border-radius:50%; color:rgba(255,255,255,0.5); font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s,background 0.15s,transform 0.15s; z-index:10; }
+  .pv-link-del-x:hover { color:#f87171; background:rgba(239,68,68,0.3); transform:scale(1.15); }
   /* SENHAS — pill buttons sempre visíveis */
   .pv-pw-list { display:flex; flex-direction:column; gap:10px; }
   .pv-pw-card { background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:16px; transition:border-color 0.2s,background 0.2s; }
@@ -4203,8 +4203,8 @@ function PersonalView({onChat}={}) {
           const url=l.content&&l.content.url||''; const cat=l.content&&l.content.category||'Outro';
           const dom=getDomain(url);
           return ce('div',{key:l.id,className:'pv-card pv-card--link'+(newIds.has(l.id)?' pv-card--new':'')+(linkDying.has(l.id)?' pv-card--dying':''),style:{'--si':i,'--cat-color':CAT_COLOR[cat]||'#6B7280'},onClick:()=>window.open(url.startsWith('http')?url:'https://'+url,'_blank')},
-            ce('button',{className:'pv-link-pencil',title:'Editar',onClick:e=>{e.stopPropagation();setEditLink(l);setLinkEditForm({title:l.title||'',url:url,category:cat});setModal('link-edit');}},ce('i',{className:'ti ti-pencil'})),
-            ce('button',{className:'pv-link-del-x',title:'Excluir',onClick:e=>{e.stopPropagation();setLinkDelConfirm(l);setLinkDelExiting(false);}},'×'),
+            ce('button',{className:'pv-link-pencil',onClick:e=>{e.stopPropagation();setEditLink(l);setLinkEditForm({title:l.title||'',url:url,category:cat});setModal('link-edit');}},ce('i',{className:'ti ti-pencil'})),
+            ce('button',{className:'pv-link-del-x',onClick:e=>{e.stopPropagation();setLinkDelConfirm(l);setLinkDelExiting(false);}},'×'),
             ce('div',{className:'pv-link-top'},
               ce('img',{className:'pv-favicon',src:`https://www.google.com/s2/favicons?domain=${dom}&sz=32`,alt:'',onError:e=>{e.target.style.display='none'}}),
               ce('span',{className:'pv-tag',style:{background:CAT_COLOR[cat]||'#6B7280'}},cat)
@@ -4213,7 +4213,7 @@ function PersonalView({onChat}={}) {
             ce('p',{className:'pv-link-url'},url.replace(/^https?:\/\//,'')),
             ce('div',{className:'pv-card-foot'},
               ce('span',{className:'pv-date'},fmtDate(l.created_at)),
-              ce('button',{className:'pv-link-copy',onClick:e=>{e.stopPropagation();navigator.clipboard.writeText(url);},title:'Copiar URL'},ce('i',{className:'ti ti-copy'}))
+              ce('button',{className:'pv-link-copy',onClick:e=>{e.stopPropagation();navigator.clipboard.writeText(url);}},ce('i',{className:'ti ti-copy'}))
             )
           );
         })
