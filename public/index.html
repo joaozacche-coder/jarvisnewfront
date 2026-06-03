@@ -1260,14 +1260,15 @@
   .pv-chat-btn:hover { background:rgba(83,74,183,0.28); }
   .pv-card--link { border-top:3px solid var(--cat-color,#534AB7); }
   .pv-card--link .pv-card-title { padding-right:0; }
-  .pv-link-top { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+  .pv-link-top { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+  .pv-link-pill { font-size:10px; font-weight:600; background:rgba(83,74,183,0.18); color:rgba(124,106,247,0.9); border-radius:4px; padding:2px 7px; flex-shrink:0; margin-left:auto; }
   .pv-favicon { width:18px; height:18px; border-radius:3px; }
   .pv-link-url { font-size:11px; color:rgba(255,255,255,0.4); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:3px 0 10px; }
   .pv-link-copy { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:13px; padding:2px 6px; border-radius:5px; transition:color 0.12s,background 0.12s; }
   .pv-link-copy:hover { color:var(--text); background:rgba(255,255,255,0.07); }
-  .pv-link-pencil { background:none; border:none; color:rgba(255,255,255,0.4); font-size:16px; cursor:pointer; padding:4px; transition:color 0.15s; flex-shrink:0; }
+  .pv-link-pencil { background:none; border:none; color:rgba(255,255,255,0.4); font-size:16px; cursor:pointer; padding:4px; transition:color 0.15s; flex-shrink:0; opacity:1; }
   .pv-link-pencil:hover { color:#a78bfa; }
-  .pv-link-del-x { background:none; border:none; color:rgba(255,255,255,0.35); font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:color 0.15s; flex-shrink:0; }
+  .pv-link-del-x { background:none; border:none; color:rgba(255,255,255,0.35); font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:4px; transition:color 0.15s; flex-shrink:0; opacity:1; }
   .pv-link-del-x:hover { color:#f87171; }
   /* SENHAS — pill buttons sempre visíveis */
   .pv-pw-list { display:flex; flex-direction:column; gap:10px; }
@@ -4206,8 +4207,7 @@ function PersonalView({onChat}={}) {
           return ce('div',{key:l.id,className:'pv-card pv-card--link'+(newIds.has(l.id)?' pv-card--new':'')+(linkDying.has(l.id)?' pv-card--dying':''),style:{'--si':i,'--cat-color':CAT_COLOR[cat]||'#6B7280'},onClick:()=>window.open(url.startsWith('http')?url:'https://'+url,'_blank')},
             ce('div',{className:'pv-link-top'},
               ce('img',{className:'pv-favicon',src:`https://www.google.com/s2/favicons?domain=${dom}&sz=32`,alt:'',onError:e=>{e.target.style.display='none'}}),
-              ce('span',{style:{flex:1}}),
-              ce('span',{className:'pv-tag',style:{background:CAT_COLOR[cat]||'#6B7280'}},cat),
+              ce('span',{className:'pv-link-pill',style:{background:CAT_COLOR[cat]||'#6B7280'}},cat),
               ce('button',{className:'pv-link-pencil',onClick:e=>{e.stopPropagation();setEditLink(l);setLinkEditForm({title:l.title||'',url:url,category:cat});setModal('link-edit');}},ce('i',{className:'ti ti-pencil'})),
               ce('button',{className:'pv-link-del-x',onClick:e=>{e.stopPropagation();setLinkDelConfirm(l);setLinkDelExiting(false);}},'×')
             ),
