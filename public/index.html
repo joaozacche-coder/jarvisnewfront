@@ -4401,6 +4401,9 @@ function PersonalView({onChat}={}) {
               ce('button',{className:'pv-goal-step-plus',onClick:e=>{e.stopPropagation();updateProgress(g.id,Math.min(100,pct+5),e.currentTarget);}},'+5%'),
               ce('button',{className:'pv-pw-pill',style:{marginLeft:'auto',padding:'6px 12px',fontSize:11},onClick:e=>{e.stopPropagation();setGoalEditForm({id:g.id,title:g.title,due_date:(g.content&&g.content.due_date)||''});setModal('goal-edit');}},
                 ce('i',{className:'ti ti-pencil'}),' Editar'
+              ),
+              ce('button',{className:'pv-pw-pill',style:{padding:'6px 12px',fontSize:11,color:'#f87171',borderColor:'rgba(239,68,68,0.3)',background:'rgba(239,68,68,0.08)'},onClick:e=>{e.stopPropagation();setGoalDelConfirm(g);setGoalDelExiting(false);}},
+                ce('i',{className:'ti ti-trash'}),' Excluir'
               )
             )
           );
