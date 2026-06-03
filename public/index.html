@@ -1402,6 +1402,79 @@
   .pv-loading { display:flex; align-items:center; justify-content:center; padding:60px; }
   @media(max-width:900px) { .pv-skel-grid { grid-template-columns:repeat(2,1fr); } }
   @media(max-width:600px) { .pv-view { left:0; padding-bottom:56px; } .pv-grid,.pv-skel-grid { grid-template-columns:1fr; } .pv-kanban { flex-direction:column; } .pv-kol { min-width:unset; } .pv-panel { width:100%; max-width:100%; } }
+
+  /* ─── Reminders View ─── */
+  .is-reminders .orb-ambient { opacity: 0 !important; transition: opacity 0.5s; }
+  .is-reminders .bg-layer canvas { opacity: 0.04 !important; transition: opacity 0.5s; }
+  @keyframes rmFadeUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes rmPop     { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
+  @keyframes rmCardDie { to{opacity:0;transform:translateY(-6px) scale(0.96)} }
+  @keyframes rmGlow    { 0%,100%{box-shadow:0 0 0 0 rgba(83,74,183,0)} 40%{box-shadow:0 0 0 6px rgba(83,74,183,0.3)} }
+  .rm-view { position:fixed; inset:0; left:var(--sb-w); display:flex; flex-direction:column; background:var(--bg); z-index:3; overflow:hidden; animation:rmFadeUp 0.25s both; }
+  .rm-header { display:flex; align-items:center; justify-content:space-between; padding:28px 32px 0; flex-shrink:0; }
+  .rm-header-title { font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; }
+  .rm-add-btn { background:#534AB7; border:none; border-radius:10px; color:#fff; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; padding:8px 16px; transition:opacity 0.15s,transform 0.1s; }
+  .rm-add-btn:hover { opacity:0.88; transform:translateY(-1px); }
+  .rm-add-btn:active { transform:scale(0.97); }
+  .rm-content { flex:1; overflow-y:auto; padding:20px 32px 80px; }
+  .rm-section { margin-bottom:28px; }
+  .rm-section-hd { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .rm-section-title { font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-3); }
+  .rm-section-badge { background:rgba(255,255,255,0.07); border-radius:99px; color:var(--text-3); font-size:10px; font-weight:600; padding:2px 7px; }
+  .rm-list { display:flex; flex-direction:column; gap:8px; }
+  .rm-card { position:relative; background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-left:3px solid #534AB7; border-radius:12px; padding:14px 16px; cursor:pointer; transition:background 0.2s,transform 0.2s cubic-bezier(0.34,1.56,0.64,1),border-color 0.2s,box-shadow 0.2s; animation:rmFadeUp 0.3s calc(var(--si,0)*35ms) both; display:flex; align-items:center; gap:12px; }
+  .rm-card:hover { background:rgba(83,74,183,0.1); transform:translateY(-3px); border-color:rgba(83,74,183,0.4); box-shadow:0 6px 22px rgba(83,74,183,0.2); }
+  .rm-card--overdue { border-left-color:#f87171; opacity:0.75; }
+  .rm-card--overdue:hover { background:rgba(248,113,113,0.08); border-color:rgba(248,113,113,0.35); box-shadow:0 6px 22px rgba(248,113,113,0.15); opacity:1; }
+  .rm-card--new { animation:rmGlow 1.4s both; }
+  .rm-card--dying { animation:rmCardDie 0.22s ease-in forwards; pointer-events:none; }
+  .rm-card-icon { width:36px; height:36px; background:rgba(83,74,183,0.15); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#a78bfa; font-size:18px; }
+  .rm-card--overdue .rm-card-icon { background:rgba(248,113,113,0.12); color:#f87171; }
+  .rm-card-body { flex:1; min-width:0; }
+  .rm-card-title { font-size:14px; font-weight:500; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:5px; }
+  .rm-card-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .rm-time-pill { background:rgba(255,255,255,0.07); border-radius:5px; color:var(--text-2); font-size:11px; font-weight:600; padding:2px 7px; font-family:'Geist Mono',monospace; }
+  .rm-repeat-pill { background:rgba(83,74,183,0.18); border-radius:5px; color:rgba(124,106,247,0.9); font-size:10px; font-weight:600; padding:2px 7px; text-transform:uppercase; letter-spacing:0.5px; }
+  .rm-overdue-pill { background:rgba(248,113,113,0.15); border-radius:5px; color:#f87171; font-size:10px; font-weight:600; padding:2px 7px; text-transform:uppercase; letter-spacing:0.5px; }
+  .rm-card-del { background:none; border:none; color:rgba(255,255,255,0.25); cursor:pointer; font-size:18px; line-height:1; padding:4px 6px; border-radius:6px; transition:color 0.15s,background 0.12s; flex-shrink:0; }
+  .rm-card-del:hover { color:#f87171; background:rgba(239,68,68,0.1); }
+  .rm-empty { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 16px; }
+  .rm-empty-icon { font-size:28px; color:var(--text-3); opacity:0.25; }
+  .rm-empty-text { font-size:13px; color:var(--text-3); }
+  /* Modal novo/editar */
+  .rm-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:9999; animation:rmPop 0.2s both; }
+  .rm-modal { background:linear-gradient(145deg,#1e1833,#12102a); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:28px 24px 20px; width:360px; max-width:calc(100vw - 32px); }
+  .rm-modal-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .rm-modal-title { font-size:16px; font-weight:700; color:var(--text); }
+  .rm-modal-x { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:20px; line-height:1; padding:2px 6px; border-radius:6px; transition:color 0.12s; }
+  .rm-modal-x:hover { color:var(--text); }
+  .rm-modal-row { margin-bottom:14px; }
+  .rm-modal-label { font-size:11px; font-weight:600; color:var(--text-3); letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px; }
+  .rm-modal-input { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:14px; padding:9px 11px; outline:none; box-sizing:border-box; transition:border-color 0.15s; }
+  .rm-modal-input:focus { border-color:rgba(124,106,247,0.5); }
+  .rm-modal-ta { resize:none; height:72px; line-height:1.5; }
+  .rm-repeat-pills { display:flex; gap:6px; }
+  .rm-repeat-btn { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-3); cursor:pointer; font-family:inherit; font-size:12px; font-weight:600; padding:6px 14px; transition:all 0.15s; }
+  .rm-repeat-btn:hover { border-color:rgba(124,106,247,0.4); color:rgba(124,106,247,0.9); }
+  .rm-repeat-btn--active { background:#534AB7; border-color:#534AB7; color:#fff; }
+  .rm-modal-foot { display:flex; gap:8px; margin-top:20px; }
+  .rm-modal-cancel { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:rgba(255,255,255,0.7); cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; transition:background 0.12s; }
+  .rm-modal-cancel:hover { background:rgba(255,255,255,0.1); }
+  .rm-modal-save { flex:1; background:#534AB7; border:none; border-radius:10px; color:#fff; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; transition:opacity 0.15s,transform 0.1s; }
+  .rm-modal-save:hover { opacity:0.88; }
+  .rm-modal-save:active { transform:scale(0.97); }
+  /* Modal de confirmação de exclusão */
+  .rm-del-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:9999; }
+  .rm-del-modal { background:linear-gradient(145deg,#1e1833,#12102a); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:32px 28px 24px; width:300px; text-align:center; animation:pvDelSpring 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+  .rm-del-modal--exit { animation:pvDelExit 0.2s ease-in forwards; }
+  .rm-del-icon { width:52px; height:52px; background:rgba(248,113,113,0.12); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .rm-del-title { font-size:17px; font-weight:700; color:var(--text); margin-bottom:6px; }
+  .rm-del-sub { font-size:13px; color:rgba(255,255,255,0.45); margin-bottom:24px; }
+  .rm-del-actions { display:flex; gap:10px; }
+  .rm-del-cancel { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:rgba(255,255,255,0.7); cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; }
+  .rm-del-confirm { flex:1; background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); border-radius:10px; color:#f87171; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; transition:background 0.12s; }
+  .rm-del-confirm:hover { background:rgba(239,68,68,0.3); }
+  @media(max-width:600px) { .rm-view { left:0; } .rm-header,.rm-content { padding-left:16px; padding-right:16px; } }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
@@ -4544,6 +4617,187 @@ function PersonalView({onChat}={}) {
   );
 }
 
+function RemindersView() {
+  const ce = React.createElement;
+  const [reminders,  setReminders]  = React.useState([]);
+  const [loading,    setLoading]    = React.useState(true);
+  const [modal,      setModal]      = React.useState(null);
+  const [editing,    setEditing]    = React.useState(null);
+  const [form,       setForm]       = React.useState({title:'',due_datetime:'',repeat:'none',notes:''});
+  const [saving,     setSaving]     = React.useState(false);
+  const [delConfirm, setDelConfirm] = React.useState(null);
+  const [delExiting, setDelExiting] = React.useState(false);
+  const [newIds,     setNewIds]     = React.useState(new Set());
+  const [dying,      setDying]      = React.useState(new Set());
+
+  React.useEffect(()=>{ load(); },[]);
+
+  const load = async () => {
+    setLoading(true);
+    try { const r=await fetch('/api/reminders'); const d=await r.json(); setReminders(d.reminders||[]); } catch {}
+    setLoading(false);
+  };
+
+  const openNew = () => {
+    setEditing(null);
+    const now=new Date(); now.setSeconds(0,0);
+    now.setMinutes(Math.ceil(now.getMinutes()/15)*15);
+    const pad=n=>String(n).padStart(2,'0');
+    const dt=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    setForm({title:'',due_datetime:dt,repeat:'none',notes:''});
+    setModal('new');
+  };
+
+  const openEdit = (r) => {
+    setEditing(r);
+    setForm({title:r.title||'',due_datetime:(r.content&&r.content.due_datetime)||'',repeat:(r.content&&r.content.repeat)||'none',notes:(r.content&&r.content.notes)||''});
+    setModal('edit');
+  };
+
+  const save = async () => {
+    if(!form.title.trim()) return;
+    setSaving(true);
+    try {
+      if(modal==='new') {
+        const r=await fetch('/api/reminders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:form.title,due_datetime:form.due_datetime,repeat:form.repeat,notes:form.notes})});
+        const d=await r.json();
+        const entry=d.reminder||d;
+        setReminders(p=>[entry,...p]);
+        setNewIds(p=>{const s=new Set(p);s.add(entry.id);setTimeout(()=>setNewIds(pp=>{const ss=new Set(pp);ss.delete(entry.id);return ss;}),2000);return s;});
+      } else {
+        await fetch(`/api/reminders/${editing.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:form.title,due_datetime:form.due_datetime,repeat:form.repeat,notes:form.notes})});
+        setReminders(p=>p.map(r=>r.id===editing.id?{...r,title:form.title,content:{...r.content,due_datetime:form.due_datetime,repeat:form.repeat,notes:form.notes}}:r));
+      }
+      setModal(null);
+    } catch {}
+    setSaving(false);
+  };
+
+  const doDelete = async (id) => {
+    setDying(p=>{const s=new Set(p);s.add(id);return s;});
+    setTimeout(async()=>{
+      await fetch(`/api/reminders/${id}`,{method:'DELETE'}).catch(()=>{});
+      setReminders(p=>p.filter(r=>r.id!==id));
+      setDying(p=>{const s=new Set(p);s.delete(id);return s;});
+    },220);
+    setDelConfirm(null);
+  };
+
+  const fmtDateTime = (iso) => {
+    if(!iso) return '';
+    try {
+      const d=new Date(iso); const now=new Date();
+      const tom=new Date(now); tom.setDate(now.getDate()+1);
+      const time=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      if(d.toDateString()===now.toDateString()) return time;
+      if(d.toDateString()===tom.toDateString()) return 'Amanhã '+time;
+      return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+time;
+    } catch { return iso.slice(11,16)||''; }
+  };
+
+  const classify = () => {
+    const now=new Date(); const todayStr=now.toDateString();
+    const today=[],upcoming=[],overdue=[];
+    reminders.forEach(r=>{
+      const iso=r.content&&r.content.due_datetime;
+      if(!iso){ upcoming.push(r); return; }
+      const d=new Date(iso);
+      if(d<now) overdue.push(r);
+      else if(d.toDateString()===todayStr) today.push(r);
+      else upcoming.push(r);
+    });
+    return {today,upcoming,overdue};
+  };
+
+  const REPEAT_LBL={none:'',daily:'Diário',weekly:'Semanal'};
+
+  const renderCard=(r,i,isOverdue)=>
+    ce('div',{key:r.id,className:'rm-card'+(isOverdue?' rm-card--overdue':'')+(newIds.has(r.id)?' rm-card--new':'')+(dying.has(r.id)?' rm-card--dying':''),style:{'--si':i},onClick:()=>openEdit(r)},
+      ce('div',{className:'rm-card-icon'},ce('i',{className:'ti '+(isOverdue?'ti-bell-off':'ti-bell')})),
+      ce('div',{className:'rm-card-body'},
+        ce('div',{className:'rm-card-title'},r.title),
+        ce('div',{className:'rm-card-meta'},
+          (r.content&&r.content.due_datetime)&&ce('span',{className:'rm-time-pill'},fmtDateTime(r.content.due_datetime)),
+          (r.content&&r.content.repeat&&r.content.repeat!=='none')&&ce('span',{className:'rm-repeat-pill'},REPEAT_LBL[r.content.repeat]||r.content.repeat),
+          isOverdue&&ce('span',{className:'rm-overdue-pill'},'Vencido')
+        )
+      ),
+      ce('button',{className:'rm-card-del',onClick:e=>{e.stopPropagation();setDelConfirm(r);setDelExiting(false);}},'\xd7')
+    );
+
+  const renderSection=(title,items,emptyText,isOverdue=false)=>
+    ce('div',{className:'rm-section'},
+      ce('div',{className:'rm-section-hd'},
+        ce('span',{className:'rm-section-title'},title),
+        items.length>0&&ce('span',{className:'rm-section-badge'},items.length)
+      ),
+      items.length===0
+        ?ce('div',{className:'rm-empty'},ce('i',{className:'ti ti-bell rm-empty-icon'}),ce('p',{className:'rm-empty-text'},emptyText))
+        :ce('div',{className:'rm-list'},...items.map((r,i)=>renderCard(r,i,isOverdue)))
+    );
+
+  const {today,upcoming,overdue}=classify();
+
+  const modalEl=modal&&ce('div',{className:'rm-modal-overlay',onClick:e=>{if(e.target===e.currentTarget)setModal(null);}},
+    ce('div',{className:'rm-modal',onClick:e=>e.stopPropagation()},
+      ce('div',{className:'rm-modal-hd'},
+        ce('span',{className:'rm-modal-title'},modal==='new'?'Novo Lembrete':'Editar Lembrete'),
+        ce('button',{className:'rm-modal-x',onClick:()=>setModal(null)},'\xd7')
+      ),
+      ce('div',{className:'rm-modal-row'},
+        ce('div',{className:'rm-modal-label'},'T\xcdTULO'),
+        ce('input',{className:'rm-modal-input',placeholder:'Ex: Ligar para cliente',value:form.title,onChange:e=>setForm(p=>({...p,title:e.target.value})),autoFocus:true,onKeyDown:e=>{if(e.key==='Enter')save();}})
+      ),
+      ce('div',{className:'rm-modal-row'},
+        ce('div',{className:'rm-modal-label'},'DATA E HORA'),
+        ce('input',{className:'rm-modal-input',type:'datetime-local',value:form.due_datetime,onChange:e=>setForm(p=>({...p,due_datetime:e.target.value}))})
+      ),
+      ce('div',{className:'rm-modal-row'},
+        ce('div',{className:'rm-modal-label'},'REPETI\xc7\xc3O'),
+        ce('div',{className:'rm-repeat-pills'},
+          ['none','daily','weekly'].map(v=>ce('button',{key:v,className:'rm-repeat-btn'+(form.repeat===v?' rm-repeat-btn--active':''),onClick:()=>setForm(p=>({...p,repeat:v}))},{none:'Nenhum',daily:'Di\xe1rio',weekly:'Semanal'}[v]))
+        )
+      ),
+      ce('div',{className:'rm-modal-row'},
+        ce('div',{className:'rm-modal-label'},'NOTAS'),
+        ce('textarea',{className:'rm-modal-input rm-modal-ta',placeholder:'Notas opcionais...',value:form.notes,onChange:e=>setForm(p=>({...p,notes:e.target.value}))})
+      ),
+      ce('div',{className:'rm-modal-foot'},
+        ce('button',{className:'rm-modal-cancel',onClick:()=>setModal(null)},'Cancelar'),
+        ce('button',{className:'rm-modal-save',onClick:save,disabled:saving},saving?'Salvando…':'Salvar')
+      )
+    )
+  );
+
+  const delEl=delConfirm&&ce('div',{className:'rm-del-overlay',onClick:()=>{if(!delExiting){setDelExiting(true);setTimeout(()=>setDelConfirm(null),200);}}},
+    ce('div',{className:'rm-del-modal'+(delExiting?' rm-del-modal--exit':''),onClick:e=>e.stopPropagation()},
+      ce('div',{className:'rm-del-icon'},ce('i',{className:'ti ti-trash',style:{fontSize:24,color:'#f87171'}})),
+      ce('div',{className:'rm-del-title'},'Excluir lembrete?'),
+      ce('div',{className:'rm-del-sub'},(delConfirm&&delConfirm.title)||'Este lembrete ser\xe1 apagado.'),
+      ce('div',{className:'rm-del-actions'},
+        ce('button',{className:'rm-del-cancel',onClick:()=>{setDelExiting(true);setTimeout(()=>setDelConfirm(null),200);}},'Cancelar'),
+        ce('button',{className:'rm-del-confirm',onClick:()=>doDelete(delConfirm.id)},'Excluir')
+      )
+    )
+  );
+
+  return ce('div',{className:'rm-view'},
+    ce('div',{className:'rm-header'},
+      ce('h1',{className:'rm-header-title'},'Lembretes'),
+      ce('button',{className:'rm-add-btn',onClick:openNew},'+ Lembrete')
+    ),
+    loading
+      ?ce('div',{className:'rm-content'},ce('div',{style:{color:'var(--text-3)',fontSize:14,paddingTop:40,textAlign:'center'}},'Carregando…'))
+      :ce('div',{className:'rm-content'},
+          renderSection('Hoje',today,'Nenhum lembrete para hoje.',false),
+          renderSection('Pr\xf3ximos',upcoming,'Tudo em dia — nenhum lembrete futuro.',false),
+          renderSection('Vencidos',overdue,'Sem lembretes vencidos.',true)
+        ),
+    modalEl,
+    delEl
+  );
+}
+
 function TasksView() {
   const ce = React.createElement;
   const [tasks, setTasks] = React.useState([]);
@@ -4970,7 +5224,7 @@ function App() {
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
   return /*#__PURE__*/React.createElement("div", {
-    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''} ${active === 'tasks' ? 'is-tasks' : ''} ${active === 'crm' ? 'is-crm' : ''} ${active === 'finance' ? 'is-finance' : ''} ${active === 'calendar' ? 'is-agenda' : ''} ${active === 'personal' ? 'is-personal' : ''}`
+    className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''} ${active === 'tasks' ? 'is-tasks' : ''} ${active === 'crm' ? 'is-crm' : ''} ${active === 'finance' ? 'is-finance' : ''} ${active === 'calendar' ? 'is-agenda' : ''} ${active === 'personal' ? 'is-personal' : ''} ${active === 'reminders' ? 'is-reminders' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "bg-layer"
   }, t.particles && /*#__PURE__*/React.createElement(Particles, {
@@ -4988,7 +5242,7 @@ function App() {
     onSelect: setActive,
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
-  }), active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
+  }), active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
