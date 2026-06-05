@@ -1616,6 +1616,63 @@
   .st-achieve-icon { font-size:22px; line-height:1; flex-shrink:0; width:28px; text-align:center; }
   .st-achieve-name { font-size:13px; font-weight:600; color:var(--text); }
   .st-achieve-desc { font-size:11px; color:var(--text-3); margin-top:2px; line-height:1.3; }
+  /* Personalization — 12-color grid */
+  .st-color-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+  .st-color-item { display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; }
+  .st-color-dot2 { width:38px; height:38px; border-radius:50%; transition:transform 0.2s,box-shadow 0.2s; border:2px solid transparent; }
+  .st-color-dot2:hover { transform:scale(1.1); }
+  .st-color-dot2.st-sel { transform:scale(1.14); border-color:rgba(255,255,255,0.55); box-shadow:0 0 0 3px rgba(255,255,255,0.12), 0 0 18px var(--dot-c); }
+  .st-color-lbl { font-size:10px; color:transparent; font-weight:600; height:13px; transition:color 0.15s; white-space:nowrap; }
+  .st-color-item.st-sel .st-color-lbl { color:var(--text-2); }
+  /* Theme cards */
+  .st-theme-cards { display:flex; gap:12px; }
+  .st-theme-card { flex:1; border-radius:14px; border:2px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.02); padding:12px; cursor:pointer; transition:all 0.2s; }
+  .st-theme-card:hover { border-color:rgba(255,255,255,0.16); transform:translateY(-2px); }
+  .st-theme-card.st-sel { border-color:var(--accent); box-shadow:0 0 14px rgba(124,106,247,0.2); }
+  .st-theme-preview { height:52px; border-radius:8px; margin-bottom:8px; overflow:hidden; display:flex; flex-direction:column; }
+  .st-theme-preview.eclipse { background:linear-gradient(160deg,#0d0b1e 0%,#1a1535 100%); }
+  .st-theme-preview.nebula  { background:linear-gradient(160deg,#0b1020 0%,#0d1e35 100%); }
+  .st-theme-preview.void    { background:#000; }
+  .st-theme-preview-bar { display:flex; gap:2px; padding:5px; }
+  .st-theme-preview-dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.18); }
+  .st-theme-preview-dot.ac { background:var(--accent); }
+  .st-theme-preview-lines { flex:1; padding:4px 5px; display:flex; flex-direction:column; gap:3px; justify-content:center; }
+  .st-theme-preview-line { height:3px; border-radius:99px; background:rgba(255,255,255,0.1); }
+  .st-theme-preview-line.s { width:55%; }
+  .st-theme-name { font-size:13px; font-weight:700; color:var(--text); }
+  .st-theme-desc { font-size:11px; color:var(--text-3); margin-top:2px; }
+  /* Tone cards */
+  .st-tone-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .st-tone-card { border-radius:14px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); padding:14px 8px; cursor:pointer; transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1); text-align:center; }
+  .st-tone-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(124,106,247,0.3); transform:translateY(-2px); }
+  .st-tone-card.st-sel { background:rgba(124,106,247,0.1); border-color:var(--accent); box-shadow:0 0 12px rgba(124,106,247,0.15); transform:translateY(-2px); }
+  .st-tone-icon { font-size:24px; margin-bottom:6px; line-height:1; }
+  .st-tone-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px; }
+  .st-tone-desc { font-size:10px; color:var(--text-3); line-height:1.4; }
+  /* Focus pills with count */
+  .st-focus-pills { display:flex; gap:8px; flex-wrap:wrap; }
+  .st-focus-pill { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:20px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); color:var(--text-2); font-size:13px; font-weight:500; cursor:pointer; transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1); font-family:inherit; }
+  .st-focus-pill:hover { border-color:rgba(124,106,247,0.35); color:var(--text); }
+  .st-focus-pill.st-sel { background:rgba(124,106,247,0.14); border-color:var(--accent); color:var(--accent); transform:scale(1.04); }
+  .st-focus-count { font-size:11px; opacity:0.55; font-weight:600; }
+  /* Floating label */
+  .st-float-wrap { position:relative; }
+  .st-float-input { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:var(--text); font-family:inherit; font-size:14px; padding:18px 14px 8px; outline:none; box-sizing:border-box; transition:border-color 0.15s; }
+  .st-float-input:focus { border-color:rgba(124,106,247,0.5); }
+  .st-float-input:focus + .st-float-lbl, .st-float-input:not(:placeholder-shown) + .st-float-lbl { top:8px; font-size:10px; color:var(--accent); }
+  .st-float-lbl { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--text-3); pointer-events:none; transition:all 0.15s; font-weight:500; }
+  .st-bot-preview { font-size:12px; color:var(--text-3); padding:10px 14px; background:rgba(255,255,255,0.03); border-radius:8px; border-left:2px solid var(--accent); margin-top:8px; font-style:italic; }
+  /* Avatar cards */
+  .st-avatar-cards { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+  .st-avatar-card { border-radius:14px; border:2px solid rgba(255,255,255,0.07); padding:14px 6px; display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+  .st-avatar-card::before { content:''; position:absolute; inset:0; background:var(--av-grad,transparent); opacity:0.12; transition:opacity 0.2s; }
+  .st-avatar-card:hover { border-color:rgba(255,255,255,0.18); transform:translateY(-2px); }
+  .st-avatar-card:hover::before { opacity:0.22; }
+  .st-avatar-card.st-sel { border-color:var(--accent); box-shadow:0 0 14px rgba(124,106,247,0.25); }
+  .st-avatar-card.st-sel::before { opacity:0.2; }
+  .st-avatar-card-icon { font-size:26px; line-height:1; position:relative; z-index:1; }
+  .st-avatar-card-name { font-size:10px; font-weight:600; color:var(--text-2); position:relative; z-index:1; }
+  @media(max-width:900px) { .st-tone-cards{grid-template-columns:repeat(3,1fr);} .st-theme-cards{flex-direction:column;} .st-color-grid{grid-template-columns:repeat(4,1fr);} .st-avatar-cards{grid-template-columns:repeat(3,1fr);} }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
@@ -4993,6 +5050,7 @@ function SettingsView() {
   const [integs, setIntegs] = React.useState({gcal:false,gmail:false,whatsapp:false,instagram:false});
   const [saving, setSaving] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
+  const [theme, setTheme] = React.useState('eclipse');
   const [showClear, setShowClear] = React.useState(false);
 
   React.useEffect(() => {
@@ -5013,6 +5071,7 @@ function SettingsView() {
           if (c.tone) setTone(c.tone);
           if (c.focus) setFocus(c.focus);
           if (c.integs) setIntegs(c.integs);
+          if (c.theme) setTheme(c.theme);
         }
       })
       .catch(() => {});
@@ -5025,7 +5084,7 @@ function SettingsView() {
 
   function save() {
     setSaving(true);
-    const content = {name,email,tz,botName,botAvatar,color,tone,focus,integs};
+    const content = {name,email,tz,botName,botAvatar,color,theme,tone,focus,integs};
     const body = profileId
       ? {content}
       : {type:'note',title:'Perfil',tags:['perfil'],content};
@@ -5045,10 +5104,39 @@ function SettingsView() {
     setFocus(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
   }
 
-  const COLORS = ['#534AB7','#3B82F6','#10B981','#EC4899','#F59E0B','#EF4444'];
-  const AVATARS = ['🤖','👾','👻','⚡','💎','🔥'];
-  const TONES = ['Parceiro','Formal','Motivacional','Brutalmente honesto'];
-  const FOCUSES = ['Trabalho','Finanças','Saúde','Família','Estudos','Projetos pessoais'];
+  const COLORS12 = [
+    {hex:'#534AB7',name:'Índigo'}, {hex:'#3B82F6',name:'Oceano'},
+    {hex:'#10B981',name:'Floresta'},{hex:'#EC4899',name:'Rosa'},
+    {hex:'#F59E0B',name:'Âmbar'},  {hex:'#EF4444',name:'Rubi'},
+    {hex:'#06B6D4',name:'Ciano'},  {hex:'#8B5CF6',name:'Lavanda'},
+    {hex:'#F97316',name:'Coral'},  {hex:'#6B7280',name:'Grafite'},
+    {hex:'#A78BFA',name:'Aurora'}, {hex:'#7C3AED',name:'Violeta'},
+  ];
+  const THEMES = [
+    {id:'eclipse',name:'Eclipse',desc:'Escuro estelar'},
+    {id:'nebula', name:'Nebula', desc:'Azul profundo'},
+    {id:'void',   name:'Void',   desc:'Preto absoluto'},
+  ];
+  const TONES2 = [
+    {id:'Parceiro',     icon:'🤝',name:'Parceiro',    desc:'Direto, sem frescura. Como um sócio.'},
+    {id:'Formal',       icon:'🎩',name:'Formal',      desc:'Profissional e preciso. Zero intimidade.'},
+    {id:'Motivacional', icon:'⚡',name:'Motivacional',desc:'Energia alta. Te empurra pra frente.'},
+    {id:'Brutal',       icon:'🔥',name:'Brutal',      desc:'Sem filtro. A verdade que você precisa.'},
+    {id:'Zen',          icon:'🧘',name:'Zen',         desc:'Calmo, paciente. Sem pressão.'},
+  ];
+  const FOCUSES2 = [
+    {id:'Trabalho',icon:'💼',count:12},{id:'Finanças',icon:'💰',count:8},
+    {id:'Saúde',   icon:'🏃',count:3}, {id:'Família', icon:'👨‍👩‍👧',count:2},
+    {id:'Estudos', icon:'📚',count:0}, {id:'Projetos',icon:'🚀',count:5},
+  ];
+  const AVATARS2 = [
+    {id:'🤖',name:'Robô',   grad:'linear-gradient(135deg,#534AB7,#3B82F6)'},
+    {id:'🔮',name:'Oráculo',grad:'linear-gradient(135deg,#7C3AED,#A78BFA)'},
+    {id:'⚡',name:'Raio',   grad:'linear-gradient(135deg,#F59E0B,#EF4444)'},
+    {id:'🧠',name:'Mente',  grad:'linear-gradient(135deg,#10B981,#3B82F6)'},
+    {id:'👁️',name:'Visão',  grad:'linear-gradient(135deg,#EC4899,#8B5CF6)'},
+    {id:'∞', name:'Infinito',grad:'linear-gradient(135deg,#06B6D4,#10B981)'},
+  ];
   const RANKS = [
     {name:'Cobre',    min:0,      color:'#B87333',gem:'🪙'},
     {name:'Bronze',   min:500,    color:'#CD7F32',gem:'🥉'},
@@ -5127,56 +5215,94 @@ function SettingsView() {
         ce('input',{className:'st-input',value:tz,placeholder:'America/Sao_Paulo',onChange:e=>setTz(e.target.value)})
       )
     ),
-    ce('div',{className:'st-group'},
-      ce('div',{className:'st-group-label'},'Assistente'),
-      ce('div',{className:'st-row'},
-        ce('div',{className:'st-label'},'Nome do assistente'),
-        ce('input',{className:'st-input',value:botName,placeholder:'Jarvis',onChange:e=>setBotName(e.target.value)})
-      ),
-      ce('div',{className:'st-row'},
-        ce('div',{className:'st-label'},'Avatar do assistente'),
-        ce('div',{className:'st-bot-grid'},
-          ...AVATARS.map(a => ce('div',{
-            key:a, className:'st-bot-opt'+(botAvatar===a?' st-sel':''),
-            onClick:()=>setBotAvatar(a)
-          },a))
-        )
-      )
-    ),
     saveRow
   );
 
   // Section 2 — Personalização
   const sec2 = ce('div',{className:'st-section'},
     ce('div',{className:'st-section-title'},'Personalização'),
-    ce('div',{className:'st-section-desc'},'Ajuste o visual e o comportamento do Jarvis'),
+    ce('div',{className:'st-section-desc'},'Visual, comportamento e identidade do seu assistente'),
     ce('div',{className:'st-group'},
       ce('div',{className:'st-group-label'},'Cor principal'),
-      ce('div',{className:'st-colors'},
-        ...COLORS.map(c => ce('div',{
-          key:c,
-          className:'st-color-dot'+(color===c?' st-sel':''),
-          style:{background:c,'--dot-c':c},
-          onClick:()=>applyColor(c)
-        }))
+      ce('div',{className:'st-color-grid'},
+        ...COLORS12.map(c=>ce('div',{
+          key:c.hex, className:'st-color-item'+(color===c.hex?' st-sel':''),
+          onClick:()=>applyColor(c.hex)
+        },
+          ce('div',{className:'st-color-dot2'+(color===c.hex?' st-sel':''),style:{background:c.hex,'--dot-c':c.hex}}),
+          ce('div',{className:'st-color-lbl'},color===c.hex?c.name:'')
+        ))
+      )
+    ),
+    ce('div',{className:'st-group'},
+      ce('div',{className:'st-group-label'},'Tema'),
+      ce('div',{className:'st-theme-cards'},
+        ...THEMES.map(t=>ce('div',{
+          key:t.id, className:'st-theme-card'+(theme===t.id?' st-sel':''),
+          onClick:()=>setTheme(t.id)
+        },
+          ce('div',{className:'st-theme-preview '+t.id},
+            ce('div',{className:'st-theme-preview-bar'},
+              ce('div',{className:'st-theme-preview-dot ac'}),
+              ce('div',{className:'st-theme-preview-dot'}),
+              ce('div',{className:'st-theme-preview-dot'})
+            ),
+            ce('div',{className:'st-theme-preview-lines'},
+              ce('div',{className:'st-theme-preview-line'}),
+              ce('div',{className:'st-theme-preview-line s'}),
+              ce('div',{className:'st-theme-preview-line'})
+            )
+          ),
+          ce('div',{className:'st-theme-name'},t.name),
+          ce('div',{className:'st-theme-desc'},t.desc)
+        ))
       )
     ),
     ce('div',{className:'st-group'},
       ce('div',{className:'st-group-label'},'Tom do agente'),
-      ce('div',{className:'st-pills'},
-        ...TONES.map(t => ce('button',{
-          key:t, className:'st-pill'+(tone===t?' st-sel':''),
-          onClick:()=>setTone(t)
-        },t))
+      ce('div',{className:'st-tone-cards'},
+        ...TONES2.map(t=>ce('div',{
+          key:t.id, className:'st-tone-card'+(tone===t.id?' st-sel':''),
+          onClick:()=>setTone(t.id)
+        },
+          ce('div',{className:'st-tone-icon'},t.icon),
+          ce('div',{className:'st-tone-name'},t.name),
+          ce('div',{className:'st-tone-desc'},t.desc)
+        ))
       )
     ),
     ce('div',{className:'st-group'},
       ce('div',{className:'st-group-label'},'Áreas de foco'),
-      ce('div',{className:'st-pills'},
-        ...FOCUSES.map(f => ce('button',{
-          key:f, className:'st-pill'+(focus.includes(f)?' st-sel':''),
-          onClick:()=>toggleFocus(f)
-        },f))
+      ce('div',{className:'st-focus-pills'},
+        ...FOCUSES2.map(f=>ce('button',{
+          key:f.id, className:'st-focus-pill'+(focus.includes(f.id)?' st-sel':''),
+          onClick:()=>toggleFocus(f.id)
+        },
+          ce('span',null,f.icon),
+          ce('span',null,' '+f.id),
+          ce('span',{className:'st-focus-count'},' ('+f.count+')')
+        ))
+      )
+    ),
+    ce('div',{className:'st-group'},
+      ce('div',{className:'st-group-label'},'Nome do assistente'),
+      ce('div',{className:'st-float-wrap'},
+        ce('input',{className:'st-float-input',value:botName,placeholder:' ',onChange:e=>setBotName(e.target.value)}),
+        ce('label',{className:'st-float-lbl'},'Nome do assistente')
+      ),
+      ce('div',{className:'st-bot-preview'},'Olá, eu sou o '+(botName||'Jarvis')+'. Como posso ajudar?')
+    ),
+    ce('div',{className:'st-group'},
+      ce('div',{className:'st-group-label'},'Avatar do assistente'),
+      ce('div',{className:'st-avatar-cards'},
+        ...AVATARS2.map(a=>ce('div',{
+          key:a.id, className:'st-avatar-card'+(botAvatar===a.id?' st-sel':''),
+          style:{'--av-grad':a.grad},
+          onClick:()=>setBotAvatar(a.id)
+        },
+          ce('div',{className:'st-avatar-card-icon'},a.id),
+          ce('div',{className:'st-avatar-card-name'},a.name)
+        ))
       )
     ),
     saveRow
