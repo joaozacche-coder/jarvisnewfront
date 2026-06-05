@@ -1,3 +1,4 @@
+import { API_BASE } from '@/lib/config'
 import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND = "https://jarvisia-production.up.railway.app";
