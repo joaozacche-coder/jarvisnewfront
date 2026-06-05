@@ -4699,13 +4699,21 @@ function RemindersView() {
   const fmtDateTime = (iso) => {
     if(!iso) return '';
     try {
-      const d=new Date(iso); const now=new Date();
-      const tom=new Date(now); tom.setDate(now.getDate()+1);
+      const hasTime = iso.includes('T') && !iso.includes('T00:00');
+      const now=new Date(); const tom=new Date(now); tom.setDate(now.getDate()+1);
+      if(!hasTime) {
+        const [y,m,dy]=iso.slice(0,10).split('-').map(Number);
+        const d=new Date(y,m-1,dy);
+        if(d.toDateString()===now.toDateString()) return 'Hoje';
+        if(d.toDateString()===tom.toDateString()) return 'Amanhã';
+        return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+      }
+      const d=new Date(iso);
       const time=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
       if(d.toDateString()===now.toDateString()) return time;
       if(d.toDateString()===tom.toDateString()) return 'Amanhã '+time;
       return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+time;
-    } catch { return iso.slice(11,16)||''; }
+    } catch { return iso.slice(0,10)||''; }
   };
 
   const classify = () => {
@@ -4714,7 +4722,11 @@ function RemindersView() {
     reminders.forEach(r=>{
       const iso=(r.content&&r.content.due_datetime)||r.date;
       if(!iso){ upcoming.push(r); return; }
-      const d=new Date(iso);
+      let d;
+      if(!iso.includes('T')||iso.includes('T00:00')){
+        const [y,m,dy]=iso.slice(0,10).split('-').map(Number);
+        d=new Date(y,m-1,dy);
+      } else { d=new Date(iso); }
       if(d<now) overdue.push(r);
       else if(d.toDateString()===todayStr) today.push(r);
       else upcoming.push(r);
