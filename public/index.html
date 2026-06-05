@@ -207,23 +207,6 @@
     filter: blur(4px);
     pointer-events: none;
   }
-  /* hero redesign — greeting acima e conteúdo abaixo do orb, posicionados no .main */
-  .hero-clock { position:absolute; top:20px; right:24px; font-size:13px; font-family:'Geist Mono',monospace; color:var(--text); opacity:0.35; z-index:4; pointer-events:none; letter-spacing:0.04em; transition:opacity 420ms ease; }
-  .is-active .hero-clock { opacity:0; }
-  .is-mounted .hero-clock { animation:fadeUp 600ms 60ms both; }
-
-  .hero-greeting-wrap { position:absolute; left:50%; top:calc(var(--orb-top) - 32px); transform:translateX(-50%); z-index:4; pointer-events:none; text-align:center; transition:opacity 420ms cubic-bezier(.4,0,.2,1), transform 500ms cubic-bezier(.4,0,.2,1); }
-  .is-active .hero-greeting-wrap { opacity:0; transform:translateX(-50%) translateY(-6px); }
-  .is-mounted .hero-greeting-wrap { animation:fadeUp 800ms 80ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-greeting { font-size:11px; font-weight:400; letter-spacing:0.25em; text-transform:uppercase; color:var(--text); opacity:0.4; white-space:nowrap; }
-
-  .hero-below { position:absolute; left:50%; top:calc(var(--orb-top) + var(--orb-size) + 32px); transform:translateX(-50%); z-index:4; pointer-events:none; text-align:center; display:flex; flex-direction:column; align-items:center; transition:opacity 420ms cubic-bezier(.4,0,.2,1), transform 500ms cubic-bezier(.4,0,.2,1); }
-  .is-active .hero-below { opacity:0; transform:translateX(-50%) translateY(8px); }
-  .is-mounted .hero-below { animation:fadeUp 1000ms 200ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-user-name { font-size:42px; font-weight:300; letter-spacing:-0.02em; line-height:1.1; color:var(--text); text-shadow:0 2px 20px rgba(8,12,20,0.9); white-space:nowrap; }
-  .hero-rank { display:flex; align-items:center; gap:6px; font-size:13px; opacity:0.7; margin-top:10px; white-space:nowrap; }
-  .hero-rank-pts { opacity:0.6; }
-  .hero-tagline { font-size:12px; color:var(--text); opacity:0.25; margin-top:8px; white-space:nowrap; }
 
   .hero-agent { display:flex; align-items:center; gap:8px; margin-bottom:12px; opacity:0; transform:translateY(6px); transition:opacity 0.4s ease, transform 0.4s ease; }
   .is-mounted .hero-agent { opacity:1; transform:translateY(0); }
@@ -2988,21 +2971,6 @@ function greetingEyebrow() {
   const h = new Date().getHours();
   return h < 5 ? 'BOA NOITE' : h < 12 ? 'BOM DIA' : h < 18 ? 'BOA TARDE' : 'BOA NOITE';
 }
-function getClockStr() {
-  return new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', hour12:false});
-}
-const RANKS = [
-  {name:'Cobre',    min:0,      color:'#B87333',gem:'🪙'},
-  {name:'Bronze',   min:500,    color:'#CD7F32',gem:'🥉'},
-  {name:'Prata',    min:1500,   color:'#C0C0C0',gem:'🥈'},
-  {name:'Ouro',     min:3500,   color:'#FFD700',gem:'🥇'},
-  {name:'Platina',  min:7000,   color:'#E5E4E2',gem:'💠'},
-  {name:'Diamante', min:15000,  color:'#B9F2FF',gem:'💎'},
-  {name:'Esmeralda',min:30000,  color:'#50C878',gem:'💚'},
-  {name:'Rubi',     min:60000,  color:'#E0115F',gem:'❤️'},
-  {name:'Safira',   min:100000, color:'#0F52BA',gem:'🔷'},
-  {name:'Lendário', min:200000, color:'#FFD700',gem:'👑'},
-];
 let __msgId = 0;
 function stripMd(txt) {
   return (txt || '')
@@ -5191,6 +5159,18 @@ function SettingsView() {
     {id:'∞', name:'Infinito',grad:'linear-gradient(135deg,#06B6D4,#10B981)'},
     {id:'none', name:'Nenhum', grad:'none'},
   ];
+  const RANKS = [
+    {name:'Cobre',    min:0,      color:'#B87333',gem:'🪙'},
+    {name:'Bronze',   min:500,    color:'#CD7F32',gem:'🥉'},
+    {name:'Prata',    min:1500,   color:'#C0C0C0',gem:'🥈'},
+    {name:'Ouro',     min:3500,   color:'#FFD700',gem:'🥇'},
+    {name:'Platina',  min:7000,   color:'#E5E4E2',gem:'💠'},
+    {name:'Diamante', min:15000,  color:'#B9F2FF',gem:'💎'},
+    {name:'Esmeralda',min:30000,  color:'#50C878',gem:'💚'},
+    {name:'Rubi',     min:60000,  color:'#E0115F',gem:'❤️'},
+    {name:'Safira',   min:100000, color:'#0F52BA',gem:'🔷'},
+    {name:'Lendário', min:200000, color:'#FFD700',gem:'👑'},
+  ];
   const XP = 750; const STREAK = 5;
   const rankIdx = RANKS.reduce((acc,r,i)=>XP>=r.min?i:acc,0);
   const curRank = RANKS[rankIdx];
@@ -5832,7 +5812,6 @@ function App() {
   const [isThinking, setIsThinking] = useState(false);
   const [jarvisName, setJarvisName] = useState(localStorage.getItem('jarvis_name') || 'Jarvis');
   const [jarvisAvatar, setJarvisAvatar] = useState(localStorage.getItem('jarvis_avatar') || 'none');
-  const [clock, setClock] = useState(getClockStr());
   const inputRef = useRef(null);
   const feedRef = useRef(null);
   const ORB_SIZE = 480;
@@ -5943,20 +5922,10 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const id = setInterval(() => setClock(getClockStr()), 60000);
-    return () => clearInterval(id);
-  }, []);
-
   // "active" = the screen is in working mode (focus, content, or voice).
   const isActive = inputFocused || input.length > 0 || orbState === 'listening' || orbState === 'speaking' || messages.length > 0;
   const showStatus = orbState === 'listening' || orbState === 'speaking';
   const eyebrow = greetingEyebrow();
-  const heroXP = parseInt(localStorage.getItem('jarvis_pts') || '750');
-  const heroRankIdx = RANKS.reduce((acc, r, i) => heroXP >= r.min ? i : acc, 0);
-  const heroRank = RANKS[heroRankIdx];
-  const heroHour = new Date().getHours();
-  const tagline = heroHour < 12 ? 'O que fazemos hoje?' : heroHour < 18 ? 'O que resolvemos hoje?' : 'Descansando ou trabalhando?';
   return /*#__PURE__*/React.createElement("div", {
     className: `app ${dark ? 'is-dark' : 'is-light'} ${mounted ? 'is-mounted' : ''} ${isActive ? 'is-active' : ''} ${messages.length > 0 ? 'has-chat' : ''} ${active === 'tasks' ? 'is-tasks' : ''} ${active === 'crm' ? 'is-crm' : ''} ${active === 'finance' ? 'is-finance' : ''} ${active === 'calendar' ? 'is-agenda' : ''} ${active === 'personal' ? 'is-personal' : ''} ${active === 'reminders' ? 'is-reminders' : ''} ${active === 'settings' ? 'is-settings' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
@@ -5976,26 +5945,17 @@ function App() {
     onSelect: setActive,
     dark: dark,
     onToggleTheme: () => setTweak('dark', !dark)
-  }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : React.createElement("main", {
+  }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
-  }, React.createElement("div", {
-    className: "hero-clock"
-  }, clock), React.createElement("div", {
-    className: "hero-greeting-wrap"
-  }, React.createElement("div", {
-    className: "hero-greeting"
-  }, eyebrow)), React.createElement("header", {
+  }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
-  }), React.createElement("div", {
-    className: "hero-below"
-  }, React.createElement("div", {
-    className: "hero-user-name"
-  }, t.name || 'João'), React.createElement("div", {
-    className: "hero-rank",
-    style: {color: heroRank.color}
-  }, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", null, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, " · " + heroXP + " pts")), React.createElement("div", {
-    className: "hero-tagline"
-  }, tagline)), React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hero-agent"
+  }, jarvisAvatar && jarvisAvatar!=='none' && /*#__PURE__*/React.createElement("span", {className:"hero-agent-icon"}, jarvisAvatar), /*#__PURE__*/React.createElement("span", {className:"hero-agent-name"}, jarvisName)), /*#__PURE__*/React.createElement("div", {
+    className: "hero-eyebrow"
+  }, eyebrow), /*#__PURE__*/React.createElement("h1", {
+    className: "hero-name"
+  }, t.name)), /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
   }, orbState === 'listening' && 'OUVINDO…', orbState === 'speaking' && 'RESPONDENDO…'),
   React.createElement('div', {
