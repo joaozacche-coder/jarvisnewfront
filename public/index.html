@@ -1438,6 +1438,12 @@
   .rm-overdue-pill { background:rgba(248,113,113,0.15); border-radius:5px; color:#f87171; font-size:10px; font-weight:600; padding:2px 7px; text-transform:uppercase; letter-spacing:0.5px; }
   .rm-card-del { background:none; border:none; color:rgba(255,255,255,0.25); cursor:pointer; font-size:18px; line-height:1; padding:4px 6px; border-radius:6px; transition:color 0.15s,background 0.12s; flex-shrink:0; }
   .rm-card-del:hover { color:#f87171; background:rgba(239,68,68,0.1); }
+  .rm-ev-card { position:relative; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.15); border-left:3px solid #6366f1; border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:12px; animation:rmFadeUp 0.3s calc(var(--si,0)*35ms) both; }
+  .rm-ev-icon { width:36px; height:36px; background:rgba(99,102,241,0.15); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#818cf8; font-size:16px; }
+  .rm-ev-body { flex:1; min-width:0; }
+  .rm-ev-title { font-size:14px; font-weight:500; color:rgba(255,255,255,0.85); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+  .rm-ev-meta { display:flex; align-items:center; gap:6px; }
+  .rm-ev-pill { background:rgba(99,102,241,0.2); border-radius:5px; color:#a5b4fc; font-size:10px; font-weight:600; padding:2px 7px; text-transform:uppercase; letter-spacing:0.5px; }
   .rm-empty { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 16px; }
   .rm-empty-icon { font-size:28px; color:var(--text-3); opacity:0.25; }
   .rm-empty-text { font-size:13px; color:var(--text-3); }
@@ -4620,6 +4626,7 @@ function PersonalView({onChat}={}) {
 function RemindersView() {
   const ce = React.createElement;
   const [reminders,  setReminders]  = React.useState([]);
+  const [events,     setEvents]     = React.useState([]);
   const [loading,    setLoading]    = React.useState(true);
   const [modal,      setModal]      = React.useState(null);
   const [editing,    setEditing]    = React.useState(null);
@@ -4634,7 +4641,11 @@ function RemindersView() {
 
   const load = async () => {
     setLoading(true);
-    try { const r=await fetch('/api/reminders'); const d=await r.json(); setReminders(d.reminders||[]); } catch {}
+    try {
+      const [rRes,eRes]=await Promise.all([fetch('/api/reminders'),fetch('/api/events')]);
+      const rd=await rRes.json(); setReminders(rd.reminders||[]);
+      const ed=await eRes.json(); setEvents(ed.events||[]);
+    } catch {}
     setLoading(false);
   };
 
@@ -4713,6 +4724,18 @@ function RemindersView() {
 
   const REPEAT_LBL={none:'',daily:'Diário',weekly:'Semanal'};
 
+  const renderEventCard=(e,i)=>
+    ce('div',{key:e.id,className:'rm-ev-card',style:{'--si':i}},
+      ce('div',{className:'rm-ev-icon'},ce('i',{className:'ti ti-calendar'})),
+      ce('div',{className:'rm-ev-body'},
+        ce('div',{className:'rm-ev-title'},e.title),
+        ce('div',{className:'rm-ev-meta'},
+          ce('span',{className:'rm-ev-pill'},e._pill||'Agenda'),
+          (e.content&&e.content.start_time)&&ce('span',{className:'rm-time-pill'},e.content.start_time+(e.content.end_time?'–'+e.content.end_time:''))
+        )
+      )
+    );
+
   const renderCard=(r,i,isOverdue)=>
     ce('div',{key:r.id,className:'rm-card'+(isOverdue?' rm-card--overdue':'')+(newIds.has(r.id)?' rm-card--new':'')+(dying.has(r.id)?' rm-card--dying':''),style:{'--si':i},onClick:()=>openEdit(r)},
       ce('div',{className:'rm-card-icon'},ce('i',{className:'ti '+(isOverdue?'ti-bell-off':'ti-bell')})),
@@ -4727,18 +4750,26 @@ function RemindersView() {
       ce('button',{className:'rm-card-del',onClick:e=>{e.stopPropagation();setDelConfirm(r);setDelExiting(false);}},'\xd7')
     );
 
-  const renderSection=(title,items,emptyText,isOverdue=false)=>
-    ce('div',{className:'rm-section'},
+  const renderSection=(title,items,emptyText,isOverdue=false,evts=[])=>{
+    const total=evts.length+items.length;
+    return ce('div',{className:'rm-section'},
       ce('div',{className:'rm-section-hd'},
         ce('span',{className:'rm-section-title'},title),
-        items.length>0&&ce('span',{className:'rm-section-badge'},items.length)
+        total>0&&ce('span',{className:'rm-section-badge'},total)
       ),
-      items.length===0
+      total===0
         ?ce('div',{className:'rm-empty'},ce('i',{className:'ti ti-bell rm-empty-icon'}),ce('p',{className:'rm-empty-text'},emptyText))
-        :ce('div',{className:'rm-list'},...items.map((r,i)=>renderCard(r,i,isOverdue)))
+        :ce('div',{className:'rm-list'},...evts.map((e,i)=>renderEventCard(e,i)),...items.map((r,i)=>renderCard(r,evts.length+i,isOverdue)))
     );
+  };
 
   const {today,upcoming,overdue}=classify();
+  const _pad=n=>String(n).padStart(2,'0');
+  const _now=new Date(); const _tom=new Date(_now); _tom.setDate(_now.getDate()+1);
+  const _toStr=d=>`${d.getFullYear()}-${_pad(d.getMonth()+1)}-${_pad(d.getDate())}`;
+  const _sortEv=(a,b)=>((a.content&&a.content.start_time)||'').localeCompare((b.content&&b.content.start_time)||'');
+  const evToday=events.filter(e=>e.content&&e.content.date===_toStr(_now)).sort(_sortEv);
+  const evTomorrow=events.filter(e=>e.content&&e.content.date===_toStr(_tom)).map(e=>({...e,_pill:'Amanhã'})).sort(_sortEv);
 
   const modalEl=modal&&ce('div',{className:'rm-modal-overlay',onClick:e=>{if(e.target===e.currentTarget)setModal(null);}},
     ce('div',{className:'rm-modal',onClick:e=>e.stopPropagation()},
@@ -4791,8 +4822,8 @@ function RemindersView() {
     loading
       ?ce('div',{className:'rm-content'},ce('div',{style:{color:'var(--text-3)',fontSize:14,paddingTop:40,textAlign:'center'}},'Carregando…'))
       :ce('div',{className:'rm-content'},
-          renderSection('Hoje',today,'Nenhum lembrete para hoje.',false),
-          renderSection('Pr\xf3ximos',upcoming,'Tudo em dia — nenhum lembrete futuro.',false),
+          renderSection('Hoje',today,'Nenhum lembrete para hoje.',false,evToday),
+          renderSection('Pr\xf3ximos',upcoming,'Tudo em dia — nenhum lembrete futuro.',false,evTomorrow),
           renderSection('Vencidos',overdue,'Sem lembretes vencidos.',true)
         ),
     modalEl,
