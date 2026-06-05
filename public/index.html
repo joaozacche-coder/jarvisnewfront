@@ -5109,8 +5109,8 @@ function SettingsView() {
     const method = profileId ? 'PATCH' : 'POST';
     localStorage.setItem('jarvis_agent_tone', tone);
     localStorage.setItem('jarvis_name', botName || 'Jarvis');
-    localStorage.setItem('jarvis_avatar', botAvatar || '🤖');
-    window.dispatchEvent(new CustomEvent('jarvis-settings-changed', {detail:{name:botName||'Jarvis',avatar:botAvatar||'🤖',tone,color}}));
+    localStorage.setItem('jarvis_avatar', botAvatar || 'none');
+    window.dispatchEvent(new CustomEvent('jarvis-settings-changed', {detail:{name:botName||'Jarvis',avatar:botAvatar||'none',tone,color}}));
     fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
       .then(r => r.json())
       .then(d => {
@@ -5157,7 +5157,7 @@ function SettingsView() {
     {id:'🧠',name:'Mente',  grad:'linear-gradient(135deg,#10B981,#3B82F6)'},
     {id:'👁️',name:'Visão',  grad:'linear-gradient(135deg,#EC4899,#8B5CF6)'},
     {id:'∞', name:'Infinito',grad:'linear-gradient(135deg,#06B6D4,#10B981)'},
-    {id:'',  name:'Nenhum', grad:'none'},
+    {id:'none', name:'Nenhum', grad:'none'},
   ];
   const RANKS = [
     {name:'Cobre',    min:0,      color:'#B87333',gem:'🪙'},
@@ -5319,11 +5319,11 @@ function SettingsView() {
       ce('div',{className:'st-group-label'},'Avatar do assistente'),
       ce('div',{className:'st-avatar-cards'},
         ...AVATARS2.map(a=>ce('div',{
-          key:a.id||'none', className:'st-avatar-card'+(botAvatar===a.id?' st-sel':'')+(a.id===''?' st-none':''),
+          key:a.id, className:'st-avatar-card'+(botAvatar===a.id?' st-sel':'')+(a.id==='none'?' st-none':''),
           style:a.grad!=='none'?{'--av-grad':a.grad}:{},
           onClick:()=>setBotAvatar(a.id)
         },
-          a.id ? ce('div',{className:'st-avatar-card-icon'},a.id) : ce('div',{className:'st-avatar-card-none'},'—'),
+          a.id!=='none' ? ce('div',{className:'st-avatar-card-icon'},a.id) : ce('div',{className:'st-avatar-card-none'},'—'),
           ce('div',{className:'st-avatar-card-name'},a.name)
         ))
       )
@@ -5811,7 +5811,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [isThinking, setIsThinking] = useState(false);
   const [jarvisName, setJarvisName] = useState(localStorage.getItem('jarvis_name') || 'Jarvis');
-  const [jarvisAvatar, setJarvisAvatar] = useState(localStorage.getItem('jarvis_avatar') || '🤖');
+  const [jarvisAvatar, setJarvisAvatar] = useState(localStorage.getItem('jarvis_avatar') || 'none');
   const inputRef = useRef(null);
   const feedRef = useRef(null);
   const ORB_SIZE = 480;
@@ -5860,7 +5860,7 @@ function App() {
   useEffect(() => {
     const handler = (e) => {
       if (e.detail.name) setJarvisName(e.detail.name);
-      if (e.detail.avatar) setJarvisAvatar(e.detail.avatar);
+      if (e.detail.avatar != null) setJarvisAvatar(e.detail.avatar);
     };
     window.addEventListener('jarvis-settings-changed', handler);
     return () => window.removeEventListener('jarvis-settings-changed', handler);
@@ -5951,7 +5951,7 @@ function App() {
     className: "hero"
   }, /*#__PURE__*/React.createElement("div", {
     className: "hero-agent"
-  }, jarvisAvatar && /*#__PURE__*/React.createElement("span", {className:"hero-agent-icon"}, jarvisAvatar), /*#__PURE__*/React.createElement("span", {className:"hero-agent-name"}, jarvisName)), /*#__PURE__*/React.createElement("div", {
+  }, jarvisAvatar && jarvisAvatar!=='none' && /*#__PURE__*/React.createElement("span", {className:"hero-agent-icon"}, jarvisAvatar), /*#__PURE__*/React.createElement("span", {className:"hero-agent-name"}, jarvisName)), /*#__PURE__*/React.createElement("div", {
     className: "hero-eyebrow"
   }, eyebrow), /*#__PURE__*/React.createElement("h1", {
     className: "hero-name"
