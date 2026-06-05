@@ -208,6 +208,11 @@
     pointer-events: none;
   }
 
+  .hero-agent { display:flex; align-items:center; gap:8px; margin-bottom:12px; opacity:0; transform:translateY(6px); transition:opacity 0.4s ease, transform 0.4s ease; }
+  .is-mounted .hero-agent { opacity:1; transform:translateY(0); }
+  .hero-agent-icon { font-size:20px; line-height:1; }
+  .hero-agent-name { font-size:12px; font-weight:700; color:var(--text-3); letter-spacing:1.5px; text-transform:uppercase; }
+  .st-save-btn.st-saved-ok { background:#10B981 !important; }
   .hero-eyebrow {
     font-family: 'Geist Mono', monospace;
     font-size: 11px;
@@ -5080,6 +5085,15 @@ function SettingsView() {
   function applyColor(c) {
     setColor(c);
     document.documentElement.style.setProperty('--accent', c);
+    document.documentElement.style.setProperty('--accent-soft', window.__hexA(c, 0.18));
+    localStorage.setItem('jarvis_primary_color', c);
+  }
+
+  function applyTheme(t) {
+    setTheme(t);
+    const bgs = {eclipse:'#080C14', nebula:'#050d1a', void:'#000000'};
+    document.documentElement.style.setProperty('--bg', bgs[t] || '#080C14');
+    localStorage.setItem('jarvis_theme', t);
   }
 
   function save() {
@@ -5090,6 +5104,10 @@ function SettingsView() {
       : {type:'note',title:'Perfil',tags:['perfil'],content};
     const url = profileId ? '/api/personal/' + profileId : '/api/personal';
     const method = profileId ? 'PATCH' : 'POST';
+    localStorage.setItem('jarvis_agent_tone', tone);
+    localStorage.setItem('jarvis_name', botName || 'Jarvis');
+    localStorage.setItem('jarvis_avatar', botAvatar || '🤖');
+    window.dispatchEvent(new CustomEvent('jarvis-settings-changed', {detail:{name:botName||'Jarvis',avatar:botAvatar||'🤖',tone,color}}));
     fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
       .then(r => r.json())
       .then(d => {
@@ -5125,9 +5143,9 @@ function SettingsView() {
     {id:'Zen',          icon:'🧘',name:'Zen',         desc:'Calmo, paciente. Sem pressão.'},
   ];
   const FOCUSES2 = [
-    {id:'Trabalho',icon:'💼',count:12},{id:'Finanças',icon:'💰',count:8},
-    {id:'Saúde',   icon:'🏃',count:3}, {id:'Família', icon:'👨‍👩‍👧',count:2},
-    {id:'Estudos', icon:'📚',count:0}, {id:'Projetos',icon:'🚀',count:5},
+    {id:'Trabalho',icon:'💼'},{id:'Finanças',icon:'💰'},
+    {id:'Saúde',   icon:'🏃'},{id:'Família', icon:'👨‍👩‍👧'},
+    {id:'Estudos', icon:'📚'},{id:'Projetos',icon:'🚀'},
   ];
   const AVATARS2 = [
     {id:'🤖',name:'Robô',   grad:'linear-gradient(135deg,#534AB7,#3B82F6)'},
@@ -5183,8 +5201,10 @@ function SettingsView() {
   ];
 
   const saveRow = ce('div',{className:'st-save-row'},
-    ce('button',{className:'st-save-btn',onClick:save,disabled:saving}, saving ? 'Salvando…' : 'Salvar'),
-    saved && ce('span',{className:'st-saved'},'✓ Salvo!')
+    ce('button',{
+      className:'st-save-btn'+(saved?' st-saved-ok':''),
+      onClick:save, disabled:saving||saved
+    }, saving ? 'Salvando…' : saved ? 'Salvo ✓' : 'Salvar')
   );
 
   // Section 1 — Perfil
@@ -5239,7 +5259,7 @@ function SettingsView() {
       ce('div',{className:'st-theme-cards'},
         ...THEMES.map(t=>ce('div',{
           key:t.id, className:'st-theme-card'+(theme===t.id?' st-sel':''),
-          onClick:()=>setTheme(t.id)
+          onClick:()=>applyTheme(t.id)
         },
           ce('div',{className:'st-theme-preview '+t.id},
             ce('div',{className:'st-theme-preview-bar'},
@@ -5279,8 +5299,7 @@ function SettingsView() {
           onClick:()=>toggleFocus(f.id)
         },
           ce('span',null,f.icon),
-          ce('span',null,' '+f.id),
-          ce('span',{className:'st-focus-count'},' ('+f.count+')')
+          ce('span',null,' '+f.id)
         ))
       )
     ),
@@ -5787,6 +5806,8 @@ function App() {
   const [inputFocused, setInputFocused] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isThinking, setIsThinking] = useState(false);
+  const [jarvisName, setJarvisName] = useState(localStorage.getItem('jarvis_name') || 'Jarvis');
+  const [jarvisAvatar, setJarvisAvatar] = useState(localStorage.getItem('jarvis_avatar') || '🤖');
   const inputRef = useRef(null);
   const feedRef = useRef(null);
   const ORB_SIZE = 480;
@@ -5826,6 +5847,20 @@ function App() {
     if (!feed) return;
     feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' });
   }, [messages, isThinking]);
+  useEffect(() => {
+    const c = localStorage.getItem('jarvis_primary_color');
+    if (c) { document.documentElement.style.setProperty('--accent', c); document.documentElement.style.setProperty('--accent-soft', window.__hexA(c, 0.18)); }
+    const th = localStorage.getItem('jarvis_theme');
+    if (th) { const bgs={nebula:'#050d1a',void:'#000000'}; if(bgs[th]) document.documentElement.style.setProperty('--bg', bgs[th]); }
+  }, []);
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail.name) setJarvisName(e.detail.name);
+      if (e.detail.avatar) setJarvisAvatar(e.detail.avatar);
+    };
+    window.addEventListener('jarvis-settings-changed', handler);
+    return () => window.removeEventListener('jarvis-settings-changed', handler);
+  }, []);
   const submit = async (text) => {
     const value = (text ?? input).trim();
     if (!value) return;
@@ -5838,7 +5873,7 @@ function App() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: value })
+        body: JSON.stringify({ message: value, tone: localStorage.getItem('jarvis_agent_tone') || 'Parceiro' })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
@@ -5911,6 +5946,8 @@ function App() {
   }, /*#__PURE__*/React.createElement("header", {
     className: "hero"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "hero-agent"
+  }, /*#__PURE__*/React.createElement("span", {className:"hero-agent-icon"}, jarvisAvatar), /*#__PURE__*/React.createElement("span", {className:"hero-agent-name"}, jarvisName)), /*#__PURE__*/React.createElement("div", {
     className: "hero-eyebrow"
   }, eyebrow), /*#__PURE__*/React.createElement("h1", {
     className: "hero-name"
