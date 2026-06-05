@@ -4982,9 +4982,9 @@ function SettingsView() {
     fetch('/api/personal?tab=profile')
       .then(r => r.json())
       .then(d => {
-        const items = d.items || d.data || [];
-        if (items.length > 0) {
-          const p = items[0];
+        const items = d.entries || d.items || d.data || [];
+        const p = items.find(i => i.tags && i.tags.includes('perfil')) || items[0];
+        if (p) {
           setProfileId(p.id || null);
           const c = p.content || {};
           if (c.name) setName(c.name);
@@ -5008,7 +5008,10 @@ function SettingsView() {
 
   function save() {
     setSaving(true);
-    const body = {tab:'profile',content:{name,email,tz,botName,botAvatar,color,tone,focus,integs}};
+    const content = {name,email,tz,botName,botAvatar,color,tone,focus,integs};
+    const body = profileId
+      ? {content}
+      : {type:'note',title:'Perfil',tags:['perfil'],content};
     const url = profileId ? '/api/personal/' + profileId : '/api/personal';
     const method = profileId ? 'PATCH' : 'POST';
     fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
