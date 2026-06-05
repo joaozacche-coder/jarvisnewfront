@@ -1598,7 +1598,24 @@
   .st-save-btn:hover { opacity:0.88; transform:translateY(-1px); }
   .st-save-btn:active { transform:scale(0.97); }
   .st-saved { font-size:12px; color:#34d399; margin-left:12px; animation:stFadeUp 0.2s both; }
-  @media(max-width:900px) { .st-sidenav{width:56px;} .st-sidenav-title,.st-nav-item span{display:none;} .st-nav-item{justify-content:center;padding:12px;} .st-content{padding:20px 16px 60px;} .st-plans{grid-template-columns:1fr;} .st-badges{grid-template-columns:repeat(3,1fr);} .st-2col{grid-template-columns:1fr;} }
+  @media(max-width:900px) { .st-sidenav{width:56px;} .st-sidenav-title,.st-nav-item span{display:none;} .st-nav-item{justify-content:center;padding:12px;} .st-content{padding:20px 16px 60px;} .st-plans{grid-template-columns:1fr;} .st-achievements{grid-template-columns:1fr;} .st-2col{grid-template-columns:1fr;} }
+  @keyframes stRankIn { 0%{transform:scale(0.7);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  .st-rank-wrap { display:flex; flex-direction:column; align-items:center; padding:24px 0 20px; }
+  .st-rank-badge { display:flex; flex-direction:column; align-items:center; gap:6px; padding:22px 44px; border-radius:22px; border:2px solid var(--rank-c,#CD7F32); background:rgba(0,0,0,0.18); box-shadow:0 0 28px var(--rank-glow,rgba(205,127,50,0.25)); animation:stRankIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; margin-bottom:16px; }
+  .st-rank-gem { font-size:50px; line-height:1; }
+  .st-rank-name { font-size:22px; font-weight:800; color:var(--rank-c,#CD7F32); letter-spacing:0.5px; }
+  .st-rank-xp { font-size:12px; color:var(--text-3); font-family:'Geist Mono',monospace; margin-top:2px; }
+  .st-rank-bar-track { width:100%; max-width:280px; }
+  .st-rank-bg { background:rgba(255,255,255,0.07); border-radius:99px; height:8px; overflow:hidden; }
+  .st-rank-bar { height:8px; border-radius:99px; background:var(--rank-c,#CD7F32); animation:stXpGrow 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.12s both; }
+  .st-rank-pts { font-size:12px; color:var(--text-3); margin-top:8px; text-align:center; }
+  .st-achievements { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:20px; }
+  .st-achieve { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); transition:all 0.2s; }
+  .st-achieve.st-unlocked { border-color:var(--rank-c,#CD7F32); box-shadow:0 0 10px var(--rank-glow,rgba(205,127,50,0.2)); }
+  .st-achieve.st-locked { opacity:0.25; }
+  .st-achieve-icon { font-size:22px; line-height:1; flex-shrink:0; width:28px; text-align:center; }
+  .st-achieve-name { font-size:13px; font-weight:600; color:var(--text); }
+  .st-achieve-desc { font-size:11px; color:var(--text-3); margin-top:2px; line-height:1.3; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
@@ -5032,27 +5049,41 @@ function SettingsView() {
   const AVATARS = ['🤖','👾','👻','⚡','💎','🔥'];
   const TONES = ['Parceiro','Formal','Motivacional','Brutalmente honesto'];
   const FOCUSES = ['Trabalho','Finanças','Saúde','Família','Estudos','Projetos pessoais'];
-  const LEVELS = [{n:'Iniciante',m:0},{n:'Organizado',m:500},{n:'Produtivo',m:1500},{n:'Elite',m:3000},{n:'Lendário',m:6000}];
+  const RANKS = [
+    {name:'Cobre',    min:0,      color:'#B87333',gem:'🪙'},
+    {name:'Bronze',   min:500,    color:'#CD7F32',gem:'🥉'},
+    {name:'Prata',    min:1500,   color:'#C0C0C0',gem:'🥈'},
+    {name:'Ouro',     min:3500,   color:'#FFD700',gem:'🥇'},
+    {name:'Platina',  min:7000,   color:'#E5E4E2',gem:'💠'},
+    {name:'Diamante', min:15000,  color:'#B9F2FF',gem:'💎'},
+    {name:'Esmeralda',min:30000,  color:'#50C878',gem:'💚'},
+    {name:'Rubi',     min:60000,  color:'#E0115F',gem:'❤️'},
+    {name:'Safira',   min:100000, color:'#0F52BA',gem:'🔷'},
+    {name:'Lendário', min:200000, color:'#FFD700',gem:'👑'},
+  ];
   const XP = 750; const STREAK = 5;
+  const rankIdx = RANKS.reduce((acc,r,i)=>XP>=r.min?i:acc,0);
+  const curRank = RANKS[rankIdx];
+  const nxtRank = RANKS[rankIdx+1]||{name:'Máximo',min:999999,color:'#FFD700',gem:'👑'};
+  const rankPct = Math.min(100,Math.round(((XP-curRank.min)/(nxtRank.min-curRank.min))*100));
+  const ptsLeft = nxtRank.min - XP;
+  function _hexA(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  const rankGlow = _hexA(curRank.color,0.22);
+  const rankStyle = {'--rank-c':curRank.color,'--rank-glow':rankGlow};
 
-  const lvlIdx = LEVELS.reduce((acc,l,i) => XP >= l.m ? i : acc, 0);
-  const curLvl = LEVELS[lvlIdx];
-  const nxtLvl = LEVELS[lvlIdx + 1] || {n:'Max',m:99999};
-  const xpPct = Math.min(100, Math.round(((XP - curLvl.m) / (nxtLvl.m - curLvl.m)) * 100));
-
-  const BADGES = [
-    {icon:'✅',name:'Primeira tarefa',unlocked:true},
-    {icon:'🔥',name:'7 dias',unlocked:true},
-    {icon:'⚡',name:'Power user',unlocked:true},
-    {icon:'💰',name:'Financeiro',unlocked:true},
-    {icon:'🔒',name:'Meta 100%',unlocked:false},
-    {icon:'🔒',name:'30 dias',unlocked:false},
-    {icon:'🔒',name:'Madrugador',unlocked:false},
-    {icon:'🔒',name:'Multitarefa',unlocked:false},
-    {icon:'🔒',name:'Memória viva',unlocked:false},
-    {icon:'🔒',name:'Social',unlocked:false},
-    {icon:'🔒',name:'Foco total',unlocked:false},
-    {icon:'🔒',name:'Lendário',unlocked:false},
+  const ACHIEVEMENTS = [
+    {icon:'✅',name:'Primeira tarefa',desc:'Criou sua primeira tarefa',unlocked:true},
+    {icon:'🔥',name:'7 dias',desc:'7 dias seguidos de uso',unlocked:true},
+    {icon:'⚡',name:'Power user',desc:'100 mensagens enviadas',unlocked:true},
+    {icon:'💰',name:'Financeiro',desc:'Registrou 10 transações',unlocked:true},
+    {icon:'🔒',name:'Meta 100%',desc:'Concluiu uma meta inteira',unlocked:false},
+    {icon:'🔒',name:'30 dias',desc:'30 dias consecutivos',unlocked:false},
+    {icon:'🔒',name:'Madrugador',desc:'Usou o Jarvis antes das 6h',unlocked:false},
+    {icon:'🔒',name:'Multitarefa',desc:'5 tarefas num só dia',unlocked:false},
+    {icon:'🔒',name:'Memória viva',desc:'50 entradas no banco',unlocked:false},
+    {icon:'🔒',name:'Social',desc:'3 clientes cadastrados',unlocked:false},
+    {icon:'🔒',name:'Foco total',desc:'Modo foco por 2h seguidas',unlocked:false},
+    {icon:'🔒',name:'Lendário',desc:'Alcançou o rank Lendário',unlocked:false},
   ];
 
   const NAV_ITEMS = [
@@ -5154,14 +5185,18 @@ function SettingsView() {
   // Section 3 — Gamificação
   const sec3 = ce('div',{className:'st-section'},
     ce('div',{className:'st-section-title'},'Gamificação'),
-    ce('div',{className:'st-section-desc'},'Seu progresso, conquistas e sequência de uso'),
-    ce('div',{className:'st-level-card'},
-      ce('div',{className:'st-level-row'},
-        ce('div',{className:'st-level-name'},curLvl.n),
-        ce('div',{className:'st-level-xp'},XP+' / '+nxtLvl.m+' XP')
+    ce('div',{className:'st-section-desc'},'Seu rank, conquistas e sequência de uso'),
+    ce('div',{className:'st-rank-wrap',style:rankStyle},
+      ce('div',{className:'st-rank-badge'},
+        ce('div',{className:'st-rank-gem'},curRank.gem),
+        ce('div',{className:'st-rank-name'},curRank.name),
+        ce('div',{className:'st-rank-xp'},XP.toLocaleString('pt-BR')+' pts')
       ),
-      ce('div',{className:'st-xp-bg'},
-        ce('div',{className:'st-xp-bar',style:{width:xpPct+'%','--xp-w':xpPct+'%'}})
+      ce('div',{className:'st-rank-bar-track'},
+        ce('div',{className:'st-rank-bg'},
+          ce('div',{className:'st-rank-bar',style:{width:rankPct+'%','--xp-w':rankPct+'%'}})
+        ),
+        ce('div',{className:'st-rank-pts'},ptsLeft.toLocaleString('pt-BR')+' pts para '+nxtRank.name)
       )
     ),
     ce('div',{className:'st-streak-card'},
@@ -5172,20 +5207,23 @@ function SettingsView() {
       )
     ),
     ce('div',{className:'st-group-label'},'Conquistas'),
-    ce('div',{className:'st-badges'},
-      ...BADGES.map((b,i) => ce('div',{
-        key:i, className:'st-badge '+(b.unlocked?'st-unlocked':'st-locked')
+    ce('div',{className:'st-achievements',style:rankStyle},
+      ...ACHIEVEMENTS.map((a,i)=>ce('div',{
+        key:i, className:'st-achieve '+(a.unlocked?'st-unlocked':'st-locked')
       },
-        ce('div',{className:'st-badge-icon'},b.icon),
-        ce('div',{className:'st-badge-name'},b.name)
+        ce('div',{className:'st-achieve-icon'},a.icon),
+        ce('div',null,
+          ce('div',{className:'st-achieve-name'},a.name),
+          ce('div',{className:'st-achieve-desc'},a.desc)
+        )
       ))
     ),
-    ce('div',{className:'st-group-label',style:{marginTop:'8px'}},'Como ganhar XP'),
+    ce('div',{className:'st-group-label',style:{marginTop:'8px'}},'Como ganhar pontos'),
     ce('div',{className:'st-xp-table'},
-      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Criar tarefa'),ce('span',{className:'st-xp-val'},'+10 XP')),
-      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Concluir tarefa'),ce('span',{className:'st-xp-val'},'+25 XP')),
-      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Meta 100%'),ce('span',{className:'st-xp-val'},'+100 XP')),
-      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Lembrete criado'),ce('span',{className:'st-xp-val'},'+5 XP'))
+      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Criar tarefa'),ce('span',{className:'st-xp-val'},'+10 pts')),
+      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Concluir tarefa'),ce('span',{className:'st-xp-val'},'+25 pts')),
+      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Meta 100%'),ce('span',{className:'st-xp-val'},'+100 pts')),
+      ce('div',{className:'st-xp-row'},ce('span',{className:'st-xp-action'},'Lembrete criado'),ce('span',{className:'st-xp-val'},'+5 pts'))
     )
   );
 
