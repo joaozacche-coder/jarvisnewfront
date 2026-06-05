@@ -1410,7 +1410,7 @@
   @keyframes rmPop     { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
   @keyframes rmCardDie { to{opacity:0;transform:translateY(-6px) scale(0.96)} }
   @keyframes rmGlow    { 0%,100%{box-shadow:0 0 0 0 rgba(83,74,183,0)} 40%{box-shadow:0 0 0 6px rgba(83,74,183,0.3)} }
-  .rm-view { position:fixed; inset:0; left:var(--sb-w); display:flex; flex-direction:column; background:var(--bg); z-index:3; overflow:hidden; animation:rmFadeUp 0.25s both; }
+  .rm-view { position:fixed; inset:0; left:var(--sb-w); display:flex; flex-direction:column; background:var(--bg); z-index:6; overflow:hidden; animation:rmFadeUp 0.25s both; }
   .rm-header { display:flex; align-items:center; justify-content:space-between; padding:28px 32px 0; flex-shrink:0; }
   .rm-header-title { font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; }
   .rm-add-btn { background:#534AB7; border:none; border-radius:10px; color:#fff; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; padding:8px 16px; transition:opacity 0.15s,transform 0.1s; }
@@ -1474,7 +1474,7 @@
   .rm-del-cancel { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:rgba(255,255,255,0.7); cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; }
   .rm-del-confirm { flex:1; background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); border-radius:10px; color:#f87171; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; padding:10px; transition:background 0.12s; }
   .rm-del-confirm:hover { background:rgba(239,68,68,0.3); }
-  @media(max-width:600px) { .rm-view { left:0; } .rm-header,.rm-content { padding-left:16px; padding-right:16px; } }
+  @media(max-width:600px) { .rm-header,.rm-content { padding-left:16px; padding-right:16px; } }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
@@ -4650,7 +4650,9 @@ function RemindersView() {
 
   const openEdit = (r) => {
     setEditing(r);
-    setForm({title:r.title||'',due_datetime:(r.content&&r.content.due_datetime)||'',repeat:(r.content&&r.content.repeat)||'none',notes:(r.content&&r.content.notes)||''});
+    const rawDt=(r.content&&r.content.due_datetime)||r.date||'';
+    const localDt=rawDt?rawDt.slice(0,16):'';
+    setForm({title:r.title||'',due_datetime:localDt,repeat:(r.content&&r.content.repeat)||'none',notes:(r.content&&r.content.notes)||''});
     setModal('edit');
   };
 
@@ -4699,7 +4701,7 @@ function RemindersView() {
     const now=new Date(); const todayStr=now.toDateString();
     const today=[],upcoming=[],overdue=[];
     reminders.forEach(r=>{
-      const iso=r.content&&r.content.due_datetime;
+      const iso=(r.content&&r.content.due_datetime)||r.date;
       if(!iso){ upcoming.push(r); return; }
       const d=new Date(iso);
       if(d<now) overdue.push(r);
@@ -4717,7 +4719,7 @@ function RemindersView() {
       ce('div',{className:'rm-card-body'},
         ce('div',{className:'rm-card-title'},r.title),
         ce('div',{className:'rm-card-meta'},
-          (r.content&&r.content.due_datetime)&&ce('span',{className:'rm-time-pill'},fmtDateTime(r.content.due_datetime)),
+          ((r.content&&r.content.due_datetime)||r.date)&&ce('span',{className:'rm-time-pill'},fmtDateTime((r.content&&r.content.due_datetime)||r.date)),
           (r.content&&r.content.repeat&&r.content.repeat!=='none')&&ce('span',{className:'rm-repeat-pill'},REPEAT_LBL[r.content.repeat]||r.content.repeat),
           isOverdue&&ce('span',{className:'rm-overdue-pill'},'Vencido')
         )
