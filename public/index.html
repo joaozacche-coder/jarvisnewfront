@@ -488,6 +488,11 @@
   .mc-fin-trend { font-size:10px; font-weight:600; margin-top:3px; }
   .mc-fin-trend--up   { color:#34d399; }
   .mc-fin-trend--down { color:#f87171; }
+  /* finance period label */
+  .mc-fin-period { font-size:9px; color:rgba(255,255,255,0.22); letter-spacing:0.08em; white-space:nowrap; }
+  /* reminders urgency */
+  @keyframes mcPulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .mc-rm-urgent { animation:mcPulse 1s ease infinite; }
 
   .composer-textarea {
     flex: 1; min-width: 0; background: none; outline: 0;
@@ -3160,6 +3165,7 @@ function MiniCard({ dataType, data, onNavigate }) {
   const [checked,   setChecked]   = React.useState({});
   const [fading,    setFading]    = React.useState({});
   const [collapsed, setCollapsed] = React.useState(false);
+  const wrapRef = React.useRef(null);
   const fmtBRL  = n => (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const navMap  = {tasks:'tasks',finance:'finance',events:'calendar',reminders:'reminders',clients:'crm'};
   const labelMap= {tasks:'Ver tarefas',finance:'Ver finanças',events:'Ver agenda',reminders:'Ver lembretes',clients:'Ver clientes'};
@@ -3197,6 +3203,7 @@ function MiniCard({ dataType, data, onNavigate }) {
 
   const onCheck = async (e, taskId) => {
     if (checked[taskId]) return;
+    if (navigator.vibrate) navigator.vibrate(8);
     mcConfetti(e);
     setChecked(p=>({...p,[taskId]:true}));
     setTimeout(()=>setFading(p=>({...p,[taskId]:true})),180);
@@ -3216,7 +3223,23 @@ function MiniCard({ dataType, data, onNavigate }) {
   const allDone       = dataType === 'tasks' && taskTotal > 0 && taskDoneCount === taskTotal;
   React.useEffect(() => {
     if (!allDone) return;
-    const tid = setTimeout(() => setCollapsed(true), 2000);
+    const el = wrapRef.current;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const colors = ['#9b8fff','#34d399','#fb923c','#f472b6','#60a5fa','#fbbf24'];
+      for (let i=0;i<28;i++){
+        const dot = document.createElement('div');
+        const angle = (i/28)*360;
+        const dist  = 45 + Math.random()*55;
+        const dx = Math.cos(angle*Math.PI/180)*dist;
+        const dy = Math.sin(angle*Math.PI/180)*dist - 35;
+        dot.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:${5+Math.random()*3}px;height:${5+Math.random()*3}px;border-radius:${Math.random()>.5?'50%':'2px'};background:${colors[i%colors.length]};pointer-events:none;z-index:9999;animation:mcConfettiP 0.85s ease-out both;--cx:${dx}px;--cy:${dy}px;--cr:${Math.random()*360}deg`;
+        document.body.appendChild(dot);
+        setTimeout(()=>dot.remove(),950);
+      }
+    }
+    const tid = setTimeout(() => setCollapsed(true), 2200);
     return () => clearTimeout(tid);
   }, [allDone]);
 
@@ -3278,11 +3301,15 @@ function MiniCard({ dataType, data, onNavigate }) {
       ce('span',{className:'mc-title'},ev.title)
     ));
   } else if (dataType === 'reminders') {
-    rows = (data||[]).slice(0,5).map((r,i) => ce('div',{key:r.id||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
-      ce('i',{className:'ti ti-clock-hour-4',style:{fontSize:13,color:'rgba(251,146,60,0.7)',flexShrink:0}}),
-      ce('span',{className:'mc-title'},r.title),
-      r.due_datetime ? ce('span',{className:'mc-ev-time'},r.due_datetime.slice(0,10)) : null
-    ));
+    const _now = new Date();
+    rows = (data||[]).slice(0,5).map((r,i) => {
+      const overdue = r.due_datetime && new Date(r.due_datetime) < _now;
+      return ce('div',{key:r.id||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
+        ce('i',{className:`ti ti-alarm mc-rm-urgent`,style:{fontSize:13,color:overdue?'#f87171':'rgba(251,146,60,0.7)',flexShrink:0,animation:overdue?undefined:'none'}}),
+        ce('span',{className:'mc-title',style:overdue?{color:'#f87171'}:{}},r.title),
+        r.due_datetime ? ce('span',{className:'mc-ev-time',style:overdue?{color:'#f87171'}:{}},r.due_datetime.slice(0,10)) : null
+      );
+    });
   } else if (dataType === 'clients') {
     rows = (data||[]).slice(0,5).map((c,i) => ce('div',{key:c.name||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
       ce('div',{style:{flex:1,minWidth:0}},
@@ -3296,12 +3323,16 @@ function MiniCard({ dataType, data, onNavigate }) {
   const icon    = iconMap[dataType];
   const label   = titleMap[dataType]||'';
   const count   = Array.isArray(data) && data.length > 0 ? data.length : null;
-  const isNeg   = dataType === 'finance' && data && data.saldo < 0;
-  const wrapCls = `mc-wrap${collapsed?' is-collapsed':''}${isNeg?' mc-wrap--neg':''}`;
-  return ce('div',{className:wrapCls},
+  const isNeg      = dataType === 'finance' && data && data.saldo < 0;
+  const wrapCls    = `mc-wrap${collapsed?' is-collapsed':''}${isNeg?' mc-wrap--neg':''}`;
+  const monthLabel = dataType === 'finance'
+    ? new Date().toLocaleString('pt-BR',{month:'short'}).toUpperCase().replace('.','') + ' · MÊS ATUAL'
+    : null;
+  return ce('div',{className:wrapCls,ref:wrapRef},
     icon ? ce('div',{className:'mc-header'},
       ce('i',{className:`ti ${icon} mc-header-icon`}),
       ce('span',{className:'mc-header-label'},label),
+      monthLabel ? ce('span',{className:'mc-fin-period'},monthLabel) : null,
       count!==null ? ce('span',{className:'mc-count-pill'},count) : null
     ) : null,
     progressBar,
