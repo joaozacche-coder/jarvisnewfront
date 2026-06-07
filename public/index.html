@@ -420,7 +420,10 @@
   @keyframes mcIn { from { opacity:0; transform:translateY(6px) scale(0.95); } to { opacity:1; transform:none; } }
   @keyframes mcFadeOut { to { opacity:0; transform:translateX(8px); } }
   @keyframes mcConfettiP { to { opacity:0; transform:translate(var(--cx,0px),var(--cy,-40px)) rotate(var(--cr,180deg)); } }
-  .mc-wrap { margin-top:12px; background:linear-gradient(135deg,rgba(83,74,183,0.12),rgba(83,74,183,0.04)); border:1px solid rgba(83,74,183,0.3); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:0; animation:mcIn 350ms cubic-bezier(0.34,1.56,0.64,1) both; overflow:hidden; }
+  .mc-wrap { margin-top:12px; background:linear-gradient(135deg,rgba(83,74,183,0.12),rgba(83,74,183,0.04)); border:1px solid rgba(83,74,183,0.3); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:0; animation:mcIn 350ms cubic-bezier(0.34,1.56,0.64,1) both; overflow:hidden; max-height:600px; transition:max-height 350ms ease-out,opacity 350ms ease-out,padding 350ms ease-out,margin-top 350ms ease-out; }
+  .mc-wrap.is-collapsed { max-height:0; opacity:0; padding-top:0; padding-bottom:0; margin-top:0; pointer-events:none; }
+  .mc-wrap--neg { background:linear-gradient(135deg,rgba(248,113,113,0.1),rgba(248,113,113,0.04)) !important; border-color:rgba(248,113,113,0.35) !important; }
+  .mc-footer-count { font-size:10px; color:rgba(255,255,255,0.25); }
   .mc-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
   .mc-header-icon { font-size:15px; color:#9b8fff; flex-shrink:0; }
   .mc-header-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.45); flex:1; }
@@ -3154,8 +3157,9 @@ function MiniCardSkeleton({ dataType }) {
 }
 function MiniCard({ dataType, data, onNavigate }) {
   const ce = React.createElement;
-  const [checked, setChecked] = React.useState({});
-  const [fading,  setFading]  = React.useState({});
+  const [checked,   setChecked]   = React.useState({});
+  const [fading,    setFading]    = React.useState({});
+  const [collapsed, setCollapsed] = React.useState(false);
   const fmtBRL  = n => (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const navMap  = {tasks:'tasks',finance:'finance',events:'calendar',reminders:'reminders',clients:'crm'};
   const labelMap= {tasks:'Ver tarefas',finance:'Ver finanças',events:'Ver agenda',reminders:'Ver lembretes',clients:'Ver clientes'};
@@ -3205,16 +3209,23 @@ function MiniCard({ dataType, data, onNavigate }) {
     return ce('span',{className:cls},(d>0?'↑ ':'↓ ')+'R$ '+fmtBRL(Math.abs(d)));
   };
 
+  // hoist task-derived values so useEffect can run unconditionally
+  const _taskSlice    = dataType === 'tasks' ? (data||[]).slice(0,5) : [];
+  const taskTotal     = _taskSlice.length;
+  const taskDoneCount = _taskSlice.filter(t => t.status==='done' || !!checked[t.id]).length;
+  const allDone       = dataType === 'tasks' && taskTotal > 0 && taskDoneCount === taskTotal;
+  React.useEffect(() => {
+    if (!allDone) return;
+    const tid = setTimeout(() => setCollapsed(true), 2000);
+    return () => clearTimeout(tid);
+  }, [allDone]);
+
   let rows = [];
   let progressBar = null;
   let allDoneEl = null;
 
   if (dataType === 'tasks') {
-    const slice = (data||[]).slice(0,5);
-    const total = slice.length;
-    const doneCount = slice.filter(t => t.status==='done' || !!checked[t.id]).length;
-    const pct = total > 0 ? Math.round(doneCount/total*100) : 0;
-    const allDone = total > 0 && doneCount === total;
+    const pct = taskTotal > 0 ? Math.round(taskDoneCount/taskTotal*100) : 0;
 
     progressBar = ce('div',{className:'mc-progress'},
       ce('div',{className:`mc-progress-fill${allDone?' mc-progress-fill--done':''}`,style:{width:pct+'%'}})
@@ -3224,10 +3235,10 @@ function MiniCard({ dataType, data, onNavigate }) {
       allDoneEl = ce('div',{className:'mc-alldone'},
         ce('div',{className:'mc-alldone-icon'},'🎯'),
         ce('div',{className:'mc-alldone-text'},'TUDO FEITO!'),
-        ce('div',{className:'mc-alldone-sub'},`${total} ${total===1?'tarefa':'tarefas'} concluída${total===1?'':'s'}`)
+        ce('div',{className:'mc-alldone-sub'},`${taskTotal} ${taskTotal===1?'tarefa':'tarefas'} concluída${taskTotal===1?'':'s'}`)
       );
     } else {
-      rows = slice.map((t,i) => {
+      rows = _taskSlice.map((t,i) => {
         const isDone  = t.status==='done' || !!checked[t.id];
         const isFade  = !!fading[t.id];
         const pillKey = isDone ? 'done' : (t.status||'active');
@@ -3282,10 +3293,12 @@ function MiniCard({ dataType, data, onNavigate }) {
   }
 
   if (!rows.length && !allDoneEl && dataType !== 'finance') return null;
-  const icon  = iconMap[dataType];
-  const label = titleMap[dataType]||'';
-  const count = Array.isArray(data) && data.length > 0 ? data.length : null;
-  return ce('div',{className:'mc-wrap'},
+  const icon    = iconMap[dataType];
+  const label   = titleMap[dataType]||'';
+  const count   = Array.isArray(data) && data.length > 0 ? data.length : null;
+  const isNeg   = dataType === 'finance' && data && data.saldo < 0;
+  const wrapCls = `mc-wrap${collapsed?' is-collapsed':''}${isNeg?' mc-wrap--neg':''}`;
+  return ce('div',{className:wrapCls},
     icon ? ce('div',{className:'mc-header'},
       ce('i',{className:`ti ${icon} mc-header-icon`}),
       ce('span',{className:'mc-header-label'},label),
@@ -3294,6 +3307,7 @@ function MiniCard({ dataType, data, onNavigate }) {
     progressBar,
     allDoneEl || rows,
     navMap[dataType] ? ce('div',{className:'mc-footer'},
+      dataType==='tasks' && !allDone ? ce('span',{className:'mc-footer-count'},`${taskDoneCount} de ${taskTotal} feitas`) : null,
       ce('button',{className:'mc-action',onClick:()=>onNavigate(navMap[dataType])},
         labelMap[dataType],
         ce('span',{className:'mc-action-arrow'},' →')
