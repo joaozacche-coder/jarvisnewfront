@@ -59,7 +59,7 @@
   /* ---------- ORB AS AMBIENT ENVIRONMENT ---------- */
   .orb-ambient {
     position: fixed;
-    top: 30vh;
+    top: 50vh;
     left: 50%;
     bottom: auto;
     right: auto;
@@ -178,45 +178,21 @@
     height: 100vh;
   }
 
-  /* ---------- HERO (greeting) — at center of orb ---------- */
-  .hero {
-    position: absolute;
-    top: calc(var(--orb-top) + var(--orb-size) / 2);
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    z-index: 2;
-    transition:
-      opacity 420ms cubic-bezier(.4,0,.2,1),
-      transform 500ms cubic-bezier(.4,0,.2,1),
-      filter 420ms ease;
-    will-change: opacity, transform, filter;
-  }
-  .is-active .hero {
-    opacity: 0;
-    transform: translate(-50%, calc(-50% - 14px));
-    filter: blur(4px);
-    pointer-events: none;
-  }
   /* hero — layout centralizado, elementos fixed */
-  .hero-greeting { position:fixed; top:16vh;left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:13px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.4; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-phrase   { position:fixed; top:8vh;  left:50%; transform:translateX(-50%); text-align:center; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-greeting { position:fixed; top:15vh; left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:13px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.4; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
   .hero-clock    { position:fixed; top:24px; right:24px; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; letter-spacing:0.04em; }
-  .hero-phrase   { position:fixed; top:8vh; left:50%; transform:translateX(-50%); text-align:center; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
-  .hero-rank     { position:fixed; bottom:18vh; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
+  .hero-rank     { position:fixed; bottom:16vh; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
   .hero-rank-gem { font-size:13px; line-height:1; }
   .hero-rank-label { font-weight:500; }
   .hero-rank-pts { opacity:0.45; }
   .hero-rank-pts::before { content:'·'; margin-right:5px; }
   .is-active .hero-greeting,.is-active .hero-clock,.is-active .hero-rank,.is-active .hero-phrase { opacity:0; }
   .has-chat   .hero-greeting,.has-chat   .hero-clock,.has-chat   .hero-rank,.has-chat   .hero-phrase { opacity:0; pointer-events:none; }
-  .is-mounted .hero-greeting { animation:fadeUp 700ms 60ms  cubic-bezier(.2,.7,.2,1) both; }
-  .is-mounted .hero-clock    { animation:fadeUp 700ms 80ms  cubic-bezier(.2,.7,.2,1) both; }
-  .is-mounted .hero-rank     { animation:fadeUp 800ms 200ms cubic-bezier(.2,.7,.2,1) both; }
-  .is-mounted .hero-phrase   { animation:fadeUp 800ms 250ms cubic-bezier(.2,.7,.2,1) both; }
+  .is-mounted .hero-phrase   { animation:fadeUpCentered 700ms 60ms  cubic-bezier(.2,.7,.2,1) both; }
+  .is-mounted .hero-greeting { animation:fadeUpCentered 700ms 120ms cubic-bezier(.2,.7,.2,1) both; }
+  .is-mounted .hero-clock    { animation:fadeUp         700ms 80ms  cubic-bezier(.2,.7,.2,1) both; }
+  .is-mounted .hero-rank     { animation:fadeUpCentered 800ms 200ms cubic-bezier(.2,.7,.2,1) both; }
 
   .hero-agent { display:flex; align-items:center; gap:8px; margin-bottom:12px; opacity:0; transform:translateY(6px); transition:opacity 0.4s ease, transform 0.4s ease; }
   .is-mounted .hero-agent { opacity:1; transform:translateY(0); }
@@ -355,7 +331,8 @@
   .status-line.is-visible { opacity: .85; }
 
   /* ---------- ANIMS ---------- */
-  @keyframes fadeUp { from { transform: translateY(8px); } to { transform: none; } }
+  @keyframes fadeUp         { from { transform: translateY(8px); }              to { transform: none; } }
+  @keyframes fadeUpCentered { from { transform: translateX(-50%) translateY(8px); } to { transform: translateX(-50%); } }
 
 
   /* ---------- CHAT FEED ---------- */
