@@ -59,13 +59,13 @@
   /* ---------- ORB AS AMBIENT ENVIRONMENT ---------- */
   .orb-ambient {
     position: fixed;
-    bottom: 120px;
-    right: 80px;
-    top: auto;
-    left: auto;
+    top: 38%;
+    left: 50%;
+    bottom: auto;
+    right: auto;
     width: var(--orb-size);
     height: var(--orb-size);
-    transform: none;
+    transform: translate(-50%, -50%);
     z-index: 0;
     pointer-events: auto;
     opacity: 0.35;
@@ -73,9 +73,9 @@
     transition: transform 520ms cubic-bezier(.4,0,.2,1), opacity 600ms ease;
     will-change: transform;
   }
-  .is-active .orb-ambient { transform: scale(1.04); opacity: 1; }
-  .is-active .orb-ambient.orb-ambient--listening { transform: scale(1.06); }
-  .is-active .orb-ambient.orb-ambient--speaking { transform: scale(1.05); }
+  .is-active .orb-ambient { transform: translate(-50%,-50%) scale(1.04); opacity: 1; }
+  .is-active .orb-ambient.orb-ambient--listening { transform: translate(-50%,-50%) scale(1.06); }
+  .is-active .orb-ambient.orb-ambient--speaking  { transform: translate(-50%,-50%) scale(1.05); }
   .has-chat .orb-ambient {
     opacity: 0 !important;
     pointer-events: none;
@@ -202,22 +202,19 @@
     filter: blur(4px);
     pointer-events: none;
   }
-  /* hero — layout assimétrico, elementos fixed */
-  .hero-greeting { position:fixed; top:32px; left:80px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:400; letter-spacing:0.25em; text-transform:uppercase; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
-  .hero-clock    { position:fixed; top:32px; right:24px; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; letter-spacing:0.04em; }
-  .hero-rank     { position:fixed; top:56px; right:24px; display:inline-flex; align-items:center; gap:6px; font-size:13px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
-  .hero-rank-gem { font-size:14px; line-height:1; }
+  /* hero — layout centralizado, elementos fixed */
+  .hero-greeting { position:fixed; top:22%; left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:13px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.4; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-clock    { position:fixed; top:24px; right:24px; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; letter-spacing:0.04em; }
+  .hero-phrase   { position:fixed; top:28%; left:50%; transform:translateX(-50%); text-align:center; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-rank     { position:fixed; bottom:120px; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
+  .hero-rank-gem { font-size:13px; line-height:1; }
   .hero-rank-label { font-weight:500; }
   .hero-rank-pts { opacity:0.45; }
   .hero-rank-pts::before { content:'·'; margin-right:5px; }
-  .hero-name  { position:fixed; top:120px; left:80px; font-size:52px; font-weight:300; letter-spacing:-0.03em; line-height:1; pointer-events:none; z-index:4; background:linear-gradient(150deg,#ffffff 10%,rgba(190,178,255,0.75) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; transition:opacity 420ms ease; }
-  .is-light .hero-name { background:linear-gradient(150deg,#1a1a2e 20%,rgba(83,74,183,0.9) 100%); }
-  .hero-phrase { position:fixed; top:185px; left:82px; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; transition:opacity 420ms ease; }
-  .is-active .hero-greeting,.is-active .hero-clock,.is-active .hero-rank,.is-active .hero-name,.is-active .hero-phrase { opacity:0; }
-  .has-chat   .hero-greeting,.has-chat   .hero-clock,.has-chat   .hero-rank,.has-chat   .hero-name,.has-chat   .hero-phrase { opacity:0; pointer-events:none; }
+  .is-active .hero-greeting,.is-active .hero-clock,.is-active .hero-rank,.is-active .hero-phrase { opacity:0; }
+  .has-chat   .hero-greeting,.has-chat   .hero-clock,.has-chat   .hero-rank,.has-chat   .hero-phrase { opacity:0; pointer-events:none; }
   .is-mounted .hero-greeting { animation:fadeUp 700ms 60ms  cubic-bezier(.2,.7,.2,1) both; }
   .is-mounted .hero-clock    { animation:fadeUp 700ms 80ms  cubic-bezier(.2,.7,.2,1) both; }
-  .is-mounted .hero-name     { animation:fadeUp 800ms 150ms cubic-bezier(.2,.7,.2,1) both; }
   .is-mounted .hero-rank     { animation:fadeUp 800ms 200ms cubic-bezier(.2,.7,.2,1) both; }
   .is-mounted .hero-phrase   { animation:fadeUp 800ms 250ms cubic-bezier(.2,.7,.2,1) both; }
 
@@ -363,9 +360,6 @@
   /* ---------- ANIMS ---------- */
   @keyframes fadeUp { from { transform: translateY(8px); } to { transform: none; } }
 
-  @media (max-width: 720px) {
-    .hero-name { font-size: 38px; }
-  }
 
   /* ---------- CHAT FEED ---------- */
   .chat-feed {
@@ -5830,7 +5824,7 @@ function App() {
   const [clock, setClock] = useState(getClockStr());
   const inputRef = useRef(null);
   const feedRef = useRef(null);
-  const ORB_SIZE = 320;
+  const ORB_SIZE = 280;
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(id);
@@ -5973,10 +5967,9 @@ function App() {
     onToggleTheme: () => setTweak('dark', !dark)
   }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
-  }, React.createElement("div", {className:"hero-greeting"}, eyebrow),
+  }, React.createElement("div", {className:"hero-greeting"}, eyebrow + ', ' + (t.name || 'JOÃO').toUpperCase()),
   React.createElement("div", {className:"hero-clock"}, clock),
   React.createElement("div", {className:"hero-rank"}, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", {className:"hero-rank-label", style:{color:heroRank.color}}, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, heroXP + " pts")),
-  React.createElement("div", {className:"hero-name"}, t.name || 'João'),
   React.createElement("div", {className:"hero-phrase"}, tagline),
   /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
