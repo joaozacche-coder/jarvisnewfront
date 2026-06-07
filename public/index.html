@@ -216,16 +216,20 @@
   .is-active .hero-wrapper .orb-ambient.orb-ambient--listening { transform:scale(1.06); }
   .is-active .hero-wrapper .orb-ambient.orb-ambient--speaking { transform:scale(1.05); }
   /* hero tipografia */
-  .hero-greeting { font-family:'Geist Mono',monospace; font-size:10px; font-weight:400; letter-spacing:0.5em; text-transform:uppercase; color:var(--text); opacity:0.28; margin-bottom:20px; }
+  .hero-greeting { display:flex; align-items:center; gap:14px; font-family:'Geist Mono',monospace; font-size:10px; font-weight:400; letter-spacing:0.4em; text-transform:uppercase; color:var(--text); opacity:0.28; margin-bottom:20px; }
+  .hero-greeting::before,.hero-greeting::after { content:''; display:block; width:28px; height:1px; background:rgba(255,255,255,0.18); flex-shrink:0; }
   .is-mounted .hero-greeting { animation:fadeUp 700ms 60ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-name { font-size:46px; font-weight:200; letter-spacing:-0.025em; line-height:1; margin-top:22px; text-align:center; background:linear-gradient(150deg,#ffffff 20%,rgba(180,168,255,0.72) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hero-name { font-size:52px; font-weight:200; letter-spacing:-0.03em; line-height:1; margin-top:24px; text-align:center; background:linear-gradient(150deg,#ffffff 10%,rgba(190,178,255,0.75) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
   .is-light .hero-name { background:linear-gradient(150deg,#1a1a2e 20%,rgba(83,74,183,0.9) 100%); }
-  .is-mounted .hero-name { animation:fadeUp 800ms 160ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-rank { display:flex; align-items:center; gap:5px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; opacity:0.55; margin-top:10px; }
-  .hero-rank-pts { opacity:0.7; }
+  .is-mounted .hero-name { animation:fadeUp 800ms 150ms cubic-bezier(.2,.7,.2,1) both; }
+  .hero-rank { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; margin-top:16px; padding:5px 14px 5px 10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07); border-radius:999px; }
+  .hero-rank-gem { font-size:13px; line-height:1; }
+  .hero-rank-label { font-weight:500; letter-spacing:0.06em; }
+  .hero-rank-pts { opacity:0.4; }
+  .hero-rank-pts::before { content:'·'; margin-right:5px; }
   .is-mounted .hero-rank { animation:fadeUp 800ms 240ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-phrase { font-size:11px; font-style:italic; letter-spacing:0.05em; color:var(--text); opacity:0.18; margin-top:8px; text-align:center; }
-  .is-mounted .hero-phrase { animation:fadeUp 800ms 320ms cubic-bezier(.2,.7,.2,1) both; }
+  .hero-phrase { font-size:11px; font-style:italic; letter-spacing:0.06em; color:var(--text); opacity:0.2; margin-top:10px; text-align:center; }
+  .is-mounted .hero-phrase { animation:fadeUp 800ms 330ms cubic-bezier(.2,.7,.2,1) both; }
 
   .hero-agent { display:flex; align-items:center; gap:8px; margin-bottom:12px; opacity:0; transform:translateY(6px); transition:opacity 0.4s ease, transform 0.4s ease; }
   .is-mounted .hero-agent { opacity:1; transform:translateY(0); }
@@ -5999,11 +6003,8 @@ function App() {
   })), React.createElement("div", {
     className: "hero-name"
   }, t.name || 'João'), React.createElement("div", {
-    className: "hero-rank",
-    style: {color: heroRank.color}
-  }, React.createElement("span", null, heroRank.gem), React.createElement("span", null, heroRank.name), React.createElement("span", {
-    className: "hero-rank-pts"
-  }, " · " + heroXP + " pts")), React.createElement("div", {
+    className: "hero-rank"
+  }, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", {className:"hero-rank-label", style:{color:heroRank.color}}, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, heroXP + " pts")), React.createElement("div", {
     className: "hero-phrase"
   }, tagline)), /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
