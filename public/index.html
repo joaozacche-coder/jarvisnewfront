@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>JARVIS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1676,8 +1676,8 @@
     .nav-item.is-active::before { left: 50%; top: -2px; bottom: auto; transform: translateX(-50%); width: 16px; height: 2px; border-radius: 0 0 2px 2px; }
     @keyframes navIn { from { transform: translateY(5px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-    /* composer: above bottom bar */
-    .input-shell { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px); width: calc(100% - 32px); }
+    /* composer: above bottom bar + keyboard */
+    .input-shell { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px + var(--keyboard-h, 0px)); width: calc(100% - 32px); }
     .is-active .input-shell { width: calc(100% - 24px); }
 
     /* hero: tighter for small screens */
@@ -1686,10 +1686,21 @@
     .hero-clock    { top: 16px; right: 16px; font-size: 11px; }
     .hero-rank     { font-size: 11px; bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 70px); }
 
-    /* views: bottom clearance for tab bar */
-    .fin-view, .ag-view, .crm-view, .st-view, .rm-view, .pv-view, .tasks-view {
+    /* touch targets */
+    .nav-item { width: 44px; height: 44px; }
+
+    /* views: bottom clearance for tab bar + scrollable on iOS */
+    .fin-view, .ag-view, .crm-view, .tasks-view {
       padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+      -webkit-overflow-scrolling: touch;
     }
+    .ag-view { overflow-y: auto; }
+    .pv-view, .rm-view, .st-view {
+      bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .st-layout { overflow-y: auto; flex-direction: column; }
     .tv-fab { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px) !important; }
 
     /* chat feed: clear composer + tab bar */
@@ -5844,7 +5855,7 @@ function App() {
   const [clock, setClock] = useState(getClockStr());
   const inputRef = useRef(null);
   const feedRef = useRef(null);
-  const ORB_SIZE = 280;
+  const ORB_SIZE = window.innerWidth < 600 ? 200 : 280;
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(id);
@@ -5852,6 +5863,17 @@ function App() {
 
   useEffect(() => {
     document.documentElement.style.setProperty('--orb-size', `${ORB_SIZE}px`);
+  }, []);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => {
+      const kh = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      document.documentElement.style.setProperty('--keyboard-h', `${kh}px`);
+    };
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => { vv.removeEventListener('resize', update); vv.removeEventListener('scroll', update); };
   }, []);
   const accent = t.accent;
   const dark = t.dark;
