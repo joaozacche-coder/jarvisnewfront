@@ -1689,6 +1689,12 @@
     /* touch targets */
     .nav-item { width: 44px; height: 44px; }
 
+    /* input zoom iOS — font-size mínimo 16px */
+    input, textarea, select { font-size: 16px !important; }
+
+    /* hero — sem overflow em telas pequenas */
+    .hero-greeting, .hero-phrase { white-space: normal; padding: 0 20px; }
+
     /* views: bottom clearance for tab bar + scrollable on iOS */
     .fin-view, .ag-view, .crm-view, .tasks-view {
       padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 24px) !important;
@@ -1701,10 +1707,27 @@
       -webkit-overflow-scrolling: touch;
     }
     .st-layout { overflow-y: auto; flex-direction: column; }
-    .tv-fab { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px) !important; }
+
+    /* fabs acima da nav */
+    .tv-fab, .fin-fab, .ag-fab { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px) !important; }
+
+    /* bottom sheets — safe area no padding inferior */
+    .fin-modal, .ag-modal {
+      padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+      animation: sheetUp 0.32s cubic-bezier(0.32,0.72,0,1) both;
+    }
+    @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
 
     /* chat feed: clear composer + tab bar */
     .chat-feed { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px) !important; }
+  }
+
+  /* landscape mobile — esconde hero, compositor fica acessível */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .hero-phrase, .hero-greeting, .hero-rank { opacity: 0 !important; pointer-events: none; }
+    .orb-ambient { opacity: 0.15; }
+    .input-shell { bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
+    .chat-feed { padding-bottom: 80px !important; }
   }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
