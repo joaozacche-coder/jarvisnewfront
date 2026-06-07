@@ -207,20 +207,20 @@
     filter: blur(4px);
     pointer-events: none;
   }
-  /* hero-wrap: bloco único, centralizado acima do composer */
-  .hero-clock { position:absolute; top:20px; right:24px; font-size:13px; font-family:'Geist Mono',monospace; color:var(--text); opacity:0.35; z-index:4; pointer-events:none; letter-spacing:0.04em; transition:opacity 420ms ease; }
-  .is-active .hero-clock { opacity:0; }
-  .is-mounted .hero-clock { animation:fadeUp 600ms 60ms both; }
-  .hero-wrap { position:absolute; top:50%; left:0; width:100%; transform:translateY(-50%); text-align:center; display:flex; flex-direction:column; align-items:center; pointer-events:none; z-index:4; transition:opacity 420ms cubic-bezier(.4,0,.2,1), transform 500ms cubic-bezier(.4,0,.2,1); }
-  .is-active .hero-wrap { opacity:0; transform:translateY(calc(-50% - 10px)); }
-  .is-mounted .hero-wrap { animation:fadeUp 1000ms 200ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-greeting { position:absolute; top:calc(var(--orb-top) - 28px); left:50%; transform:translateX(-50%); font-size:11px; font-weight:400; letter-spacing:0.25em; text-transform:uppercase; color:var(--text); opacity:0.4; white-space:nowrap; z-index:4; pointer-events:none; transition:opacity 420ms cubic-bezier(.4,0,.2,1), transform 500ms cubic-bezier(.4,0,.2,1); }
-  .is-active .hero-greeting { opacity:0; transform:translateX(-50%) translateY(-6px); }
-  .is-mounted .hero-greeting { animation:fadeUp 800ms 80ms cubic-bezier(.2,.7,.2,1) both; }
-  .hero-user-name { font-size:42px; font-weight:300; letter-spacing:-0.02em; line-height:1.1; color:var(--text); text-shadow:0 2px 20px rgba(8,12,20,0.9); margin-top:16px; }
-  .hero-rank { display:flex; align-items:center; gap:6px; font-size:13px; opacity:0.7; margin-top:6px; }
+  /* hero — bloco único centralizado verticalmente acima do composer */
+  .hero-wrapper { position:absolute; top:0; left:0; right:0; bottom:80px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; pointer-events:none; z-index:4; transition:opacity 420ms cubic-bezier(.4,0,.2,1); }
+  .is-active .hero-wrapper { opacity:0; pointer-events:none; }
+  .has-chat .hero-wrapper { opacity:0; pointer-events:none; }
+  /* orb dentro do hero-wrapper: retira posicionamento absoluto, vira filho flex */
+  .hero-wrapper .orb-ambient { position:relative; top:auto; left:auto; transform:none; flex-shrink:0; pointer-events:auto; }
+  .is-active .hero-wrapper .orb-ambient { transform:scale(1.04); opacity:1; }
+  .is-active .hero-wrapper .orb-ambient.orb-ambient--listening { transform:scale(1.06); }
+  .is-active .hero-wrapper .orb-ambient.orb-ambient--speaking { transform:scale(1.05); }
+  .hero-greeting { font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:var(--text); opacity:0.35; margin-bottom:24px; }
+  .hero-name { font-size:40px; font-weight:300; margin-top:20px; color:rgba(255,255,255,0.9); text-align:center; }
+  .hero-rank { display:flex; align-items:center; gap:6px; font-size:13px; opacity:0.7; margin-top:8px; }
   .hero-rank-pts { opacity:0.6; }
-  .hero-tagline { font-size:12px; color:var(--text); opacity:0.25; margin-top:4px; }
+  .hero-phrase { font-size:12px; color:var(--text); opacity:0.25; margin-top:4px; text-align:center; }
 
   .hero-agent { display:flex; align-items:center; gap:8px; margin-bottom:12px; opacity:0; transform:translateY(6px); transition:opacity 0.4s ease, transform 0.4s ease; }
   .is-mounted .hero-agent { opacity:1; transform:translateY(0); }
@@ -5974,12 +5974,6 @@ function App() {
     accent: accent,
     density: t.density,
     paused: !t.particles
-  })), /*#__PURE__*/React.createElement("div", {
-    className: `orb-ambient orb-ambient--${orbState}`
-  }, /*#__PURE__*/React.createElement(VoiceOrb, {
-    state: orbState,
-    accent: accent,
-    size: ORB_SIZE
   })), /*#__PURE__*/React.createElement(Sidebar, {
     active: active,
     onSelect: setActive,
@@ -5988,20 +5982,24 @@ function App() {
   }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, React.createElement("div", {
-    className: "hero-clock"
-  }, clock), React.createElement("div", {
+    className: "hero-wrapper"
+  }, React.createElement("div", {
     className: "hero-greeting"
   }, eyebrow), React.createElement("div", {
-    className: "hero-wrap"
-  }, React.createElement("div", {
-    className: "hero-user-name"
+    className: `orb-ambient orb-ambient--${orbState}`
+  }, React.createElement(VoiceOrb, {
+    state: orbState,
+    accent: accent,
+    size: ORB_SIZE
+  })), React.createElement("div", {
+    className: "hero-name"
   }, t.name || 'João'), React.createElement("div", {
     className: "hero-rank",
     style: {color: heroRank.color}
   }, React.createElement("span", null, heroRank.gem), React.createElement("span", null, heroRank.name), React.createElement("span", {
     className: "hero-rank-pts"
   }, " · " + heroXP + " pts")), React.createElement("div", {
-    className: "hero-tagline"
+    className: "hero-phrase"
   }, tagline)), /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
   }, orbState === 'listening' && 'OUVINDO…', orbState === 'speaking' && 'RESPONDENDO…'),
