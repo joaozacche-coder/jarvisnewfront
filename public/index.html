@@ -465,6 +465,26 @@
   .is-light .mc-tag--default { background:rgba(0,0,0,0.06); color:rgba(0,0,0,0.5); }
   .is-light .mc-footer { border-top-color:rgba(0,0,0,0.07); }
   .is-light .mc-header-label { color:rgba(0,0,0,0.4); }
+  /* skeleton */
+  @keyframes mcShimmer { from{background-position:-200% 0} to{background-position:200% 0} }
+  .mc-skel-wrap { margin-top:12px; background:rgba(83,74,183,0.05); border:1px solid rgba(83,74,183,0.12); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:11px; }
+  .mc-skel-line { height:11px; border-radius:6px; background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.1) 50%,rgba(255,255,255,0.04) 75%); background-size:200% 100%; animation:mcShimmer 1.5s ease-in-out infinite; }
+  /* stagger row entrance */
+  @keyframes mcRowIn { from{opacity:0;transform:translateX(-5px)} to{opacity:1;transform:none} }
+  .mc-row-enter { animation:mcRowIn 260ms cubic-bezier(0.34,1.56,0.64,1) both; }
+  /* progress bar */
+  .mc-progress { height:3px; border-radius:999px; background:rgba(255,255,255,0.07); margin-bottom:12px; overflow:hidden; }
+  .mc-progress-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#534AB7,#9b8fff); transition:width 600ms cubic-bezier(0.34,1.56,0.64,1); }
+  .mc-progress-fill--done { background:linear-gradient(90deg,#1D9E75,#34d399); }
+  /* all-done */
+  .mc-alldone { display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 0 6px; animation:mcIn 400ms cubic-bezier(0.34,1.56,0.64,1) both; }
+  .mc-alldone-icon { font-size:30px; line-height:1; }
+  .mc-alldone-text { font-size:12px; font-weight:700; color:#34d399; letter-spacing:0.1em; text-transform:uppercase; }
+  .mc-alldone-sub  { font-size:11px; color:rgba(255,255,255,0.32); }
+  /* finance trend */
+  .mc-fin-trend { font-size:10px; font-weight:600; margin-top:3px; }
+  .mc-fin-trend--up   { color:#34d399; }
+  .mc-fin-trend--down { color:#f87171; }
 
   .composer-textarea {
     flex: 1; min-width: 0; background: none; outline: 0;
@@ -3123,6 +3143,15 @@ function CopyBtn({ text }) {
           React.createElement('path', { d: 'M5 4H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1M7 3h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z', stroke: 'currentColor', strokeWidth: '1.5', fill: 'none', strokeLinejoin: 'round' }))
   );
 }
+function MiniCardSkeleton({ dataType }) {
+  const ce = React.createElement;
+  const n = dataType === 'finance' ? 1 : 4;
+  const ws = ['65%','50%','75%','42%'];
+  return ce('div',{className:'mc-skel-wrap'},
+    ce('div',{className:'mc-skel-line',style:{width:'32%'}}),
+    ...Array.from({length:n},(_,i)=>ce('div',{key:i,className:'mc-skel-line',style:{width:ws[i]||'58%'}}))
+  );
+}
 function MiniCard({ dataType, data, onNavigate }) {
   const ce = React.createElement;
   const [checked, setChecked] = React.useState({});
@@ -3170,43 +3199,81 @@ function MiniCard({ dataType, data, onNavigate }) {
     try { await fetch(`/api/tasks/${taskId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'done'})}); } catch {}
   };
 
+  const fmtDelta = d => {
+    if (d == null || Math.abs(d) < 0.01) return null;
+    const cls = 'mc-fin-trend mc-fin-trend--' + (d > 0 ? 'up' : 'down');
+    return ce('span',{className:cls},(d>0?'↑ ':'↓ ')+'R$ '+fmtBRL(Math.abs(d)));
+  };
+
   let rows = [];
+  let progressBar = null;
+  let allDoneEl = null;
+
   if (dataType === 'tasks') {
-    rows = (data||[]).slice(0,5).map((t,i) => {
-      const isDone  = t.status==='done' || !!checked[t.id];
-      const isFade  = !!fading[t.id];
-      const pillKey = isDone ? 'done' : (t.status||'active');
-      const pillLbl = isDone ? 'Feito' : t.status==='overdue' ? 'Atrasada' : 'A fazer';
-      return ce('div',{key:t.id||i,className:`mc-row${isDone?' is-done':''}${isFade?' is-fading':''}`},
-        ce('div',{className:`mc-chk${isDone?' is-checked':''}`,onClick:ev=>onCheck(ev,t.id)},
-          ce('svg',{className:'mc-chk-svg',viewBox:'0 0 9 9',fill:'none'},
-            ce('path',{d:'M1 4.5l2.5 2.5 4.5-5',stroke:'#1D9E75',strokeWidth:'1.6',strokeLinecap:'round',strokeLinejoin:'round'}))
-        ),
-        ce('span',{className:'mc-title'},t.title),
-        clientTag(t.tags),
-        ce('span',{className:`mc-pill mc-pill--${pillKey}`},pillLbl)
+    const slice = (data||[]).slice(0,5);
+    const total = slice.length;
+    const doneCount = slice.filter(t => t.status==='done' || !!checked[t.id]).length;
+    const pct = total > 0 ? Math.round(doneCount/total*100) : 0;
+    const allDone = total > 0 && doneCount === total;
+
+    progressBar = ce('div',{className:'mc-progress'},
+      ce('div',{className:`mc-progress-fill${allDone?' mc-progress-fill--done':''}`,style:{width:pct+'%'}})
+    );
+
+    if (allDone) {
+      allDoneEl = ce('div',{className:'mc-alldone'},
+        ce('div',{className:'mc-alldone-icon'},'🎯'),
+        ce('div',{className:'mc-alldone-text'},'TUDO FEITO!'),
+        ce('div',{className:'mc-alldone-sub'},`${total} ${total===1?'tarefa':'tarefas'} concluída${total===1?'':'s'}`)
       );
-    });
+    } else {
+      rows = slice.map((t,i) => {
+        const isDone  = t.status==='done' || !!checked[t.id];
+        const isFade  = !!fading[t.id];
+        const pillKey = isDone ? 'done' : (t.status||'active');
+        const pillLbl = isDone ? 'Feito' : t.status==='overdue' ? 'Atrasada' : 'A fazer';
+        return ce('div',{key:t.id||i,className:`mc-row mc-row-enter${isDone?' is-done':''}${isFade?' is-fading':''}`,style:{animationDelay:i*60+'ms'}},
+          ce('div',{className:`mc-chk${isDone?' is-checked':''}`,onClick:ev=>onCheck(ev,t.id)},
+            ce('svg',{className:'mc-chk-svg',viewBox:'0 0 9 9',fill:'none'},
+              ce('path',{d:'M1 4.5l2.5 2.5 4.5-5',stroke:'#1D9E75',strokeWidth:'1.6',strokeLinecap:'round',strokeLinejoin:'round'}))
+          ),
+          ce('span',{className:'mc-title'},t.title),
+          clientTag(t.tags),
+          ce('span',{className:`mc-pill mc-pill--${pillKey}`},pillLbl)
+        );
+      });
+    }
   } else if (dataType === 'finance') {
     rows = [ce('div',{key:'pills',className:'mc-finance-pills'},
-      ce('div',{className:'mc-fin-pill mc-fin-pill--balance'},ce('span',{className:'mc-fin-label'},'Saldo'),   ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.saldo)}`)),
-      ce('div',{className:'mc-fin-pill mc-fin-pill--income'}, ce('span',{className:'mc-fin-label'},'Receitas'), ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.receitas)}`)),
-      ce('div',{className:'mc-fin-pill mc-fin-pill--expense'},ce('span',{className:'mc-fin-label'},'Despesas'), ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.despesas)}`))
+      ce('div',{className:'mc-fin-pill mc-fin-pill--balance'},
+        ce('span',{className:'mc-fin-label'},'Saldo'),
+        ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.saldo)}`)
+      ),
+      ce('div',{className:'mc-fin-pill mc-fin-pill--income'},
+        ce('span',{className:'mc-fin-label'},'Receitas'),
+        ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.receitas)}`),
+        fmtDelta(data.receitas_delta)
+      ),
+      ce('div',{className:'mc-fin-pill mc-fin-pill--expense'},
+        ce('span',{className:'mc-fin-label'},'Despesas'),
+        ce('span',{className:'mc-fin-value'},`R$ ${fmtBRL(data.despesas)}`),
+        fmtDelta(data.despesas_delta)
+      )
     )];
   } else if (dataType === 'events') {
-    rows = (data||[]).slice(0,5).map((ev,i) => ce('div',{key:ev.id||i,className:'mc-row'},
+    rows = (data||[]).slice(0,5).map((ev,i) => ce('div',{key:ev.id||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
       ce('span',{className:'mc-ev-dot',style:{background:ev.color||'rgba(124,106,247,0.6)'}}),
       ce('span',{className:'mc-ev-time'},(ev.start_time||'').slice(11,16)||'—'),
       ce('span',{className:'mc-title'},ev.title)
     ));
   } else if (dataType === 'reminders') {
-    rows = (data||[]).slice(0,5).map((r,i) => ce('div',{key:r.id||i,className:'mc-row'},
+    rows = (data||[]).slice(0,5).map((r,i) => ce('div',{key:r.id||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
       ce('i',{className:'ti ti-clock-hour-4',style:{fontSize:13,color:'rgba(251,146,60,0.7)',flexShrink:0}}),
       ce('span',{className:'mc-title'},r.title),
       r.due_datetime ? ce('span',{className:'mc-ev-time'},r.due_datetime.slice(0,10)) : null
     ));
   } else if (dataType === 'clients') {
-    rows = (data||[]).slice(0,5).map((c,i) => ce('div',{key:c.name||i,className:'mc-row'},
+    rows = (data||[]).slice(0,5).map((c,i) => ce('div',{key:c.name||i,className:'mc-row mc-row-enter',style:{animationDelay:i*60+'ms'}},
       ce('div',{style:{flex:1,minWidth:0}},
         ce('span',{className:'mc-title'},c.name),
         c.situacao ? ce('span',{className:'mc-subtitle',style:{display:'block'}},c.situacao.slice(0,55)+(c.situacao.length>55?'…':'')) : null
@@ -3214,7 +3281,7 @@ function MiniCard({ dataType, data, onNavigate }) {
     ));
   }
 
-  if (!rows.length && dataType !== 'finance') return null;
+  if (!rows.length && !allDoneEl && dataType !== 'finance') return null;
   const icon  = iconMap[dataType];
   const label = titleMap[dataType]||'';
   const count = Array.isArray(data) && data.length > 0 ? data.length : null;
@@ -3224,7 +3291,8 @@ function MiniCard({ dataType, data, onNavigate }) {
       ce('span',{className:'mc-header-label'},label),
       count!==null ? ce('span',{className:'mc-count-pill'},count) : null
     ) : null,
-    ...rows,
+    progressBar,
+    allDoneEl || rows,
     navMap[dataType] ? ce('div',{className:'mc-footer'},
       ce('button',{className:'mc-action',onClick:()=>onNavigate(navMap[dataType])},
         labelMap[dataType],
@@ -6145,10 +6213,17 @@ function App() {
           const payload = line.slice(6);
           try {
             const parsed = JSON.parse(payload);
+            if (parsed.data_type_hint) {
+              setMessages(prev => prev.map(m => m.id === assistantId
+                ? { ...m, loading_card: true, data_type_hint: parsed.data_type_hint } : m));
+            }
             if (parsed.done) {
               if (parsed.data_type && parsed.data != null) {
                 setMessages(prev => prev.map(m => m.id === assistantId
-                  ? { ...m, data_type: parsed.data_type, data: parsed.data } : m));
+                  ? { ...m, data_type: parsed.data_type, data: parsed.data, loading_card: false } : m));
+              } else {
+                setMessages(prev => prev.map(m => m.id === assistantId
+                  ? { ...m, loading_card: false } : m));
               }
               break;
             }
@@ -6282,9 +6357,11 @@ function App() {
           ),
           React.createElement(CopyBtn, { text: msg.text })
         ),
-        msg.data_type && msg.data
-          ? React.createElement(MiniCard, { dataType: msg.data_type, data: msg.data, onNavigate: setActive })
-          : null
+        msg.loading_card && !msg.data
+          ? React.createElement(MiniCardSkeleton, { dataType: msg.data_type_hint })
+          : msg.data_type && msg.data
+            ? React.createElement(MiniCard, { dataType: msg.data_type, data: msg.data, onNavigate: setActive })
+            : null
       );
     }),
     isThinking && React.createElement('div', { className: 'msg msg-jarvis' },
