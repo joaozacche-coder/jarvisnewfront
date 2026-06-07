@@ -5955,6 +5955,7 @@ function App() {
     setMessages(prev => [...prev, userMsg]);
     setOrbState('speaking');
     setIsThinking(true);
+    const assistantId = ++__msgId;
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -5962,11 +5963,36 @@ function App() {
         body: JSON.stringify({ message: value, tone: localStorage.getItem('jarvis_agent_tone') || 'Parceiro' })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      const reply = stripMd(data.response || '');
-      setMessages(prev => [...prev, { id: ++__msgId, role: 'jarvis', text: reply }]);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullText = '';
+      let started = false;
+      while (true) {
+        const { done, value: chunk } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(chunk, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const payload = line.slice(6);
+          if (payload === '[DONE]') break;
+          try {
+            const { chunk: t } = JSON.parse(payload);
+            if (!started) {
+              started = true;
+              setIsThinking(false);
+              setMessages(prev => [...prev, { id: assistantId, role: 'jarvis', text: '' }]);
+            }
+            fullText += t;
+            setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, text: stripMd(fullText) } : m));
+          } catch {}
+        }
+      }
+      if (!started) setMessages(prev => [...prev, { id: assistantId, role: 'jarvis', text: '' }]);
     } catch(e) {
-      setMessages(prev => [...prev, { id: ++__msgId, role: 'jarvis', text: '', error: true, retryText: value }]);
+      setMessages(prev => [...prev, { id: assistantId, role: 'jarvis', text: '', error: true, retryText: value }]);
     } finally {
       setIsThinking(false);
       setOrbState('idle');
