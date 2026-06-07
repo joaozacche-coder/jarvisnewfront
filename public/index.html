@@ -6244,10 +6244,18 @@ function App() {
     setIsThinking(true);
     const assistantId = ++__msgId;
     try {
+      const history = messages
+        .filter(m => !m.error && m.text && m.role)
+        .slice(-8)
+        .map(m => ({ role: m.role === 'user' ? 'user' : 'model', text: m.text }));
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: value, tone: localStorage.getItem('jarvis_agent_tone') || 'Parceiro' })
+        body: JSON.stringify({
+          message: value,
+          tone: localStorage.getItem('jarvis_agent_tone') || 'Parceiro',
+          history,
+        })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const reader = res.body.getReader();
