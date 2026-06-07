@@ -59,7 +59,7 @@
   /* ---------- ORB AS AMBIENT ENVIRONMENT ---------- */
   .orb-ambient {
     position: fixed;
-    top: 32vh;
+    top: 24vh;
     left: 50%;
     bottom: auto;
     right: auto;
@@ -203,10 +203,10 @@
     pointer-events: none;
   }
   /* hero — layout centralizado, elementos fixed */
-  .hero-greeting { position:fixed; top:18vh; left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:13px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.4; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-greeting { position:fixed; top:17vh;left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:13px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.4; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
   .hero-clock    { position:fixed; top:24px; right:24px; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; letter-spacing:0.04em; }
-  .hero-phrase   { position:fixed; top:24vh; left:50%; transform:translateX(-50%); text-align:center; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
-  .hero-rank     { position:fixed; bottom:14vh; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
+  .hero-phrase   { position:fixed; top:12vh; left:50%; transform:translateX(-50%); text-align:center; font-size:13px; color:var(--text); opacity:0.25; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-rank     { position:fixed; bottom:16vh; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
   .hero-rank-gem { font-size:13px; line-height:1; }
   .hero-rank-label { font-weight:500; }
   .hero-rank-pts { opacity:0.45; }
@@ -5961,10 +5961,10 @@ function App() {
     onToggleTheme: () => setTweak('dark', !dark)
   }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
-  }, React.createElement("div", {className:"hero-greeting"}, eyebrow + ', ' + (t.name || 'JOÃO').toUpperCase()),
+  }, React.createElement("div", {className:"hero-phrase"}, tagline),
+  React.createElement("div", {className:"hero-greeting"}, eyebrow + ', ' + (t.name || 'JOÃO').toUpperCase()),
   React.createElement("div", {className:"hero-clock"}, clock),
   React.createElement("div", {className:"hero-rank"}, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", {className:"hero-rank-label", style:{color:heroRank.color}}, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, heroXP + " pts")),
-  React.createElement("div", {className:"hero-phrase"}, tagline),
   /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
   }, orbState === 'listening' && 'OUVINDO…', orbState === 'speaking' && 'RESPONDENDO…'),
