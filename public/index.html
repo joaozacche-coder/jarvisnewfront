@@ -797,7 +797,7 @@
 
   /* Modal */
   .crm-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: tvFadeUp 0.18s both; }
-  .crm-modal { background: #0D1420; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 26px; width: 380px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 32px 80px rgba(0,0,0,0.7); animation: tvSlideDown 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+  .crm-modal { background: #0D1420; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 26px; width: 380px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 32px 80px rgba(0,0,0,0.7); animation: tvSlideDown 0.25s cubic-bezier(0.34,1.56,0.64,1); }
   .crm-modal-hd { display: flex; align-items: center; justify-content: space-between; }
   .crm-modal-title { font-size: 15px; font-weight: 600; color: var(--text); }
   .crm-modal-x { font-size: 20px; color: var(--text-2); cursor: pointer; background: none; border: none; line-height: 1; padding: 2px 6px; border-radius: 6px; transition: background 0.12s; }
@@ -821,6 +821,10 @@
     .crm-view { padding: 24px 16px 40px calc(var(--sb-w) + 16px); }
     .crm-grid { grid-template-columns: 1fr; }
     .crm-title { font-size: 20px; }
+  }
+  @media (max-width: 600px) {
+    .crm-modal-bg { align-items: flex-end; }
+    .crm-modal { width: 100% !important; max-width: 100% !important; border-radius: 18px 18px 0 0; padding-bottom: max(26px, env(safe-area-inset-bottom, 0px)); }
   }
 
   /* ─── Finance View ─── */
@@ -1139,7 +1143,7 @@
   .ag-event--day { left: 56px; right: 12px; }
 
   /* ── Month view ── */
-  .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
+  .ag-month-wrap { display: flex; flex-direction: column; gap: 0; flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: 80px; animation: agFadeUp 0.3s both; }
   .ag-month-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0 0 0; border-bottom: 0.5px solid rgba(255,255,255,0.1); flex-shrink: 0; }
   .ag-month-hd { text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 8px 0; }
   .ag-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; padding: 0; flex-shrink: 0; }
@@ -1474,7 +1478,7 @@
   .pv-empty-icon { font-size:40px; opacity:0.3; }
   .pv-loading { display:flex; align-items:center; justify-content:center; padding:60px; }
   @media(max-width:900px) { .pv-skel-grid { grid-template-columns:repeat(2,1fr); } }
-  @media(max-width:600px) { .pv-view { left:0; padding-bottom:56px; } .pv-grid,.pv-skel-grid { grid-template-columns:1fr; } .pv-kanban { flex-direction:column; } .pv-kol { min-width:unset; } .pv-panel { width:100%; max-width:100%; } }
+  @media(max-width:600px) { .pv-view { left:0; padding-bottom:56px; } .pv-grid,.pv-skel-grid { grid-template-columns:1fr; } .pv-kanban { flex-direction:column; } .pv-kol { min-width:unset; } .pv-panel { width:100%; max-width:100%; padding-top: max(26px, calc(env(safe-area-inset-top, 0px) + 16px)); padding-bottom: max(26px, calc(env(safe-area-inset-bottom, 0px) + 16px)); } }
 
   /* ─── Reminders View ─── */
   .is-reminders .orb-ambient { opacity: 0 !important; transition: opacity 0.5s; }
@@ -1879,6 +1883,10 @@
     .st-badges { grid-template-columns: repeat(3, 1fr) !important; }
   }
 
+  @media (max-width: 600px) {
+    .twk-panel { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 8px) !important; right: 8px !important; width: calc(100vw - 16px) !important; }
+  }
+
   /* landscape mobile — esconde hero, compositor fica acessível */
   @media (orientation: landscape) and (max-height: 500px) {
     .hero-phrase, .hero-greeting, .hero-rank { opacity: 0 !important; pointer-events: none; }
@@ -1944,7 +1952,7 @@
 
 const __TWEAKS_STYLE = `
   .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
-    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;
     transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
     background:rgba(250,249,247,.78);color:#29261b;
     -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
