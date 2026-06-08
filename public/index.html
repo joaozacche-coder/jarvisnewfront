@@ -189,10 +189,10 @@
   }
 
   /* hero — layout centralizado, elementos fixed */
-  .hero-phrase   { position:fixed; top:8vh;  left:50%; transform:translateX(-50%); text-align:center; font-size:12px; color:var(--text); opacity:0.22; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
-  .hero-greeting { position:fixed; top:15vh; left:50%; transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:14px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.55; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-phrase   { position:fixed; top:8vh;  left:50%; -webkit-transform:translateX(-50%); transform:translateX(-50%); text-align:center; font-size:12px; color:var(--text); opacity:0.22; pointer-events:none; z-index:4; letter-spacing:0.04em; white-space:nowrap; transition:opacity 420ms ease; }
+  .hero-greeting { position:fixed; top:15vh; left:50%; -webkit-transform:translateX(-50%); transform:translateX(-50%); text-align:center; font-family:'Geist Mono',monospace; font-size:14px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase; color:var(--text); opacity:0.55; pointer-events:none; z-index:4; white-space:nowrap; transition:opacity 420ms ease; }
   .hero-clock    { position:fixed; top:24px; right:24px; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); opacity:0.35; pointer-events:none; z-index:4; transition:opacity 420ms ease; letter-spacing:0.04em; }
-  .hero-rank     { position:fixed; bottom:14vh; left:50%; transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
+  .hero-rank     { position:fixed; bottom:14vh; left:50%; -webkit-transform:translateX(-50%); transform:translateX(-50%); display:inline-flex; align-items:center; gap:6px; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:0.04em; pointer-events:none; z-index:4; transition:opacity 420ms ease; }
   .hero-rank-gem { font-size:13px; line-height:1; }
   .hero-rank-label { font-weight:500; }
   .hero-rank-pts { opacity:0.45; }
@@ -1799,7 +1799,7 @@
     .st-layout { overflow-y: auto; flex-direction: column; }
 
     /* fabs acima da nav */
-    .tv-fab, .fin-fab, .ag-fab { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px) !important; }
+    .tv-fab, .fin-fab, .ag-fab { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 20px) !important; }
 
     /* bottom sheets — safe area no padding inferior */
     .fin-modal, .ag-modal {
@@ -2593,7 +2593,7 @@ function Particles({
           if (d < maxDist) {
             const alpha = (1 - d / maxDist) * 0.05 * centerFade;
             if (alpha < 0.005) continue;
-            ctx.strokeStyle = `rgba(160,150,230,${alpha})`;
+            ctx.strokeStyle = `rgba(167,139,250,${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -2608,7 +2608,7 @@ function Particles({
         if (p.layer === 1) {
           // glow spark
           const rad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
-          rad.addColorStop(0, `rgba(180,168,255,${alpha})`);
+          rad.addColorStop(0, `rgba(167,139,250,${alpha})`);
           rad.addColorStop(0.4, `rgba(124,106,247,${alpha * 0.4})`);
           rad.addColorStop(1, 'rgba(124,106,247,0)');
           ctx.fillStyle = rad;
@@ -2719,7 +2719,7 @@ function VoiceOrb({
     }
     const COLORS = {
       v: {
-        rgb: '180,160,255',
+        rgb: '167,139,250',
         glow: '124,106,247'
       },
       w: {
@@ -2887,7 +2887,7 @@ function VoiceOrb({
           alpha = Math.min(0.7, alpha + boost * 1.2);
         }
         if (alpha < 0.03) continue;
-        ctx.strokeStyle = `rgba(180,160,255,${alpha})`;
+        ctx.strokeStyle = `rgba(167,139,250,${alpha})`;
         ctx.beginPath();
         ctx.moveTo(A.x, A.y);
         ctx.lineTo(B.x, B.y);
@@ -3175,17 +3175,17 @@ function MiniCard({ dataType, data, onNavigate }) {
   const iconMap = {tasks:'ti-list-check',finance:'ti-wallet',events:'ti-calendar-event',reminders:'ti-bell',clients:'ti-building-store'};
   const titleMap= {tasks:'TAREFAS',finance:'FINANÇAS',events:'AGENDA',reminders:'LEMBRETES',clients:'CLIENTES'};
 
-  const tagClass = tag => {
+  const tagStyle = tag => {
     const l = (tag||'').toLowerCase();
-    if (l.includes('gracie'))                          return 'mc-tag mc-tag--gracie';
-    if (l.includes('soho'))                            return 'mc-tag mc-tag--soho';
-    if (l.includes('ddpart') || l.includes('dd part')) return 'mc-tag mc-tag--ddparts';
-    return 'mc-tag mc-tag--default';
+    if (l.includes('gracie'))                          return {background:'rgba(52,211,153,0.15)',color:'#34d399'};
+    if (l.includes('soho'))                            return {background:'rgba(124,106,247,0.18)',color:'#9b8fff'};
+    if (l.includes('ddpart') || l.includes('dd part')) return {background:'rgba(251,146,60,0.18)',color:'#fb923c'};
+    return {background:'rgba(255,255,255,0.07)',color:'rgba(255,255,255,0.5)'};
   };
 
   const clientTag = tags => {
     const t = (tags||[]).filter(g=>!['task','active','done','contexto-vivo','todo','pending'].includes(g.toLowerCase()))[0];
-    return t ? ce('span',{className:tagClass(t)},t) : null;
+    return t ? ce('span',{className:'mc-tag',style:tagStyle(t)},t) : null;
   };
 
   const mcConfetti = e => {
