@@ -314,6 +314,19 @@
     color: var(--accent);
     background: rgba(124,106,247,0.18);
   }
+  .composer-send {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: none;
+    place-items: center;
+    flex-shrink: 0;
+    transition: transform 150ms ease, opacity 150ms ease, background 150ms ease;
+  }
+  .composer-send:hover { background: rgba(124,106,247,0.8); }
+  .composer-send:active { transform: scale(0.88); }
+  .composer.has-text .composer-send { display: grid; }
   .mic-pulse {
     position: absolute;
     inset: -2px;
@@ -1825,14 +1838,21 @@
     }
     @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
 
-    /* chat feed: clear composer + tab bar, scrollable on iOS */
+    /* chat feed: clear composer + tab bar + keyboard, scrollable on iOS */
     .chat-feed {
-      padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px) !important;
+      padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px + var(--keyboard-h, 0px)) !important;
       -webkit-overflow-scrolling: touch;
       overflow-y: auto;
       width: calc(100% - 16px) !important;
       margin-left: 0 !important;
     }
+
+    /* composer: hide desktop-only buttons, swap mic/send */
+    .composer-btn.attach { display: none; }
+    .composer-btn-aux { display: none; }
+    .composer-send { display: grid !important; background: rgba(255,255,255,0.12); opacity: 0.35; pointer-events: none; }
+    .composer.has-text .composer-send { background: var(--accent); opacity: 1; pointer-events: auto; }
+    .composer.has-text .composer-btn.mic { display: none; }
 
     /* status-line: reposition for mobile */
     .status-line { top: calc(50% + min(28vw, 130px)); }
@@ -3488,8 +3508,9 @@ function Composer({
     ta.style.height = Math.min(ta.scrollHeight, MAX_H) + 'px';
     ta.style.overflowY = ta.scrollHeight > MAX_H ? 'auto' : 'hidden';
   };
+  const hasText = value.trim().length > 0;
   return /*#__PURE__*/React.createElement("form", {
-    className: `composer ${listening ? 'is-listening' : ''}`,
+    className: `composer ${listening ? 'is-listening' : ''}${hasText ? ' has-text' : ''}`,
     onSubmit: e => { e.preventDefault(); onSubmit(); }
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -3515,18 +3536,25 @@ function Composer({
     }
   }), /*#__PURE__*/React.createElement("button", {
     type: "button",
-    className: "composer-btn",
+    className: "composer-btn composer-btn-aux",
     title: "Fone de ouvido"
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "headphone",
     size: 15
   })), /*#__PURE__*/React.createElement("button", {
     type: "button",
-    className: "composer-btn",
+    className: "composer-btn composer-btn-aux",
     title: "Volume"
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "volume",
     size: 15
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "composer-send",
+    title: "Enviar"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "arrow-up",
+    size: 16
   })), /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: `composer-btn mic ${listening ? 'is-on' : ''}`,
@@ -6260,6 +6288,10 @@ function App() {
     const update = () => {
       const kh = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
       document.documentElement.style.setProperty('--keyboard-h', `${kh}px`);
+      if (kh > 100) {
+        const feed = feedRef.current;
+        if (feed) setTimeout(() => feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' }), 80);
+      }
     };
     vv.addEventListener('resize', update);
     vv.addEventListener('scroll', update);
