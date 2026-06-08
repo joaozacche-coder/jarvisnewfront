@@ -195,41 +195,41 @@
     height: 100dvh;
   }
 
-  /* hero — layout flow, sem position:fixed */
-  .hero-wrap {
-    position:absolute; top:0; left:0; right:0;
-    padding:env(safe-area-inset-top,44px) 24px 0;
-    display:flex; flex-direction:column; align-items:flex-start; gap:8px;
-    pointer-events:none; z-index:4;
-  }
+  /* hero — position:fixed, layout original */
   .hero-phrase {
-    text-align:left; font-size:12px; color:rgba(241,240,255,0.35);
-    pointer-events:none; letter-spacing:0.08em;
-    white-space:nowrap; transition:opacity 420ms ease;
+    position:fixed; top:8vh; left:50%;
+    -webkit-transform:translateX(-50%); transform:translateX(-50%);
+    text-align:center; font-size:12px; pointer-events:none; z-index:4;
+    letter-spacing:0.08em; white-space:nowrap; transition:opacity 420ms ease;
     font-family:'Syne',sans-serif; font-weight:600; text-transform:uppercase;
+    color:rgba(241,240,255,0.35);
   }
   .hero-greeting {
-    text-align:left; font-family:'Syne',sans-serif;
-    font-size:clamp(26px,7vw,34px); font-weight:800;
+    position:fixed; top:15vh; left:50%;
+    -webkit-transform:translateX(-50%); transform:translateX(-50%);
+    text-align:center; white-space:nowrap;
+    font-family:'Syne',sans-serif; font-size:clamp(22px,5vw,30px); font-weight:800;
     letter-spacing:-0.02em; line-height:1.1;
     background:linear-gradient(135deg,#ffffff 0%,#a78bfa 100%);
     -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    pointer-events:none; transition:opacity 420ms ease;
+    pointer-events:none; z-index:4; transition:opacity 420ms ease;
   }
   .hero-clock {
-    position:absolute; top:16px; right:20px;
+    position:fixed; top:24px; right:24px;
     font-family:'Syne',sans-serif; font-size:12px;
     color:rgba(241,240,255,0.3); pointer-events:none; z-index:4;
     transition:opacity 420ms ease; letter-spacing:0.04em;
   }
   .hero-rank {
+    position:fixed; bottom:14vh; left:50%;
+    -webkit-transform:translateX(-50%); transform:translateX(-50%);
     display:inline-flex; align-items:center; gap:6px;
     padding:5px 14px 5px 10px;
     background:linear-gradient(135deg,rgba(251,146,60,0.14),rgba(251,146,60,0.05));
     border:1px solid rgba(251,146,60,0.28); border-radius:100px;
     font-size:12px; font-family:'Syne',sans-serif; font-weight:600;
     color:#fb923c; letter-spacing:0.02em;
-    pointer-events:none; transition:opacity 420ms ease;
+    pointer-events:none; z-index:4; transition:opacity 420ms ease;
   }
   .hero-rank::before {
     content:''; width:6px; height:6px; border-radius:50%;
@@ -1861,10 +1861,10 @@
     .is-active .input-shell { width: calc(100% - 16px); }
 
     /* hero: tighter for small screens + safe area for notch/dynamic island */
-    .hero-phrase   { font-size: 11px; }
-    .hero-greeting { font-size: clamp(22px,8vw,28px); letter-spacing: -0.01em; }
+    .hero-phrase   { font-size: 11px; top: max(6vh, calc(env(safe-area-inset-top, 0px) + 32px)); }
+    .hero-greeting { font-size: clamp(18px,6vw,24px); top: max(12vh, calc(env(safe-area-inset-top, 0px) + 62px)); }
     .hero-clock    { top: max(16px, calc(env(safe-area-inset-top, 0px) + 8px)); right: max(16px, calc(env(safe-area-inset-right, 0px) + 16px)); font-size: 11px; }
-    .hero-rank     { font-size: 11px; }
+    .hero-rank     { font-size: 11px; bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 120px); }
 
     /* orb: center in usable area (above bottom nav) */
     .orb-ambient { top: calc((100dvh - 56px - env(safe-area-inset-bottom, 0px)) * 0.45 + env(safe-area-inset-top, 0px)); }
@@ -6556,12 +6556,10 @@ function App() {
     onToggleTheme: () => setTweak('dark', !dark)
   }), active === 'settings' ? React.createElement(SettingsView, null) : active === 'personal' ? React.createElement(PersonalView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : active === 'reminders' ? React.createElement(RemindersView, null) : active === 'tasks' ? React.createElement(TasksView, null) : active === 'crm' ? React.createElement(ClientsView, {onChat: (msg) => { setActive('agent'); setInput(msg); }}) : active === 'finance' ? React.createElement(FinanceView, null) : active === 'calendar' ? React.createElement(AgendaView, {onChat:(msg)=>{setActive('agent');setInput(msg);}}) : /*#__PURE__*/React.createElement("main", {
     className: "main"
-  }, React.createElement("div", {className:"hero-wrap"},
-    React.createElement("div", {className:"hero-clock"}, clock),
-    React.createElement("div", {className:"hero-phrase"}, tagline),
-    React.createElement("div", {className:"hero-greeting"}, eyebrow + ', ' + (t.name || 'JOÃO').toUpperCase()),
-    React.createElement("div", {className:"hero-rank"}, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", {className:"hero-rank-label", style:{color:heroRank.color}}, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, heroXP + " pts"))
-  ),
+  }, React.createElement("div", {className:"hero-phrase"}, tagline),
+  React.createElement("div", {className:"hero-greeting"}, eyebrow + ', ' + (t.name || 'JOÃO').toUpperCase()),
+  React.createElement("div", {className:"hero-clock"}, clock),
+  React.createElement("div", {className:"hero-rank"}, React.createElement("span", {className:"hero-rank-gem"}, heroRank.gem), React.createElement("span", {className:"hero-rank-label", style:{color:heroRank.color}}, heroRank.name), React.createElement("span", {className:"hero-rank-pts"}, heroXP + " pts")),
   /*#__PURE__*/React.createElement("div", {
     className: `status-line ${showStatus ? 'is-visible' : ''}`
   }, orbState === 'listening' && 'OUVINDO…', orbState === 'speaking' && 'RESPONDENDO…'),
