@@ -1865,6 +1865,8 @@
 
     /* === SETTINGS — sidenav horizontal no mobile === */
     .st-view { padding-top: env(safe-area-inset-top, 0px); }
+    /* st-layout overflow:hidden garante que o sidenav não scrolla junto com o conteúdo */
+    .st-layout { overflow: hidden !important; }
     .st-sidenav { width: 100% !important; flex-direction: row !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; padding: 4px 0 0 !important; overflow-x: auto; scrollbar-width: none; }
     .st-sidenav::-webkit-scrollbar { display: none; }
     .st-sidenav-title { display: none !important; }
