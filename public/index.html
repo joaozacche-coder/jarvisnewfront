@@ -314,20 +314,43 @@
     color: var(--accent);
     background: rgba(124,106,247,0.18);
   }
-  .composer-send {
+  /* ── Action wrapper: single flex slot, mic + send overlap via absolute ── */
+  .composer-action-wrap {
+    position: relative;
     width: 36px; height: 36px;
+    flex-shrink: 0;
+  }
+  .composer-action-wrap .composer-send,
+  .composer-action-wrap .composer-btn.mic {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
     border-radius: 11px;
+    display: grid; place-items: center;
+    transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.18s ease;
+  }
+  /* Send: hidden by default, springs in on has-text */
+  .composer-send {
     background: var(--accent);
     color: #fff;
-    display: none;
-    place-items: center;
-    flex-shrink: 0;
     box-shadow: 0 4px 18px rgba(83,74,183,0.5);
-    transition: transform 180ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms ease;
+    opacity: 0; transform: scale(0.5) rotate(-20deg); pointer-events: none;
   }
-  .composer-send:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(83,74,183,0.65); }
-  .composer-send:active { transform: scale(0.86); box-shadow: 0 2px 8px rgba(83,74,183,0.3); }
-  .composer.has-text .composer-send { display: grid; animation: sendPop 0.28s cubic-bezier(0.34,1.56,0.64,1) both; }
+  .composer-send:active { transform: scale(0.86) !important; box-shadow: 0 2px 8px rgba(83,74,183,0.3); }
+  /* Mic: visible by default */
+  .composer-btn.mic {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    opacity: 1; transform: scale(1);
+  }
+  /* Swap on has-text */
+  .composer.has-text .composer-send {
+    opacity: 1; transform: scale(1) rotate(0deg); pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(83,74,183,0.6);
+  }
+  .composer.has-text .composer-btn.mic {
+    opacity: 0; transform: scale(0.5) rotate(20deg); pointer-events: none;
+  }
   @keyframes sendPop { from { transform: scale(0.4) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
   .mic-pulse {
     position: absolute;
@@ -1849,47 +1872,25 @@
       margin-left: 0 !important;
     }
 
-    /* composer mobile: full redesign — rounded rect, botão send dopaminérgico */
-    .composer-btn.attach { display: none; }
-    .composer-btn-aux { display: none; }
+    /* composer mobile */
+    .composer-btn.attach, .composer-btn-aux { display: none; }
     .composer {
-      border-radius: 22px;
-      padding: 10px 10px 10px 18px;
-      align-items: flex-end;
+      border-radius: 26px;
+      padding: 10px 10px 10px 20px;
+      align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.065);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 36px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.05) inset;
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset;
     }
     .composer:focus-within {
-      background: rgba(255,255,255,0.09);
-      border-color: rgba(124,106,247,0.38);
-      box-shadow: 0 0 0 3px rgba(124,106,247,0.1), 0 8px 36px rgba(0,0,0,0.45);
+      background: rgba(255,255,255,0.095);
+      box-shadow: 0 0 0 2px rgba(124,106,247,0.35), 0 8px 40px rgba(0,0,0,0.5);
     }
-    .composer-textarea { font-size: 16px; padding: 4px 0; }
-    /* send: cinza fantasma quando vazio, roxo vivo quando tem texto */
-    .composer-send {
-      display: grid !important;
-      width: 40px; height: 40px;
-      border-radius: 13px;
-      background: rgba(83,74,183,0.18);
-      color: rgba(255,255,255,0.28);
-      box-shadow: none;
-      animation: none !important;
-      pointer-events: none;
-    }
-    .composer.has-text .composer-send {
-      background: var(--accent);
-      color: #fff;
-      pointer-events: auto;
-      box-shadow: 0 4px 20px rgba(83,74,183,0.55);
-      animation: sendPop 0.28s cubic-bezier(0.34,1.56,0.64,1) both !important;
-    }
-    .composer.has-text .composer-send:active { transform: scale(0.84); box-shadow: 0 2px 8px rgba(83,74,183,0.3); }
-    /* mic: mesmo tamanho do send */
-    .composer-btn.mic { width: 40px; height: 40px; border-radius: 13px; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6); }
-    .composer.has-text .composer-btn.mic { display: none; }
+    .composer-textarea { font-size: 16px; }
+    .composer-action-wrap { width: 44px; height: 44px; }
+    .composer-action-wrap .composer-send,
+    .composer-action-wrap .composer-btn.mic { border-radius: 14px; }
+    .composer-action-wrap .composer-btn.mic { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.65); }
 
     /* status-line: reposition for mobile */
     .status-line { top: calc(50% + min(28vw, 130px)); }
@@ -3586,7 +3587,9 @@ function Composer({
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "volume",
     size: 15
-  })), /*#__PURE__*/React.createElement("button", {
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "composer-action-wrap"
+  }, /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "composer-send",
     title: "Enviar"
@@ -3603,7 +3606,7 @@ function Composer({
     size: 15
   }), listening && /*#__PURE__*/React.createElement("span", {
     className: "mic-pulse"
-  })));
+  }))));
 }
 function CountUp({end, duration, locale}) {
   const [val, setVal] = React.useState(0);
