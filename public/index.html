@@ -27,12 +27,14 @@
 
   * { box-sizing: border-box; }
   html, body, #root { height: 100%; }
+  html { height: -webkit-fill-available; }
   body {
     margin: 0;
     font-family: 'Space Grotesk', 'DM Sans', 'Helvetica Neue', Helvetica, system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     overflow: hidden;
+    min-height: -webkit-fill-available;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -46,6 +48,7 @@
   .app {
     position: relative;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
     overscroll-behavior: none;
@@ -70,11 +73,13 @@
   .orb-ambient {
     position: fixed;
     top: 44vh;
+    top: 44dvh;
     left: 50%;
     bottom: auto;
     right: auto;
     width: var(--orb-size);
     height: var(--orb-size);
+    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     z-index: 0;
     pointer-events: auto;
@@ -83,9 +88,9 @@
     transition: transform 520ms cubic-bezier(.4,0,.2,1), opacity 600ms ease;
     will-change: transform;
   }
-  .is-active .orb-ambient { transform: translate(-50%,-50%) scale(1.04); opacity: 1; }
-  .is-active .orb-ambient.orb-ambient--listening { transform: translate(-50%,-50%) scale(1.06); }
-  .is-active .orb-ambient.orb-ambient--speaking  { transform: translate(-50%,-50%) scale(1.05); }
+  .is-active .orb-ambient { -webkit-transform: translate(-50%,-50%) scale(1.04); transform: translate(-50%,-50%) scale(1.04); opacity: 1; }
+  .is-active .orb-ambient.orb-ambient--listening { -webkit-transform: translate(-50%,-50%) scale(1.06); transform: translate(-50%,-50%) scale(1.06); }
+  .is-active .orb-ambient.orb-ambient--speaking  { -webkit-transform: translate(-50%,-50%) scale(1.05); transform: translate(-50%,-50%) scale(1.05); }
   .has-chat .orb-ambient {
     opacity: 0 !important;
     pointer-events: none;
@@ -186,6 +191,7 @@
     position: relative;
     z-index: 3;
     height: 100vh;
+    height: 100dvh;
   }
 
   /* hero — layout centralizado, elementos fixed */
@@ -230,6 +236,7 @@
     left: 50%;
     bottom: 6vh;
     top: auto;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: min(520px, calc(100% - 48px));
     z-index: 2;
@@ -350,6 +357,7 @@
     position: absolute;
     top: 0; bottom: 0;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: min(560px, calc(100% - var(--sb-w) - 48px));
     margin-left: calc(var(--sb-w) / 2);
@@ -357,6 +365,7 @@
     flex-direction: column;
     justify-content: flex-end;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 40px 12px calc(6vh + 88px);
     opacity: 0;
     pointer-events: none;
@@ -1770,11 +1779,14 @@
     .input-shell { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px + var(--keyboard-h, 0px)); width: calc(100% - 32px); }
     .is-active .input-shell { width: calc(100% - 24px); }
 
-    /* hero: tighter for small screens */
-    .hero-phrase   { font-size: 11px; top: 6vh; }
-    .hero-greeting { font-size: 12px; top: 12vh; letter-spacing: 0.15em; }
-    .hero-clock    { top: 16px; right: 16px; font-size: 11px; }
+    /* hero: tighter for small screens + safe area for notch/dynamic island */
+    .hero-phrase   { font-size: 11px; top: max(6vh, calc(env(safe-area-inset-top, 0px) + 32px)); }
+    .hero-greeting { font-size: 12px; top: max(12vh, calc(env(safe-area-inset-top, 0px) + 62px)); letter-spacing: 0.15em; }
+    .hero-clock    { top: max(16px, calc(env(safe-area-inset-top, 0px) + 8px)); right: max(16px, calc(env(safe-area-inset-right, 0px) + 16px)); font-size: 11px; }
     .hero-rank     { font-size: 11px; bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 70px); }
+
+    /* orb: center in usable area (above bottom nav) */
+    .orb-ambient { top: calc((100dvh - 56px - env(safe-area-inset-bottom, 0px)) * 0.45 + env(safe-area-inset-top, 0px)); }
 
     /* touch targets */
     .nav-item { width: 44px; height: 44px; }
@@ -1808,13 +1820,36 @@
     }
     @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
 
-    /* chat feed: clear composer + tab bar */
-    .chat-feed { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px) !important; }
+    /* chat feed: clear composer + tab bar, scrollable on iOS */
+    .chat-feed {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px) !important;
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+      width: calc(100% - 16px) !important;
+      margin-left: 0 !important;
+    }
+
+    /* status-line: reposition for mobile */
+    .status-line { top: calc(50% + min(28vw, 130px)); }
+
+    /* input-shell: ensure no left offset from sidebar */
+    .input-shell { left: 50%; margin-left: 0; }
 
     /* minicard mobile */
     .mc-wrap { padding:12px; }
     .mc-row { gap:8px; }
     .mc-title { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    /* messages: tighter on small screens */
+    .msg-user .msg-bubble { max-width: 92%; font-size: 14px; }
+    .msg-text { font-size: 14px; }
+    .msg-copy { display: none; }
+
+    /* composer: lock font-size to avoid iOS zoom */
+    .composer-input { font-size: 16px; }
+
+    /* bg-layer: slightly more visible on mobile */
+    .bg-layer canvas { opacity: 0.35; }
   }
 
   /* landscape mobile — esconde hero, compositor fica acessível */
