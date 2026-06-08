@@ -315,18 +315,20 @@
     background: rgba(124,106,247,0.18);
   }
   .composer-send {
-    width: 32px; height: 32px;
-    border-radius: 50%;
+    width: 36px; height: 36px;
+    border-radius: 11px;
     background: var(--accent);
     color: #fff;
     display: none;
     place-items: center;
     flex-shrink: 0;
-    transition: transform 150ms ease, opacity 150ms ease, background 150ms ease;
+    box-shadow: 0 4px 18px rgba(83,74,183,0.5);
+    transition: transform 180ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms ease;
   }
-  .composer-send:hover { background: rgba(124,106,247,0.8); }
-  .composer-send:active { transform: scale(0.88); }
-  .composer.has-text .composer-send { display: grid; }
+  .composer-send:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(83,74,183,0.65); }
+  .composer-send:active { transform: scale(0.86); box-shadow: 0 2px 8px rgba(83,74,183,0.3); }
+  .composer.has-text .composer-send { display: grid; animation: sendPop 0.28s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes sendPop { from { transform: scale(0.4) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
   .mic-pulse {
     position: absolute;
     inset: -2px;
@@ -1794,8 +1796,8 @@
     @keyframes navIn { from { transform: translateY(5px); opacity: 0; } to { transform: none; opacity: 1; } }
 
     /* composer: above bottom bar + keyboard */
-    .input-shell { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px + var(--keyboard-h, 0px)); width: calc(100% - 32px); }
-    .is-active .input-shell { width: calc(100% - 24px); }
+    .input-shell { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 8px + var(--keyboard-h, 0px)); width: calc(100% - 24px); }
+    .is-active .input-shell { width: calc(100% - 16px); }
 
     /* hero: tighter for small screens + safe area for notch/dynamic island */
     .hero-phrase   { font-size: 11px; top: max(6vh, calc(env(safe-area-inset-top, 0px) + 32px)); }
@@ -1847,11 +1849,46 @@
       margin-left: 0 !important;
     }
 
-    /* composer: hide desktop-only buttons, swap mic/send */
+    /* composer mobile: full redesign — rounded rect, botão send dopaminérgico */
     .composer-btn.attach { display: none; }
     .composer-btn-aux { display: none; }
-    .composer-send { display: grid !important; background: rgba(255,255,255,0.12); opacity: 0.35; pointer-events: none; }
-    .composer.has-text .composer-send { background: var(--accent); opacity: 1; pointer-events: auto; }
+    .composer {
+      border-radius: 22px;
+      padding: 10px 10px 10px 18px;
+      align-items: flex-end;
+      gap: 8px;
+      background: rgba(255,255,255,0.065);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 36px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.05) inset;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    }
+    .composer:focus-within {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(124,106,247,0.38);
+      box-shadow: 0 0 0 3px rgba(124,106,247,0.1), 0 8px 36px rgba(0,0,0,0.45);
+    }
+    .composer-textarea { font-size: 16px; padding: 4px 0; }
+    /* send: cinza fantasma quando vazio, roxo vivo quando tem texto */
+    .composer-send {
+      display: grid !important;
+      width: 40px; height: 40px;
+      border-radius: 13px;
+      background: rgba(83,74,183,0.18);
+      color: rgba(255,255,255,0.28);
+      box-shadow: none;
+      animation: none !important;
+      pointer-events: none;
+    }
+    .composer.has-text .composer-send {
+      background: var(--accent);
+      color: #fff;
+      pointer-events: auto;
+      box-shadow: 0 4px 20px rgba(83,74,183,0.55);
+      animation: sendPop 0.28s cubic-bezier(0.34,1.56,0.64,1) both !important;
+    }
+    .composer.has-text .composer-send:active { transform: scale(0.84); box-shadow: 0 2px 8px rgba(83,74,183,0.3); }
+    /* mic: mesmo tamanho do send */
+    .composer-btn.mic { width: 40px; height: 40px; border-radius: 13px; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6); }
     .composer.has-text .composer-btn.mic { display: none; }
 
     /* status-line: reposition for mobile */
@@ -3528,6 +3565,7 @@ function Composer({
     onChange: handleInput,
     onFocus: onFocus,
     onBlur: onBlur,
+    style: { touchAction: 'manipulation' },
     onKeyDown: e => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -6288,6 +6326,8 @@ function App() {
     const update = () => {
       const kh = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
       document.documentElement.style.setProperty('--keyboard-h', `${kh}px`);
+      // iOS Safari scrolls the page when keyboard opens — counteract it
+      if (vv.offsetTop > 0) window.scrollTo(0, 0);
       if (kh > 100) {
         const feed = feedRef.current;
         if (feed) setTimeout(() => feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' }), 80);
