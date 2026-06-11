@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content" />
 <title>JARVIS</title>
 <link rel="manifest" href="/manifest.json" />
 <meta name="theme-color" content="#0A0A12" />
@@ -72,8 +72,7 @@
   /* ---------- ORB AS AMBIENT ENVIRONMENT ---------- */
   .orb-ambient {
     position: fixed;
-    top: 44vh;
-    top: 44dvh;
+    top: 50%;
     left: 50%;
     bottom: auto;
     right: auto;
@@ -1868,7 +1867,11 @@
     .hero-rank     { font-size: 11px; bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 120px); }
 
     /* orb: center in usable area (above bottom nav) */
-    .orb-ambient { top: calc((100dvh - 56px - env(safe-area-inset-bottom, 0px)) * 0.45 + env(safe-area-inset-top, 0px)); }
+    .orb-ambient {
+      top: calc(50% - 28px);
+      width: min(var(--orb-size), min(44vw, 44vh));
+      height: min(var(--orb-size), min(44vw, 44vh));
+    }
 
     /* touch targets */
     .nav-item { width: 44px; height: 44px; }
@@ -6365,7 +6368,7 @@ function App() {
     const vv = window.visualViewport;
     if (!vv) return;
     const update = () => {
-      const kh = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      const kh = Math.max(0, window.innerHeight - vv.height);
       document.documentElement.style.setProperty('--keyboard-h', `${kh}px`);
       if (kh > 100) {
         const feed = feedRef.current;
