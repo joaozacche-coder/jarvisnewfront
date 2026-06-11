@@ -197,7 +197,7 @@
 
   /* hero — position:fixed, layout original */
   .hero-phrase {
-    position:fixed; top:8vh; left:50%;
+    position:fixed; top:8vh; top:8lvh; left:50%;
     -webkit-transform:translateX(-50%); transform:translateX(-50%);
     text-align:center; font-size:12px; pointer-events:none; z-index:4;
     letter-spacing:0.08em; white-space:nowrap; transition:opacity 420ms ease;
@@ -205,7 +205,7 @@
     color:rgba(241,240,255,0.35);
   }
   .hero-greeting {
-    position:fixed; top:15vh; left:50%;
+    position:fixed; top:15vh; top:15lvh; left:50%;
     -webkit-transform:translateX(-50%); transform:translateX(-50%);
     text-align:center; white-space:nowrap;
     font-family:'Syne',sans-serif; font-size:clamp(22px,5vw,30px); font-weight:800;
@@ -221,7 +221,7 @@
     transition:opacity 420ms ease; letter-spacing:0.04em;
   }
   .hero-rank {
-    position:fixed; bottom:14vh; left:50%;
+    position:fixed; bottom:14vh; bottom:14lvh; left:50%;
     -webkit-transform:translateX(-50%); transform:translateX(-50%);
     display:inline-flex; align-items:center; gap:6px;
     padding:5px 14px 5px 10px;
@@ -441,6 +441,7 @@
     justify-content: flex-end;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     padding: 40px 12px calc(6vh + 88px);
     opacity: 0;
     pointer-events: none;
@@ -1906,6 +1907,7 @@
       padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 90px + var(--keyboard-h, 0px)) !important;
       -webkit-overflow-scrolling: touch;
       overflow-y: auto;
+      overscroll-behavior: contain;
       width: calc(100% - 16px) !important;
       margin-left: 0 !important;
     }
@@ -6365,8 +6367,6 @@ function App() {
     const update = () => {
       const kh = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
       document.documentElement.style.setProperty('--keyboard-h', `${kh}px`);
-      // iOS Safari scrolls the page when keyboard opens — counteract it
-      if (vv.offsetTop > 0) window.scrollTo(0, 0);
       if (kh > 100) {
         const feed = feedRef.current;
         if (feed) setTimeout(() => feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' }), 80);
@@ -6399,7 +6399,8 @@ function App() {
   useEffect(() => {
     const feed = feedRef.current;
     if (!feed) return;
-    feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' });
+    const distFromBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight;
+    if (distFromBottom < 120) feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' });
   }, [messages, isThinking]);
   useEffect(() => {
     const c = localStorage.getItem('jarvis_primary_color');
